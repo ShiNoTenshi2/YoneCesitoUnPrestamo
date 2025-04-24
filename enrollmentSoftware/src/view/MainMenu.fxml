@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" prefHeight="525.0" prefWidth="426.0" spacing="20" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainMenuController">
+    <padding>
+        <Insets bottom="50" left="50" right="50" top="50" />
+    </padding>
+    <Label alignment="CENTER" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Menu de Acceso">
+        <font>
+            <Font name="Arial" size="24" />
+        </font>
+        <effect>
+            <DropShadow color="#95a5a6" radius="3" />
+        </effect>
+      <VBox.margin>
+         <Insets bottom="50.0" />
+      </VBox.margin>
+    </Label>
+    <Button fx:id="btnEstudiante" onAction="#GoToEstudiante" prefHeight="50" prefWidth="200" style="-fx-font-size: 16; -fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 5;" text="Estudiantes">
+        <font>
+            <Font size="18" />
+        </font>
+        <effect>
+            <DropShadow color="#2980b9" radius="3" />
+        </effect>
+    </Button>
+    <Button fx:id="btnCursos" onAction="#GoToCursos" prefHeight="50" prefWidth="200" style="-fx-font-size: 16; -fx-background-color: #2ecc71; -fx-text-fill: white; -fx-background-radius: 5;" text="Cursos">
+        <font>
+            <Font size="18" />
+        </font>
+        <effect>
+            <DropShadow color="#27ae60" radius="3" />
+        </effect>
+    </Button>
+   <Button fx:id="btnInscripciones" onAction="#GoToInscripciones" prefHeight="50" prefWidth="200" style="-fx-font-size: 16; -fx-background-color: #c93c20; -fx-text-fill: white; -fx-background-radius: 5;" text="Inscripciones">
+      <font>
+         <Font size="18" />
+      </font>
+      <effect>
+         <DropShadow color="#27ae60" radius="3" />
+      </effect>
+   </Button>
+</VBox>
