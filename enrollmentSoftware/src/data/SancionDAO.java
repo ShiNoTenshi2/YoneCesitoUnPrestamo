@@ -13,6 +13,7 @@ public class SancionDAO {
         this.connection = connection;
     }
 
+    // Crear una nueva sanción
     public void guardar(Sancion sancion) throws SQLException {
         String sql = "INSERT INTO sancion (id_sancion, id_solicitante, motivo, monto, estado) VALUES (?, ?, ?, ?, ?)";
         
@@ -26,7 +27,29 @@ public class SancionDAO {
         }
     }
 
-    public ObservableList<Sancion> obtenerTodos() throws SQLException {
+    // Leer una sanción por id_sancion
+    public Sancion buscarPorId(int id_sancion) throws SQLException {
+        String sql = "SELECT id_sancion, id_solicitante, motivo, monto, estado FROM sancion WHERE id_sancion = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id_sancion);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return new Sancion(
+                    rs.getInt("id_sancion"),
+                    rs.getInt("id_solicitante"),
+                    rs.getString("motivo"),
+                    rs.getInt("monto"),
+                    rs.getString("estado")
+                );
+            }
+            return null;
+        }
+    }
+
+    // Obtener todas las sanciones
+    public ObservableList<Sancion> obtenerTodas() throws SQLException {
         ObservableList<Sancion> sanciones = FXCollections.observableArrayList();
         String sql = "SELECT id_sancion, id_solicitante, motivo, monto, estado FROM sancion";
         
@@ -46,6 +69,7 @@ public class SancionDAO {
         return sanciones;
     }
 
+    // Actualizar una sanción
     public void actualizar(Sancion sancion) throws SQLException {
         String sql = "UPDATE sancion SET id_solicitante = ?, motivo = ?, monto = ?, estado = ? WHERE id_sancion = ?";
         
@@ -58,7 +82,9 @@ public class SancionDAO {
             stmt.executeUpdate();
         }
     }
+    //chao
 
+    // Eliminar una sanción
     public void eliminar(int id_sancion) throws SQLException {
         String sql = "DELETE FROM sancion WHERE id_sancion = ?";
         
@@ -68,6 +94,7 @@ public class SancionDAO {
         }
     }
 
+    // Verificar si existe una sanción por id_sancion
     public boolean existeId(int id_sancion) throws SQLException {
         String sql = "SELECT COUNT(*) FROM sancion WHERE id_sancion = ?";
         
@@ -75,40 +102,6 @@ public class SancionDAO {
             stmt.setInt(1, id_sancion);
             ResultSet rs = stmt.executeQuery();
             return rs.next() && rs.getInt(1) > 0;
-        }
-    }
-
-    public ObservableList<Integer> obtenerTodosIds() throws SQLException {
-        ObservableList<Integer> ids = FXCollections.observableArrayList();
-        String sql = "SELECT id_solicitante FROM solicitante";
-        
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            
-            while (rs.next()) {
-                ids.add(rs.getInt("id_solicitante"));
-            }
-        }
-        return ids;
-    }
-    
-    public Sancion buscarPorId(int id_sancion) throws SQLException {
-        String sql = "SELECT id_sancion, id_solicitante, motivo, monto, estado FROM sancion WHERE id_sancion = ?";
-        
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, id_sancion);
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                return new Sancion(
-                    rs.getInt("id_sancion"),
-                    rs.getInt("id_solicitante"),
-                    rs.getString("motivo"),
-                    rs.getInt("monto"),
-                    rs.getString("estado")
-                );
-            }
-            return null;
         }
     }
 }
