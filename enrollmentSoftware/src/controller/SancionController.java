@@ -4,7 +4,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import model.Sancion;
 import application.Main;
@@ -42,7 +44,7 @@ public class SancionController {
             
             // Cargar los IDs de solicitantes en el ComboBox
             cargarSolicitantes();
-        } catch (SQLException e) { // Cambié IOException por SQLException
+        } catch (IOException e) {
             mostrarAlerta("Error", "Error de conexión", "No se pudo conectar a la base de datos: " + e.getMessage());
         }
     }
@@ -50,10 +52,11 @@ public class SancionController {
     private void cargarSolicitantes() {
         try {
             ObservableList<Integer> idsSolicitantes = solicitanteDAO.obtenerTodosIds();
-            comboBoxdSolicitanteSancion.setItems(idsSolicitantes);
-            
-            // Configurar un prompt text para el ComboBox
-            comboBoxdSolicitanteSancion.setPromptText("Seleccione un solicitante");
+            if (idsSolicitantes != null && !idsSolicitantes.isEmpty()) {
+                comboBoxdSolicitanteSancion.setItems(idsSolicitantes);
+            } else {
+                System.out.println("No se han encontrado solicitantes.");
+            }
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error al cargar solicitantes", e.getMessage());
         }
