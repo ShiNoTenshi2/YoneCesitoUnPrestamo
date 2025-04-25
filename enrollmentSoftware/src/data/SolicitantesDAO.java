@@ -14,7 +14,6 @@ public class SolicitantesDAO {
         this.connection = connection;
     }
 
-    // ============ OPERACIONES CRUD ============
     public void guardar(Solicitantes solicitante) throws SQLException {
         String sql = "INSERT INTO solicitante (id_solicitante, nombre, correo, telefono) VALUES (?, ?, ?, ?)";
         
@@ -67,7 +66,6 @@ public class SolicitantesDAO {
         }
     }
 
-    // ============ VALIDACIONES ============
     public boolean existeId(int id_solicitante) throws SQLException {
         String sql = "SELECT COUNT(*) FROM solicitante WHERE id_solicitante = ?";
         
@@ -88,7 +86,6 @@ public class SolicitantesDAO {
         }
     }
 
-    // ============ BÚSQUEDAS ============
     public Solicitantes buscarPorId(int id_solicitante) throws SQLException {
         String sql = "SELECT id_solicitante, nombre, correo, telefono FROM solicitante WHERE id_solicitante = ?";
         

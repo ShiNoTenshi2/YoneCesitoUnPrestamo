@@ -1,12 +1,12 @@
 package model;
 
-public class Solicitantes {
+public class Sala {
     private int id_solicitante;
     private String nombre;
     private String correo;
     private String telefono;
 
-    public Solicitantes(int id_solicitante, String nombre, String correo, String telefono) {
+    public Sala(int id_solicitante, String nombre, String correo, String telefono) {
         this.id_solicitante = id_solicitante;
         this.nombre = nombre;
         this.correo = correo;
