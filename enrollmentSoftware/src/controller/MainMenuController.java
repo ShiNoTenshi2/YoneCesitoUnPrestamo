@@ -14,15 +14,22 @@ public class MainMenuController {
     private Button btnSala;
     
     @FXML
+    private Button btnAudiovisual;
+    
+    @FXML
     void GoToSolicitantes(ActionEvent event) {
     	Main.loadScene("/view/Solicitantes.fxml");
-
     }
 
     @FXML
     void GoToSala(ActionEvent event) {
     	Main.loadScene("/view/Sala.fxml");
-
     }
+    
+    @FXML
+    void GoToAudiovisual(ActionEvent event) {
+    	Main.loadScene("/view/Audiovisual.fxml");
+    }
+    
     
 }
