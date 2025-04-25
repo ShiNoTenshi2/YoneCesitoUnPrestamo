@@ -11,6 +11,9 @@ public class MainMenuController {
     private Button btnSolicitantes;
     
     @FXML
+    private Button btnSancion;
+    
+    @FXML
     private Button btnSala;
     
     @FXML
@@ -24,6 +27,11 @@ public class MainMenuController {
     @FXML
     void GoToSala(ActionEvent event) {
     	Main.loadScene("/view/Sala.fxml");
+    }
+    
+    @FXML
+    void GoToSancion(ActionEvent event) {
+    	Main.loadScene("/view/Sancion.fxml");
     }
     
     @FXML
