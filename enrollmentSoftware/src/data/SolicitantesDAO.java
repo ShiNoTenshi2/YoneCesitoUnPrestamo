@@ -124,4 +124,18 @@ public class SolicitantesDAO {
         }
         return resultados;
     }
+public ObservableList<Integer> obtenerTodosIds() throws SQLException {
+    ObservableList<Integer> ids = FXCollections.observableArrayList();
+    String sql = "SELECT id_solicitante FROM solicitante";
+    
+    try (Statement stmt = connection.createStatement();
+         ResultSet rs = stmt.executeQuery(sql)) {
+        
+        while (rs.next()) {
+            ids.add(rs.getInt("id_solicitante"));
+        }
+    }
+    return ids;
+}
+
 }
