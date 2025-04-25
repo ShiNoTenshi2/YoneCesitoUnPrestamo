@@ -17,18 +17,8 @@ public class MainMenuController {
     private Button btnInscripciones;
 
     @FXML
-    void GoToInscripciones(ActionEvent event) {
-    	Main.loadScene("/view/Enrollments.fxml");
-    }
-    
-    @FXML
-    void GoToCursos(ActionEvent event) {
-    	Main.loadScene("/view/Courses.fxml");
-    }
-
-    @FXML
-    void GoToEstudiante(ActionEvent event) {
-    	Main.loadScene("/view/Students.fxml");
+    void GoToSolicitantes(ActionEvent event) {
+    	Main.loadScene("/view/Solicitantes.fxml");
 
     }
 
