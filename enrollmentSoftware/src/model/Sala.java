@@ -1,55 +1,57 @@
 package model;
 
 public class Sala {
-    private int id_solicitante;
-    private String nombre;
-    private String correo;
-    private String telefono;
+    private int id_sala;
+    private int capacidad;
+    private String detalles_sala;
+    private String estado;
 
-    public Sala(int id_solicitante, String nombre, String correo, String telefono) {
-        this.id_solicitante = id_solicitante;
-        this.nombre = nombre;
-        this.correo = correo;
-        this.telefono = telefono;
+    public Sala(int id_sala, int capacidad, String detalles_sala, String estado) {
+        this.id_sala = id_sala;
+        this.capacidad = capacidad;
+        this.detalles_sala = detalles_sala;
+        this.estado = estado;
     }
 
-    public int getid_solicitante() {
-        return id_solicitante;
+    // Getters
+    public int getid_sala() {
+        return id_sala;
     }
 
-    public String getNombre() {
-        return nombre;
+    public int getcapacidad() {
+        return capacidad;
     }
 
-    public String getCorreo() {
-        return correo;
+    public String getdetalles_sala() {
+        return detalles_sala;
     }
 
-    public String getTelefono() {
-        return telefono;
+    public String getestado() {
+        return estado;
     }
 
-    public void setid_solicitante(int id_solicitante) {
-        this.id_solicitante = id_solicitante;
+    // Setters
+    public void setid_sala(int id_sala) {
+        this.id_sala = id_sala;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setcapacidad(int capacidad) {
+        this.capacidad = capacidad;
     }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
+    public void setdetalles_sala(String detalles_sala) {
+        this.detalles_sala = detalles_sala;
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
+    public void setestado(String estado) {
+        this.estado = estado;
     }
     
     @Override
     public String toString() {
         return String.format(
-            "Solicitante [ID: %d, Nombre: %s, Correo: %s, Teléfono: %s]",
-            id_solicitante, nombre, correo, telefono
+            "Sala [id_sala: %d, capacidad: %d, detalles_sala: %s, estado: %s]",
+            id_sala, capacidad, detalles_sala, estado
         );
     }
 }

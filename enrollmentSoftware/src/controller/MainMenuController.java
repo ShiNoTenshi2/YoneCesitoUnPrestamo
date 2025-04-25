@@ -8,18 +8,21 @@ import javafx.scene.control.Button;
 public class MainMenuController {
 
     @FXML
-    private Button btnCursos;
-
+    private Button btnSolicitantes;
+    
     @FXML
-    private Button btnEstudiante;
-
-    @FXML
-    private Button btnInscripciones;
-
+    private Button btnSala;
+    
     @FXML
     void GoToSolicitantes(ActionEvent event) {
     	Main.loadScene("/view/Solicitantes.fxml");
 
     }
 
+    @FXML
+    void GoToSala(ActionEvent event) {
+    	Main.loadScene("/view/Sala.fxml");
+
+    }
+    
 }
