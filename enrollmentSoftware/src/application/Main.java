@@ -1,5 +1,5 @@
 package application;
-	//oña
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -23,7 +23,6 @@ public class Main extends Application {
             e.printStackTrace();
         }
     }
-
 	
 	
     public static void loadScene(String fxmlFile) {

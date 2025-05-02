@@ -55,4 +55,17 @@ public class DBConnection {
     public String getConnectionString() {
         return String.format("jdbc:oracle:thin:@%s:%s:%s", this.host, this.port, this.service);
     }
+
+    // Método opcional para cerrar la conexión (solo agrégalo si lo deseas)
+    public void closeConnection() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                connection = null; // Opcional: permite que la próxima llamada a getConnection() cree una nueva
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al cerrar la conexión: " + e.getMessage());
+        }
+    }
 }

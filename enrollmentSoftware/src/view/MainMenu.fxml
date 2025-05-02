@@ -62,7 +62,7 @@
          <DropShadow color="#2980b9" radius="3" />
       </effect>
    </Button>
-   <Button prefHeight="50" prefWidth="200" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Prestamos">
+   <Button fx:id="btnPrestamo" onAction="#GoToPrestamo" prefHeight="50" prefWidth="200" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Prestamos">
       <font>
          <Font size="18" />
       </font>
