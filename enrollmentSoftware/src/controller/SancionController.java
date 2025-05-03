@@ -3,27 +3,22 @@ package controller;
 import data.DBConnection;
 import data.SancionDAO;
 import data.SolicitantesDAO;
-import java.io.IOException;
 import java.sql.SQLException;
-
 import application.Main;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import model.Sancion;
 
 public class SancionController {
 
     @FXML private TextField txtIdSancion;
     @FXML private ComboBox<Integer> comboBoxIdSolicitanteSancion;
+    @FXML private ComboBox<Integer> comboBoxIdDevolucionSancion; // Nuevo ComboBox
     @FXML private TextField txtMotivoSancion;
     @FXML private TextField txtMontoSancion;
     @FXML private TextField txtEstadoSancion;
@@ -52,6 +47,17 @@ public class SancionController {
         } catch (SQLException e) {
             mostrarAlerta("Error", "No se pudieron cargar los IDs de solicitantes: " + e.getMessage());
         }
+
+        // Cargar IDs de devoluciones en el ComboBox
+        try {
+            ObservableList<Integer> devolucionIds = sancionDAO.obtenerIdsDevoluciones();
+            comboBoxIdDevolucionSancion.setItems(devolucionIds);
+            if (!devolucionIds.isEmpty()) {
+                comboBoxIdDevolucionSancion.getSelectionModel().selectFirst();
+            }
+        } catch (SQLException e) {
+            mostrarAlerta("Error", "No se pudieron cargar los IDs de devoluciones: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -68,7 +74,8 @@ public class SancionController {
                 comboBoxIdSolicitanteSancion.getValue(),
                 txtMotivoSancion.getText(),
                 Integer.parseInt(txtMontoSancion.getText()),
-                txtEstadoSancion.getText()
+                txtEstadoSancion.getText(),
+                comboBoxIdDevolucionSancion.getValue()
             );
 
             // Verificar si el ID ya existe
@@ -125,7 +132,8 @@ public class SancionController {
                 comboBoxIdSolicitanteSancion.getValue(),
                 txtMotivoSancion.getText(),
                 Integer.parseInt(txtMontoSancion.getText()),
-                txtEstadoSancion.getText()
+                txtEstadoSancion.getText(),
+                comboBoxIdDevolucionSancion.getValue()
             );
 
             // Verificar si el ID existe
@@ -184,7 +192,8 @@ public class SancionController {
             comboBoxIdSolicitanteSancion.getValue() == null ||
             txtMotivoSancion.getText().isEmpty() ||
             txtMontoSancion.getText().isEmpty() ||
-            txtEstadoSancion.getText().isEmpty()) {
+            txtEstadoSancion.getText().isEmpty() ||
+            comboBoxIdDevolucionSancion.getValue() == null) {
             mostrarAlerta("Error", "Por favor, complete todos los campos.");
             return false;
         }
@@ -194,6 +203,7 @@ public class SancionController {
     private void limpiarCampos() {
         txtIdSancion.clear();
         comboBoxIdSolicitanteSancion.getSelectionModel().selectFirst();
+        comboBoxIdDevolucionSancion.getSelectionModel().clearSelection();
         txtMotivoSancion.clear();
         txtMontoSancion.clear();
         txtEstadoSancion.clear();

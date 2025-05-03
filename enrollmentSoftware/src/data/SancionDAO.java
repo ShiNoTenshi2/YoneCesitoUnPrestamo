@@ -15,7 +15,7 @@ public class SancionDAO {
 
     // Crear una nueva sanción
     public void guardar(Sancion sancion) throws SQLException {
-        String sql = "INSERT INTO sancion (id_sancion, id_solicitante, motivo, monto, estado) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO sancion (id_sancion, id_solicitante, motivo, monto, estado, id_devolucion) VALUES (?, ?, ?, ?, ?, ?)";
         
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, sancion.getid_sancion());
@@ -23,13 +23,14 @@ public class SancionDAO {
             stmt.setString(3, sancion.getmotivo());
             stmt.setInt(4, sancion.getmonto());
             stmt.setString(5, sancion.getestado());
+            stmt.setObject(6, sancion.getId_devolucion()); // Maneja null
             stmt.executeUpdate();
         }
     }
 
     // Leer una sanción por id_sancion
     public Sancion buscarPorId(int id_sancion) throws SQLException {
-        String sql = "SELECT id_sancion, id_solicitante, motivo, monto, estado FROM sancion WHERE id_sancion = ?";
+        String sql = "SELECT id_sancion, id_solicitante, motivo, monto, estado, id_devolucion FROM sancion WHERE id_sancion = ?";
         
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id_sancion);
@@ -41,7 +42,8 @@ public class SancionDAO {
                     rs.getInt("id_solicitante"),
                     rs.getString("motivo"),
                     rs.getInt("monto"),
-                    rs.getString("estado")
+                    rs.getString("estado"),
+                    rs.getObject("id_devolucion") != null ? rs.getInt("id_devolucion") : null
                 );
             }
             return null;
@@ -51,7 +53,7 @@ public class SancionDAO {
     // Obtener todas las sanciones
     public ObservableList<Sancion> obtenerTodas() throws SQLException {
         ObservableList<Sancion> sanciones = FXCollections.observableArrayList();
-        String sql = "SELECT id_sancion, id_solicitante, motivo, monto, estado FROM sancion";
+        String sql = "SELECT id_sancion, id_solicitante, motivo, monto, estado, id_devolucion FROM sancion";
         
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -62,7 +64,8 @@ public class SancionDAO {
                     rs.getInt("id_solicitante"),
                     rs.getString("motivo"),
                     rs.getInt("monto"),
-                    rs.getString("estado")
+                    rs.getString("estado"),
+                    rs.getObject("id_devolucion") != null ? rs.getInt("id_devolucion") : null
                 ));
             }
         }
@@ -71,14 +74,15 @@ public class SancionDAO {
 
     // Actualizar una sanción
     public void actualizar(Sancion sancion) throws SQLException {
-        String sql = "UPDATE sancion SET id_solicitante = ?, motivo = ?, monto = ?, estado = ? WHERE id_sancion = ?";
+        String sql = "UPDATE sancion SET id_solicitante = ?, motivo = ?, monto = ?, estado = ?, id_devolucion = ? WHERE id_sancion = ?";
         
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, sancion.getid_solicitante());
             stmt.setString(2, sancion.getmotivo());
             stmt.setInt(3, sancion.getmonto());
             stmt.setString(4, sancion.getestado());
-            stmt.setInt(5, sancion.getid_sancion());
+            stmt.setObject(5, sancion.getId_devolucion()); // Maneja null
+            stmt.setInt(6, sancion.getid_sancion());
             stmt.executeUpdate();
         }
     }
@@ -102,5 +106,18 @@ public class SancionDAO {
             ResultSet rs = stmt.executeQuery();
             return rs.next() && rs.getInt(1) > 0;
         }
+    }
+
+    // Obtener IDs de devoluciones para el ComboBox
+    public ObservableList<Integer> obtenerIdsDevoluciones() throws SQLException {
+        ObservableList<Integer> ids = FXCollections.observableArrayList();
+        String sql = "SELECT id_devolucion FROM devolucion";
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                ids.add(rs.getInt("id_devolucion"));
+            }
+        }
+        return ids;
     }
 }

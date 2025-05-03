@@ -64,10 +64,12 @@ public class PrestamoController {
             // IDs de audiovisuales
             ObservableList<Integer> audiovisualIds = prestamoDAO.obtenerIdsAudiovisuales();
             comboBoxIdAudiovisualPrestamo.setItems(audiovisualIds);
+            // No seleccionamos automáticamente para permitir que el usuario elija
 
             // IDs de salas
             ObservableList<Integer> salaIds = prestamoDAO.obtenerIdsSalas();
             comboBoxIdSalaPrestamo.setItems(salaIds);
+            // No seleccionamos automáticamente para permitir que el usuario elija
         } catch (SQLException e) {
             mostrarAlerta("Error", "No se pudieron cargar los datos: " + e.getMessage());
         }
@@ -209,6 +211,7 @@ public class PrestamoController {
     }
 
     private boolean validarCampos() {
+        // Validar campos obligatorios
         if (txtIdPrestamo.getText().isEmpty() ||
             comboBoxIdSolicitantePrestamo.getValue() == null ||
             fechaDatePicker.getValue() == null ||
@@ -220,6 +223,16 @@ public class PrestamoController {
             mostrarAlerta("Error", "Por favor, complete todos los campos obligatorios.");
             return false;
         }
+
+        // Validar que al menos un ComboBox tenga un valor seleccionado
+        Integer idAudiovisual = comboBoxIdAudiovisualPrestamo.getValue();
+        Integer idSala = comboBoxIdSalaPrestamo.getValue();
+        
+        if (idAudiovisual == null && idSala == null) {
+            mostrarAlerta("Error", "Debe seleccionar al menos un ID de audiovisual o un ID de sala.");
+            return false;
+        }
+
         return true;
     }
 

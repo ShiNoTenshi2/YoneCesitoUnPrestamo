@@ -26,6 +26,9 @@ public class MainMenuController {
     private Button btnPrestamo;
     
     @FXML
+    private Button bntMantenimiento;
+
+    @FXML
     void GoToSolicitantes(ActionEvent event) {
     	Main.loadScene("/view/Solicitantes.fxml");
     }
@@ -55,4 +58,8 @@ public class MainMenuController {
     	Main.loadScene("/view/Prestamo.fxml");
     }
     
+    @FXML
+    void GoToMantenimiento(ActionEvent event) {
+    	Main.loadScene("/view/Mantenimiento.fxml");
+    }
 }
