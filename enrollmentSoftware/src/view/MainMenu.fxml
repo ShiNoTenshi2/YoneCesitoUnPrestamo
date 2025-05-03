@@ -46,7 +46,7 @@
          <DropShadow color="#2980b9" radius="3" />
       </effect>
    </Button>
-   <Button prefHeight="50" prefWidth="200" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Devoluciones">
+   <Button fx:id="btnDevolucion" onAction="#GoToDevolucion" prefHeight="50" prefWidth="200" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Devoluciones">
       <font>
          <Font size="18" />
       </font>

@@ -73,16 +73,16 @@ public class Prestamo {
     @Override
     public String toString() {
         return "Prestamo{" +
-                "id_prestamo=" + id_prestamo +
-                ", id_solicitante=" + id_solicitante +
-                ", fecha_solicitud=" + fecha_solicitud +
-                ", estado='" + estado + '\'' +
-                ", nombre_usuario='" + nombre_usuario + '\'' +
-                ", id_audiovisual=" + id_audiovisual +
-                ", id_sala=" + id_sala +
-                ", detalle_prestamo='" + detalle_prestamo + '\'' +
-                ", hora_inicio='" + hora_inicio + '\'' +
-                ", hora_fin='" + hora_fin + '\'' +
+                "Id Prestamo=" + id_prestamo +
+                ", Id Solicitante=" + id_solicitante +
+                ", Fecha Solicitud=" + fecha_solicitud +
+                ", Estado='" + estado + '\'' +
+                ", Nombre Ssuario='" + nombre_usuario + '\'' +
+                ", Id Audiovisual=" + id_audiovisual +
+                ", Id Sala=" + id_sala +
+                ", Detalle Prestamo='" + detalle_prestamo + '\'' +
+                ", Hora Inicio='" + hora_inicio + '\'' +
+                ", Hora Fin='" + hora_fin + '\'' +
                 '}';
     }
 }

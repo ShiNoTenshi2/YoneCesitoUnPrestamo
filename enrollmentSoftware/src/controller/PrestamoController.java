@@ -21,12 +21,12 @@ public class PrestamoController {
     @FXML private ComboBox<Integer> comboBoxIdSolicitantePrestamo;
     @FXML private DatePicker fechaDatePicker;
     @FXML private TextField txtMontoSancion; // Mapeado a estado
-    @FXML private ComboBox<String> comboBoxIdUsuarioPrestamo; // Mapeado a nombre_usuario
+    @FXML private TextField txtIdUsuarioPrestamo; // Mapeado a nombre_usuario, ahora TextField
     @FXML private ComboBox<Integer> comboBoxIdAudiovisualPrestamo;
     @FXML private ComboBox<Integer> comboBoxIdSalaPrestamo;
     @FXML private TextField txtEstadoSancion; // Mapeado a detalle_prestamo
-    @FXML private TextField txtHoraInicio; // Nuevo campo
-    @FXML private TextField txtHoraFin; // Nuevo campo
+    @FXML private TextField txtHoraInicio;
+    @FXML private TextField txtHoraFin;
     @FXML private Button btnRegistrarPrestamo;
     @FXML private Button btnLeerPrestamo;
     @FXML private Button btnActualizarPrestamo;
@@ -34,11 +34,23 @@ public class PrestamoController {
     @FXML private Button btnMenu;
 
     private PrestamoDAO prestamoDAO;
+    private String usuarioActual; // Simulamos el usuario que inició sesión
 
     @FXML
     public void initialize() {
         // Inicializar DAO
         prestamoDAO = new PrestamoDAO(DBConnection.getInstance().getConnection());
+
+        // Simulamos el usuario actual (debería venir de un SessionManager)
+        usuarioActual = application.SessionManager.getUsuarioActual(); // Obtener usuario
+        if (usuarioActual == null) {
+            usuarioActual = "Usuario Desconocido"; // Valor por defecto para pruebas
+        }
+        if (txtIdUsuarioPrestamo != null) { // Verificación de null
+            txtIdUsuarioPrestamo.setText(usuarioActual);
+        } else {
+            System.out.println("Error: txtIdUsuarioPrestamo es null en initialize");
+        }
 
         // Cargar IDs en los ComboBox
         try {
@@ -49,22 +61,13 @@ public class PrestamoController {
                 comboBoxIdSolicitantePrestamo.getSelectionModel().selectFirst();
             }
 
-            // Nombres de usuarios (como cadenas)
-            ObservableList<String> usuarioNombres = prestamoDAO.obtenerNombresUsuarios();
-            comboBoxIdUsuarioPrestamo.setItems(usuarioNombres);
-            if (!usuarioNombres.isEmpty()) {
-                comboBoxIdUsuarioPrestamo.getSelectionModel().selectFirst();
-            }
-
             // IDs de audiovisuales
             ObservableList<Integer> audiovisualIds = prestamoDAO.obtenerIdsAudiovisuales();
             comboBoxIdAudiovisualPrestamo.setItems(audiovisualIds);
-            // No seleccionamos un valor por defecto para hacerlo opcional
 
             // IDs de salas
             ObservableList<Integer> salaIds = prestamoDAO.obtenerIdsSalas();
             comboBoxIdSalaPrestamo.setItems(salaIds);
-            // No seleccionamos un valor por defecto para hacerlo opcional
         } catch (SQLException e) {
             mostrarAlerta("Error", "No se pudieron cargar los datos: " + e.getMessage());
         }
@@ -84,12 +87,12 @@ public class PrestamoController {
                 comboBoxIdSolicitantePrestamo.getValue(),
                 fechaDatePicker.getValue(),
                 txtMontoSancion.getText(), // Mapeado a estado
-                comboBoxIdUsuarioPrestamo.getValue(), // Mapeado a nombre_usuario
-                comboBoxIdAudiovisualPrestamo.getValue(), // Puede ser null
-                comboBoxIdSalaPrestamo.getValue(), // Puede ser null
+                txtIdUsuarioPrestamo.getText(), // Mapeado a nombre_usuario, ahora fijo
+                comboBoxIdAudiovisualPrestamo.getValue(),
+                comboBoxIdSalaPrestamo.getValue(),
                 txtEstadoSancion.getText(), // Mapeado a detalle_prestamo
-                txtHoraInicio.getText(), // Nuevo campo
-                txtHoraFin.getText() // Nuevo campo
+                txtHoraInicio.getText(),
+                txtHoraFin.getText()
             );
 
             // Verificar si el ID ya existe
@@ -146,12 +149,12 @@ public class PrestamoController {
                 comboBoxIdSolicitantePrestamo.getValue(),
                 fechaDatePicker.getValue(),
                 txtMontoSancion.getText(), // Mapeado a estado
-                comboBoxIdUsuarioPrestamo.getValue(), // Mapeado a nombre_usuario
-                comboBoxIdAudiovisualPrestamo.getValue(), // Puede ser null
-                comboBoxIdSalaPrestamo.getValue(), // Puede ser null
+                txtIdUsuarioPrestamo.getText(), // Mapeado a nombre_usuario, ahora fijo
+                comboBoxIdAudiovisualPrestamo.getValue(),
+                comboBoxIdSalaPrestamo.getValue(),
                 txtEstadoSancion.getText(), // Mapeado a detalle_prestamo
-                txtHoraInicio.getText(), // Nuevo campo
-                txtHoraFin.getText() // Nuevo campo
+                txtHoraInicio.getText(),
+                txtHoraFin.getText()
             );
 
             // Verificar si el ID existe
@@ -210,7 +213,7 @@ public class PrestamoController {
             comboBoxIdSolicitantePrestamo.getValue() == null ||
             fechaDatePicker.getValue() == null ||
             txtMontoSancion.getText().isEmpty() || // Mapeado a estado
-            comboBoxIdUsuarioPrestamo.getValue() == null ||
+            txtIdUsuarioPrestamo.getText().isEmpty() || // Mapeado a nombre_usuario
             txtEstadoSancion.getText().isEmpty() || // Mapeado a detalle_prestamo
             txtHoraInicio.getText().isEmpty() || // Nuevo campo
             txtHoraFin.getText().isEmpty()) { // Nuevo campo
@@ -225,12 +228,12 @@ public class PrestamoController {
         comboBoxIdSolicitantePrestamo.getSelectionModel().selectFirst();
         fechaDatePicker.setValue(null);
         txtMontoSancion.clear(); // Mapeado a estado
-        comboBoxIdUsuarioPrestamo.getSelectionModel().selectFirst();
-        comboBoxIdAudiovisualPrestamo.getSelectionModel().clearSelection(); // Opcional
-        comboBoxIdSalaPrestamo.getSelectionModel().clearSelection(); // Opcional
+        // txtIdUsuarioPrestamo no se limpia, es el usuario actual
+        comboBoxIdAudiovisualPrestamo.getSelectionModel().clearSelection();
+        comboBoxIdSalaPrestamo.getSelectionModel().clearSelection();
         txtEstadoSancion.clear(); // Mapeado a detalle_prestamo
-        txtHoraInicio.clear(); // Nuevo campo
-        txtHoraFin.clear(); // Nuevo campo
+        txtHoraInicio.clear();
+        txtHoraFin.clear();
     }
 
     private void mostrarAlerta(String titulo, String mensaje) {

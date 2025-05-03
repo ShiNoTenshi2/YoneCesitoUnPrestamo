@@ -84,7 +84,7 @@
                <Insets />
             </opaqueInsets>
          </TextField>
-         <ComboBox fx:id="comboBoxIdUsuarioPrestamo" prefHeight="32.0" prefWidth="617.0" GridPane.columnIndex="2" GridPane.rowIndex="14" />
+         <TextField fx:id="txtIdUsuarioPrestamo" prefHeight="40" prefWidth="300" promptText="Nombre Responsable" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;" GridPane.columnIndex="2" GridPane.rowIndex="14" />
       </children>
    </GridPane>
    <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Detalles" />

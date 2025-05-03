@@ -26,8 +26,8 @@ public class PrestamoDAO {
             stmt.setDate(3, Date.valueOf(prestamo.getFecha_solicitud()));
             stmt.setString(4, prestamo.getEstado());
             stmt.setString(5, prestamo.getNombre_usuario());
-            stmt.setObject(6, prestamo.getId_audiovisual()); // Maneja null
-            stmt.setObject(7, prestamo.getId_sala()); // Maneja null
+            stmt.setObject(6, prestamo.getId_audiovisual());
+            stmt.setObject(7, prestamo.getId_sala());
             stmt.setString(8, prestamo.getDetalle_prestamo());
             stmt.setString(9, prestamo.getHora_inicio());
             stmt.setString(10, prestamo.getHora_fin());
@@ -69,8 +69,8 @@ public class PrestamoDAO {
             stmt.setDate(2, Date.valueOf(prestamo.getFecha_solicitud()));
             stmt.setString(3, prestamo.getEstado());
             stmt.setString(4, prestamo.getNombre_usuario());
-            stmt.setObject(5, prestamo.getId_audiovisual()); // Maneja null
-            stmt.setObject(6, prestamo.getId_sala()); // Maneja null
+            stmt.setObject(5, prestamo.getId_audiovisual());
+            stmt.setObject(6, prestamo.getId_sala());
             stmt.setString(7, prestamo.getDetalle_prestamo());
             stmt.setString(8, prestamo.getHora_inicio());
             stmt.setString(9, prestamo.getHora_fin());
@@ -113,19 +113,6 @@ public class PrestamoDAO {
             }
         }
         return ids;
-    }
-
-    // Ajustamos para obtener nombres de usuario (cadenas) desde comboBoxIdUsuarioPrestamo
-    public ObservableList<String> obtenerNombresUsuarios() throws SQLException {
-        ObservableList<String> nombres = FXCollections.observableArrayList();
-        String sql = "SELECT nombre FROM usuario";
-        try (PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                nombres.add(rs.getString("nombre"));
-            }
-        }
-        return nombres;
     }
 
     public ObservableList<Integer> obtenerIdsAudiovisuales() throws SQLException {

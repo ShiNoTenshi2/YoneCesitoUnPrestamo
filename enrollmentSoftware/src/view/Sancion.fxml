@@ -34,10 +34,12 @@
       </opaqueInsets></TextField>
     <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="ID Solicitante" />
    <ComboBox fx:id="comboBoxIdSolicitanteSancion" prefHeight="32.0" prefWidth="617.0" />
+   <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="ID Devolucion" />
+   <ComboBox fx:id="comboBoxIdDevolucionSancion" prefHeight="32.0" prefWidth="617.0" />
     <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Motivo" />
-    <TextField fx:id="txtMotivoSancion" prefHeight="40" prefWidth="300" promptText="Ingrese los Motivos" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;" />
+    <TextField fx:id="txtMotivoSancion" prefHeight="40" prefWidth="300" promptText="Ingrese los Motivos de la Sancion" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;" />
    <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Monto" />
-   <TextField fx:id="txtMontoSancion" prefHeight="40" prefWidth="300" promptText="Ingrese el Monto" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;" />
+   <TextField fx:id="txtMontoSancion" prefHeight="40" prefWidth="300" promptText="Ingrese el Monto de la Sancion" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;" />
    <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Estado" />
    <TextField fx:id="txtEstadoSancion" prefHeight="40" prefWidth="300" promptText="Ingrese el Estado de la Sancion" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;" />
    <GridPane translateY="1.0">

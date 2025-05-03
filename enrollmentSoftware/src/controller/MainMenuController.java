@@ -20,6 +20,9 @@ public class MainMenuController {
     private Button btnAudiovisual;
     
     @FXML
+    private Button btnDevolucion;
+    
+    @FXML
     private Button btnPrestamo;
     
     @FXML
@@ -42,6 +45,11 @@ public class MainMenuController {
     	Main.loadScene("/view/Audiovisual.fxml");
     }
     
+    @FXML
+    void GoToDevolucion(ActionEvent event) {
+    	Main.loadScene("/view/Devolucion.fxml");
+    }
+
     @FXML
     void GoToPrestamo(ActionEvent event) {
     	Main.loadScene("/view/Prestamo.fxml");
