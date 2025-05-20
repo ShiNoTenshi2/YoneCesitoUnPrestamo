@@ -15,13 +15,12 @@ public class AudiovisualDAO {
     }
 
     public void guardar(Audiovisual audiovisual) throws SQLException {
-        String sql = "INSERT INTO audiovisual (id_audiovisual, nombre, detalle_audiovisual, estado) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO audiovisual (id_audiovisual, nombre, detalle_audiovisual, estado) VALUES (seq_audiovisual.NEXTVAL, ?, ?, ?)";
         
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, audiovisual.getId_audiovisual());
-            stmt.setString(2, audiovisual.getNombre());
-            stmt.setString(3, audiovisual.getDetalle_audiovisual());
-            stmt.setString(4, audiovisual.getEstado());
+            stmt.setString(1, audiovisual.getNombre());
+            stmt.setString(2, audiovisual.getDetalle_audiovisual());
+            stmt.setString(3, audiovisual.getEstado());
             stmt.executeUpdate();
         }
     }

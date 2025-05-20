@@ -32,32 +32,17 @@ public class AudiovisualController {
     public void RegistrarAudiovisual(ActionEvent event) {
         try {
             // Validar campos vacíos
-            if (txtIdAudiovisual.getText().isEmpty() || 
-                txtNombreAudiovisual.getText().isEmpty() ||
+            if (txtNombreAudiovisual.getText().isEmpty() ||
                 txtDetalleAudiovisual.getText().isEmpty() ||
                 txtEstadoAudiovisual.getText().isEmpty()) {
                 
-                mostrarAlerta("Error", "Campos vacíos", "Todos los campos son obligatorios.");
+                mostrarAlerta("Error", "Campos vacíos", "Nombre, Detalle y Estado son obligatorios.");
                 return;
             }
 
-            // Validar ID
-            int id;
-            try {
-                id = Integer.parseInt(txtIdAudiovisual.getText());
-            } catch (NumberFormatException e) {
-                mostrarAlerta("Error", "ID inválido", "El ID debe ser un número.");
-                return;
-            }
-
-            // Verificar ID único
-            if (audiovisualDAO.existeId(id)) {
-                mostrarAlerta("Error", "ID duplicado", "Este ID de audiovisual ya está registrado.");
-                return;
-            }
-
+            // Crear audiovisual sin ID (la secuencia lo genera)
             Audiovisual audiovisual = new Audiovisual(
-                id,
+                0, // ID no se usa, se asigna automáticamente
                 txtNombreAudiovisual.getText().trim(),
                 txtDetalleAudiovisual.getText().trim(),
                 txtEstadoAudiovisual.getText().trim()
@@ -89,24 +74,28 @@ public class AudiovisualController {
     @FXML
     public void ActualizarAudiovisual(ActionEvent event) {
         try {
-            if (txtIdAudiovisual.getText().isEmpty()) {
-                mostrarAlerta("Error", "Campo vacío", "Ingrese un ID para actualizar");
+            // Validar campos vacíos
+            if (txtIdAudiovisual.getText().isEmpty() || 
+                txtNombreAudiovisual.getText().isEmpty() ||
+                txtDetalleAudiovisual.getText().isEmpty() ||
+                txtEstadoAudiovisual.getText().isEmpty()) {
+                
+                mostrarAlerta("Error", "Campos vacíos", "Todos los campos son obligatorios para actualizar.");
                 return;
             }
             
-            int id = Integer.parseInt(txtIdAudiovisual.getText());
-            
-            // Validar campos
-            if (txtNombreAudiovisual.getText().isEmpty() || 
-                txtDetalleAudiovisual.getText().isEmpty() ||
-                txtEstadoAudiovisual.getText().isEmpty()) {
-                mostrarAlerta("Error", "Campos vacíos", "Todos los campos son obligatorios para actualizar");
+            // Validar ID
+            int id;
+            try {
+                id = Integer.parseInt(txtIdAudiovisual.getText());
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Error", "ID inválido", "El ID debe ser un número.");
                 return;
             }
             
             // Verificar que el ID existe
             if (!audiovisualDAO.existeId(id)) {
-                mostrarAlerta("Error", "ID no encontrado", "No existe un audiovisual con ese ID");
+                mostrarAlerta("Error", "ID no encontrado", "No existe un audiovisual con ese ID.");
                 return;
             }
             
@@ -118,10 +107,9 @@ public class AudiovisualController {
             );
             
             audiovisualDAO.actualizar(audiovisual);
-            mostrarAlerta("Éxito", "Actualización exitosa", "Audiovisual actualizado correctamente");
+            mostrarAlerta("Éxito", "Actualización exitosa", "Audiovisual actualizado correctamente.");
+            limpiarCampos();
             
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "ID inválido", "El ID debe ser un número");
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error de BD", e.getMessage());
         }
@@ -130,33 +118,40 @@ public class AudiovisualController {
     @FXML
     public void BorrarAudiovisual(ActionEvent event) {
         try {
+            // Validar campo ID
             if (txtIdAudiovisual.getText().isEmpty()) {
-                mostrarAlerta("Error", "Campo vacío", "Ingrese un ID para borrar");
+                mostrarAlerta("Error", "Campo vacío", "Ingrese un ID para borrar.");
                 return;
             }
             
-            int id = Integer.parseInt(txtIdAudiovisual.getText());
+            // Validar ID
+            int id;
+            try {
+                id = Integer.parseInt(txtIdAudiovisual.getText());
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Error", "ID inválido", "El ID debe ser un número.");
+                return;
+            }
             
             // Verificar que el ID existe
             if (!audiovisualDAO.existeId(id)) {
-                mostrarAlerta("Error", "ID no encontrado", "No existe un audiovisual con ese ID");
+                mostrarAlerta("Error", "ID no encontrado", "No existe un audiovisual con ese ID.");
                 return;
             }
             
+            // Confirmar borrado
             Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
             confirmacion.setTitle("Confirmar borrado");
             confirmacion.setHeaderText("¿Está seguro de borrar este audiovisual?");
-            confirmacion.setContentText("Esta acción no se puede deshacer");
+            confirmacion.setContentText("Esta acción no se puede deshacer.");
             
             Optional<ButtonType> resultado = confirmacion.showAndWait();
             if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
                 audiovisualDAO.eliminar(id);
-                mostrarAlerta("Éxito", "Borrado exitoso", "Audiovisual eliminado correctamente");
+                mostrarAlerta("Éxito", "Borrado exitoso", "Audiovisual borrado correctamente.");
                 limpiarCampos();
             }
             
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "ID inválido", "El ID debe ser un número");
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error de BD", e.getMessage());
         }
@@ -181,4 +176,5 @@ public class AudiovisualController {
         txtDetalleAudiovisual.clear();
         txtEstadoAudiovisual.clear();
     }
+
 }

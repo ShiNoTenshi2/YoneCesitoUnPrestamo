@@ -56,17 +56,11 @@ public class DevolucionController {
 
             // Crear nueva devolución
             Devolucion devolucion = new Devolucion(
-                Integer.parseInt(txtIdDevolucion.getText()),
+                0, // ID no se usa, la secuencia lo genera
                 fechaDevDatePicker.getValue(),
                 txtEstadoDevolucion.getText(),
                 comboBoxIdPrestamoDevolucion.getValue()
             );
-
-            // Verificar si el ID ya existe
-            if (devolucionDAO.existeId(devolucion.getId_devolucion())) {
-                mostrarAlerta("Error", "El ID de devolución ya existe.");
-                return;
-            }
 
             // Guardar en la base de datos
             devolucionDAO.guardar(devolucion);
@@ -74,8 +68,6 @@ public class DevolucionController {
             limpiarCampos();
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error al registrar la devolución: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "El ID de devolución debe ser numérico.");
         }
     }
 
@@ -105,24 +97,38 @@ public class DevolucionController {
     @FXML
     public void ActualizarDevolucion() {
         try {
-            // Validar campos
+            // Validar ID
+            String idText = txtIdDevolucion.getText();
+            if (idText.isEmpty()) {
+                mostrarAlerta("Error", "Por favor, ingrese el ID de la devolución.");
+                return;
+            }
+            int idDevolucion;
+            try {
+                idDevolucion = Integer.parseInt(idText);
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Error", "El ID de devolución debe ser numérico.");
+                return;
+            }
+
+            // Validar otros campos
             if (!validarCampos()) {
+                return;
+            }
+
+            // Verificar si el ID existe
+            if (!devolucionDAO.existeId(idDevolucion)) {
+                mostrarAlerta("Error", "El ID de devolución no existe.");
                 return;
             }
 
             // Crear devolución actualizada
             Devolucion devolucion = new Devolucion(
-                Integer.parseInt(txtIdDevolucion.getText()),
+                idDevolucion,
                 fechaDevDatePicker.getValue(),
                 txtEstadoDevolucion.getText(),
                 comboBoxIdPrestamoDevolucion.getValue()
             );
-
-            // Verificar si el ID existe
-            if (!devolucionDAO.existeId(devolucion.getId_devolucion())) {
-                mostrarAlerta("Error", "El ID de devolución no existe.");
-                return;
-            }
 
             // Actualizar en la base de datos
             devolucionDAO.actualizar(devolucion);
@@ -130,8 +136,6 @@ public class DevolucionController {
             limpiarCampos();
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error al actualizar la devolución: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "El ID de devolución debe ser numérico.");
         }
     }
 
@@ -145,7 +149,13 @@ public class DevolucionController {
                 return;
             }
 
-            int idDevolucion = Integer.parseInt(idText);
+            int idDevolucion;
+            try {
+                idDevolucion = Integer.parseInt(idText);
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Error", "El ID de devolución debe ser numérico.");
+                return;
+            }
 
             // Verificar si el ID existe
             if (!devolucionDAO.existeId(idDevolucion)) {
@@ -155,12 +165,10 @@ public class DevolucionController {
 
             // Eliminar de la base de datos
             devolucionDAO.eliminar(idDevolucion);
-            mostrarAlerta("Éxito", "Devolución eliminada correctamente.");
+            mostrarAlerta("Éxito", "Devolución borrada correctamente.");
             limpiarCampos();
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error al eliminar la devolución: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "El ID de devolución debe ser numérico.");
         }
     }
 
@@ -170,8 +178,8 @@ public class DevolucionController {
     }
 
     private boolean validarCampos() {
-        if (txtIdDevolucion.getText().isEmpty() ||
-            fechaDevDatePicker.getValue() == null ||
+        // Validar campos obligatorios (excluimos txtIdDevolucion para registro)
+        if (fechaDevDatePicker.getValue() == null ||
             txtEstadoDevolucion.getText().isEmpty() ||
             comboBoxIdPrestamoDevolucion.getValue() == null) {
             mostrarAlerta("Error", "Por favor, complete todos los campos obligatorios.");

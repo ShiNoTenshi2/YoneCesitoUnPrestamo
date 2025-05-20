@@ -61,12 +61,12 @@
                <DropShadow color="#2980b9" radius="3" />
             </effect>
          </Button>
-         <Button fx:id="btnActualizarSolicitante" onAction="#ActualizarSolicitante" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Borrar Solicitante" GridPane.columnIndex="1" GridPane.rowIndex="4">
+         <Button fx:id="btnActualizarSolicitante" onAction="#ActualizarSolicitante" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Actualizar Solicitante" GridPane.rowIndex="4">
             <effect>
                <DropShadow color="#2980b9" radius="3" />
             </effect>
          </Button>
-         <Button fx:id="btnBorrarSolicitante" onAction="#BorrarSolicitante" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Actualizar Solicitante" GridPane.rowIndex="4">
+         <Button fx:id="btnBorrarSolicitante" onAction="#BorrarSolicitante" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Borrar Solicitante" GridPane.columnIndex="1" GridPane.rowIndex="4">
             <effect>
                <DropShadow color="#2980b9" radius="3" />
             </effect>

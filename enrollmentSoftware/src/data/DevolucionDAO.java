@@ -19,12 +19,11 @@ public class DevolucionDAO {
     // Guardar una nueva devolución
     public void guardar(Devolucion devolucion) throws SQLException {
         String sql = "INSERT INTO devolucion (id_devolucion, fecha_devolucion, estado_equipo, id_prestamo) " +
-                    "VALUES (?, ?, ?, ?)";
+                    "VALUES (seq_devolucion.NEXTVAL, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, devolucion.getId_devolucion());
-            stmt.setDate(2, Date.valueOf(devolucion.getFecha_devolucion()));
-            stmt.setString(3, devolucion.getEstado_equipo());
-            stmt.setObject(4, devolucion.getId_prestamo()); // Maneja null
+            stmt.setDate(1, Date.valueOf(devolucion.getFecha_devolucion()));
+            stmt.setString(2, devolucion.getEstado_equipo());
+            stmt.setInt(3, devolucion.getId_prestamo());
             stmt.executeUpdate();
         }
     }
@@ -55,7 +54,7 @@ public class DevolucionDAO {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDate(1, Date.valueOf(devolucion.getFecha_devolucion()));
             stmt.setString(2, devolucion.getEstado_equipo());
-            stmt.setObject(3, devolucion.getId_prestamo()); // Maneja null
+            stmt.setInt(3, devolucion.getId_prestamo());
             stmt.setInt(4, devolucion.getId_devolucion());
             stmt.executeUpdate();
         }

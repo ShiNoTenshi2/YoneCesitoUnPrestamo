@@ -32,21 +32,11 @@ public class SolicitantesController {
     void RegistrarSolicitante(ActionEvent event) {
         try {
             // Validar campos vacíos
-            if (txtIdSolicitante.getText().isEmpty() || 
-                txtNombreSolicitante.getText().isEmpty() ||
+            if (txtNombreSolicitante.getText().isEmpty() ||
                 txtCorreoSolicitante.getText().isEmpty() ||
                 txtTelefonoSolicitante.getText().isEmpty()) {
                 
-                mostrarAlerta("Error", "Campos vacíos", "Todos los campos son obligatorios.");
-                return;
-            }
-
-            // Validar ID
-            int id;
-            try {
-                id = Integer.parseInt(txtIdSolicitante.getText());
-            } catch (NumberFormatException e) {
-                mostrarAlerta("Error", "ID inválido", "El ID debe ser un número.");
+                mostrarAlerta("Error", "Campos vacíos", "Nombre, Correo y Teléfono son obligatorios.");
                 return;
             }
 
@@ -64,15 +54,15 @@ public class SolicitantesController {
                 return;
             }
 
-            // Verificar ID único
-            if (solicitanteDAO.existeId(id)) {
-                mostrarAlerta("Error", "ID duplicado", "Este ID ya está registrado.");
+            // Verificar correo único
+            if (solicitanteDAO.existeCorreo(correo)) {
+                mostrarAlerta("Error", "Correo duplicado", "Este correo ya está registrado.");
                 return;
             }
 
             // Crear y guardar
             Solicitantes solicitante = new Solicitantes(
-                id,
+                0, // ID no se usa, la secuencia lo genera
                 txtNombreSolicitante.getText().trim(),
                 correo,
                 telefono
@@ -104,22 +94,24 @@ public class SolicitantesController {
     }
 
     @FXML
-    void BorrarSolicitante(ActionEvent event) {
+    void ActualizarSolicitante(ActionEvent event) {
         try {
-            if (txtIdSolicitante.getText().isEmpty()) {
-                mostrarAlerta("Error", "Campo vacío", "Ingrese un ID para actualizar");
-                return;
-            }
-            
-            // Validar campos
-            if (txtNombreSolicitante.getText().isEmpty() || 
+            if (txtIdSolicitante.getText().isEmpty() || 
+                txtNombreSolicitante.getText().isEmpty() ||
                 txtCorreoSolicitante.getText().isEmpty() ||
                 txtTelefonoSolicitante.getText().isEmpty()) {
-                mostrarAlerta("Error", "Campos vacíos", "Todos los campos son obligatorios para actualizar");
+                
+                mostrarAlerta("Error", "Campos vacíos", "Todos los campos son obligatorios para actualizar.");
                 return;
             }
             
-            int id = Integer.parseInt(txtIdSolicitante.getText());
+            int id;
+            try {
+                id = Integer.parseInt(txtIdSolicitante.getText());
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Error", "ID inválido", "El ID debe ser un número.");
+                return;
+            }
             
             // Validar teléfono
             String telefono = txtTelefonoSolicitante.getText().trim();
@@ -134,13 +126,20 @@ public class SolicitantesController {
                 mostrarAlerta("Error", "Correo inválido", "Formato: usuario@dominio.com");
                 return;
             }
-            
+
             // Verificar que el ID existe
             if (!solicitanteDAO.existeId(id)) {
-                mostrarAlerta("Error", "ID no encontrado", "No existe un solicitante con ese ID");
+                mostrarAlerta("Error", "ID no encontrado", "No existe un solicitante con ese ID.");
                 return;
             }
-            
+
+            // Verificar correo único (excepto para el propio registro)
+            Solicitantes existing = solicitanteDAO.buscarPorId(id);
+            if (!correo.equals(existing.getCorreo()) && solicitanteDAO.existeCorreo(correo)) {
+                mostrarAlerta("Error", "Correo duplicado", "Este correo ya está registrado.");
+                return;
+            }
+
             // Crear objeto con datos actualizados
             Solicitantes solicitante = new Solicitantes(
                 id,
@@ -152,23 +151,28 @@ public class SolicitantesController {
             // Actualizar en BD
             solicitanteDAO.actualizar(solicitante);
             mostrarAlerta("Éxito", "Actualización exitosa", "Solicitante actualizado correctamente");
+            limpiarCampos();
             
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "ID inválido", "El ID debe ser un número");
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error de base de datos", e.getMessage());
         }
     }
 
     @FXML
-    void ActualizarSolicitante(ActionEvent event) {
+    void BorrarSolicitante(ActionEvent event) {
         try {
             if (txtIdSolicitante.getText().isEmpty()) {
                 mostrarAlerta("Error", "Campo vacío", "Ingrese un ID para borrar");
                 return;
             }
             
-            int id = Integer.parseInt(txtIdSolicitante.getText());
+            int id;
+            try {
+                id = Integer.parseInt(txtIdSolicitante.getText());
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Error", "ID inválido", "El ID debe ser un número");
+                return;
+            }
             
             // Verificar que el ID existe
             if (!solicitanteDAO.existeId(id)) {
@@ -185,12 +189,10 @@ public class SolicitantesController {
             Optional<ButtonType> resultado = confirmacion.showAndWait();
             if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
                 solicitanteDAO.eliminar(id);
-                mostrarAlerta("Éxito", "Borrado exitoso", "Solicitante eliminado correctamente");
+                mostrarAlerta("Éxito", "Borrado exitoso", "Solicitante borrado correctamente");
                 limpiarCampos();
             }
             
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "ID inválido", "El ID debe ser un número");
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error de base de datos", e.getMessage());
         }

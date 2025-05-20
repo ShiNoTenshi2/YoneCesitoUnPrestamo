@@ -15,13 +15,12 @@ public class SalaDAO {
     }
 
     public void guardar(Sala sala) throws SQLException {
-        String sql = "INSERT INTO sala (id_sala, capacidad, detalles_sala, estado) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO sala (id_sala, capacidad, detalles_sala, estado) VALUES (seq_sala.NEXTVAL, ?, ?, ?)";
         
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, sala.getid_sala());
-            stmt.setInt(2, sala.getcapacidad());
-            stmt.setString(3, sala.getdetalles_sala());
-            stmt.setString(4, sala.getestado());
+            stmt.setInt(1, sala.getcapacidad());
+            stmt.setString(2, sala.getdetalles_sala());
+            stmt.setString(3, sala.getestado());
             stmt.executeUpdate();
         }
     }

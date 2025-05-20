@@ -15,13 +15,12 @@ public class SolicitantesDAO {
     }
 
     public void guardar(Solicitantes solicitante) throws SQLException {
-        String sql = "INSERT INTO solicitante (id_solicitante, nombre, correo, telefono) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO solicitante (id_solicitante, nombre, correo, telefono) VALUES (seq_solicitante.NEXTVAL, ?, ?, ?)";
         
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, solicitante.getid_solicitante());
-            stmt.setString(2, solicitante.getNombre());
-            stmt.setString(3, solicitante.getCorreo());
-            stmt.setString(4, solicitante.getTelefono());
+            stmt.setString(1, solicitante.getNombre());
+            stmt.setString(2, solicitante.getCorreo());
+            stmt.setString(3, solicitante.getTelefono());
             stmt.executeUpdate();
         }
     }
@@ -124,18 +123,18 @@ public class SolicitantesDAO {
         }
         return resultados;
     }
-public ObservableList<Integer> obtenerTodosIds() throws SQLException {
-    ObservableList<Integer> ids = FXCollections.observableArrayList();
-    String sql = "SELECT id_solicitante FROM solicitante";
-    
-    try (Statement stmt = connection.createStatement();
-         ResultSet rs = stmt.executeQuery(sql)) {
-        
-        while (rs.next()) {
-            ids.add(rs.getInt("id_solicitante"));
-        }
-    }
-    return ids;
-}
 
+    public ObservableList<Integer> obtenerTodosIds() throws SQLException {
+        ObservableList<Integer> ids = FXCollections.observableArrayList();
+        String sql = "SELECT id_solicitante FROM solicitante";
+        
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+        
+            while (rs.next()) {
+                ids.add(rs.getInt("id_solicitante"));
+            }
+        }
+        return ids;
+    }
 }

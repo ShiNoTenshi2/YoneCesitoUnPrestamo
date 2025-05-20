@@ -19,14 +19,13 @@ public class MantenimientoDAO {
     // Guardar un nuevo mantenimiento
     public void guardar(Mantenimiento mantenimiento) throws SQLException {
         String sql = "INSERT INTO mantenimiento (id_mantenimiento, fecha, descripcion, responsable, id_sala, id_audiovisual) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
+                    "VALUES (seq_mantenimiento.NEXTVAL, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, mantenimiento.getId_mantenimiento());
-            stmt.setDate(2, Date.valueOf(mantenimiento.getFecha()));
-            stmt.setString(3, mantenimiento.getDescripcion());
-            stmt.setString(4, mantenimiento.getResponsable());
-            stmt.setObject(5, mantenimiento.getId_sala()); // Maneja null
-            stmt.setObject(6, mantenimiento.getId_audiovisual()); // Maneja null
+            stmt.setDate(1, Date.valueOf(mantenimiento.getFecha()));
+            stmt.setString(2, mantenimiento.getDescripcion());
+            stmt.setString(3, mantenimiento.getResponsable());
+            stmt.setObject(4, mantenimiento.getId_sala()); // Maneja null
+            stmt.setObject(5, mantenimiento.getId_audiovisual()); // Maneja null
             stmt.executeUpdate();
         }
     }

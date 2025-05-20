@@ -21,7 +21,7 @@ public class PrestamoController {
     @FXML private ComboBox<Integer> comboBoxIdSolicitantePrestamo;
     @FXML private DatePicker fechaDatePicker;
     @FXML private TextField txtMontoSancion; // Mapeado a estado
-    @FXML private TextField txtIdUsuarioPrestamo; // Mapeado a nombre_usuario, ahora TextField
+    @FXML private TextField txtIdUsuarioPrestamo; // Mapeado a nombre_usuario
     @FXML private ComboBox<Integer> comboBoxIdAudiovisualPrestamo;
     @FXML private ComboBox<Integer> comboBoxIdSalaPrestamo;
     @FXML private TextField txtEstadoSancion; // Mapeado a detalle_prestamo
@@ -46,7 +46,7 @@ public class PrestamoController {
         if (usuarioActual == null) {
             usuarioActual = "Usuario Desconocido"; // Valor por defecto para pruebas
         }
-        if (txtIdUsuarioPrestamo != null) { // Verificación de null
+        if (txtIdUsuarioPrestamo != null) {
             txtIdUsuarioPrestamo.setText(usuarioActual);
         } else {
             System.out.println("Error: txtIdUsuarioPrestamo es null en initialize");
@@ -64,12 +64,10 @@ public class PrestamoController {
             // IDs de audiovisuales
             ObservableList<Integer> audiovisualIds = prestamoDAO.obtenerIdsAudiovisuales();
             comboBoxIdAudiovisualPrestamo.setItems(audiovisualIds);
-            // No seleccionamos automáticamente para permitir que el usuario elija
 
             // IDs de salas
             ObservableList<Integer> salaIds = prestamoDAO.obtenerIdsSalas();
             comboBoxIdSalaPrestamo.setItems(salaIds);
-            // No seleccionamos automáticamente para permitir que el usuario elija
         } catch (SQLException e) {
             mostrarAlerta("Error", "No se pudieron cargar los datos: " + e.getMessage());
         }
@@ -85,23 +83,17 @@ public class PrestamoController {
 
             // Crear nuevo préstamo
             Prestamo prestamo = new Prestamo(
-                Integer.parseInt(txtIdPrestamo.getText()),
+                0, // ID no se usa, la secuencia lo genera
                 comboBoxIdSolicitantePrestamo.getValue(),
                 fechaDatePicker.getValue(),
-                txtMontoSancion.getText(), // Mapeado a estado
-                txtIdUsuarioPrestamo.getText(), // Mapeado a nombre_usuario, ahora fijo
+                txtMontoSancion.getText(),
+                txtIdUsuarioPrestamo.getText(),
                 comboBoxIdAudiovisualPrestamo.getValue(),
                 comboBoxIdSalaPrestamo.getValue(),
-                txtEstadoSancion.getText(), // Mapeado a detalle_prestamo
+                txtEstadoSancion.getText(),
                 txtHoraInicio.getText(),
                 txtHoraFin.getText()
             );
-
-            // Verificar si el ID ya existe
-            if (prestamoDAO.existeId(prestamo.getId_prestamo())) {
-                mostrarAlerta("Error", "El ID de préstamo ya existe.");
-                return;
-            }
 
             // Guardar en la base de datos
             prestamoDAO.guardar(prestamo);
@@ -109,8 +101,6 @@ public class PrestamoController {
             limpiarCampos();
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error al registrar el préstamo: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "El ID de préstamo debe ser numérico.");
         }
     }
 
@@ -140,30 +130,44 @@ public class PrestamoController {
     @FXML
     public void ActualizarPrestamo() {
         try {
-            // Validar campos
+            // Validar ID
+            String idText = txtIdPrestamo.getText();
+            if (idText.isEmpty()) {
+                mostrarAlerta("Error", "Por favor, ingrese el ID del préstamo.");
+                return;
+            }
+            int idPrestamo;
+            try {
+                idPrestamo = Integer.parseInt(idText);
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Error", "El ID de préstamo debe ser numérico.");
+                return;
+            }
+
+            // Validar otros campos
             if (!validarCampos()) {
+                return;
+            }
+
+            // Verificar si el ID existe
+            if (!prestamoDAO.existeId(idPrestamo)) {
+                mostrarAlerta("Error", "El ID de préstamo no existe.");
                 return;
             }
 
             // Crear préstamo actualizado
             Prestamo prestamo = new Prestamo(
-                Integer.parseInt(txtIdPrestamo.getText()),
+                idPrestamo,
                 comboBoxIdSolicitantePrestamo.getValue(),
                 fechaDatePicker.getValue(),
-                txtMontoSancion.getText(), // Mapeado a estado
-                txtIdUsuarioPrestamo.getText(), // Mapeado a nombre_usuario, ahora fijo
+                txtMontoSancion.getText(),
+                txtIdUsuarioPrestamo.getText(),
                 comboBoxIdAudiovisualPrestamo.getValue(),
                 comboBoxIdSalaPrestamo.getValue(),
-                txtEstadoSancion.getText(), // Mapeado a detalle_prestamo
+                txtEstadoSancion.getText(),
                 txtHoraInicio.getText(),
                 txtHoraFin.getText()
             );
-
-            // Verificar si el ID existe
-            if (!prestamoDAO.existeId(prestamo.getId_prestamo())) {
-                mostrarAlerta("Error", "El ID de préstamo no existe.");
-                return;
-            }
 
             // Actualizar en la base de datos
             prestamoDAO.actualizar(prestamo);
@@ -171,8 +175,6 @@ public class PrestamoController {
             limpiarCampos();
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error al actualizar el préstamo: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "El ID de préstamo debe ser numérico.");
         }
     }
 
@@ -186,7 +188,13 @@ public class PrestamoController {
                 return;
             }
 
-            int idPrestamo = Integer.parseInt(idText);
+            int idPrestamo;
+            try {
+                idPrestamo = Integer.parseInt(idText);
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Error", "El ID de préstamo debe ser numérico.");
+                return;
+            }
 
             // Verificar si el ID existe
             if (!prestamoDAO.existeId(idPrestamo)) {
@@ -196,12 +204,10 @@ public class PrestamoController {
 
             // Eliminar de la base de datos
             prestamoDAO.eliminar(idPrestamo);
-            mostrarAlerta("Éxito", "Préstamo eliminado correctamente.");
+            mostrarAlerta("Éxito", "Préstamo borrado correctamente.");
             limpiarCampos();
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error al eliminar el préstamo: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "El ID de préstamo debe ser numérico.");
         }
     }
 
@@ -211,15 +217,14 @@ public class PrestamoController {
     }
 
     private boolean validarCampos() {
-        // Validar campos obligatorios
-        if (txtIdPrestamo.getText().isEmpty() ||
-            comboBoxIdSolicitantePrestamo.getValue() == null ||
+        // Validar campos obligatorios (excluimos txtIdPrestamo para registro)
+        if (comboBoxIdSolicitantePrestamo.getValue() == null ||
             fechaDatePicker.getValue() == null ||
-            txtMontoSancion.getText().isEmpty() || // Mapeado a estado
-            txtIdUsuarioPrestamo.getText().isEmpty() || // Mapeado a nombre_usuario
-            txtEstadoSancion.getText().isEmpty() || // Mapeado a detalle_prestamo
-            txtHoraInicio.getText().isEmpty() || // Nuevo campo
-            txtHoraFin.getText().isEmpty()) { // Nuevo campo
+            txtMontoSancion.getText().isEmpty() ||
+            txtIdUsuarioPrestamo.getText().isEmpty() ||
+            txtEstadoSancion.getText().isEmpty() ||
+            txtHoraInicio.getText().isEmpty() ||
+            txtHoraFin.getText().isEmpty()) {
             mostrarAlerta("Error", "Por favor, complete todos los campos obligatorios.");
             return false;
         }
@@ -240,11 +245,11 @@ public class PrestamoController {
         txtIdPrestamo.clear();
         comboBoxIdSolicitantePrestamo.getSelectionModel().selectFirst();
         fechaDatePicker.setValue(null);
-        txtMontoSancion.clear(); // Mapeado a estado
+        txtMontoSancion.clear();
         // txtIdUsuarioPrestamo no se limpia, es el usuario actual
         comboBoxIdAudiovisualPrestamo.getSelectionModel().clearSelection();
         comboBoxIdSalaPrestamo.getSelectionModel().clearSelection();
-        txtEstadoSancion.clear(); // Mapeado a detalle_prestamo
+        txtEstadoSancion.clear();
         txtHoraInicio.clear();
         txtHoraFin.clear();
     }

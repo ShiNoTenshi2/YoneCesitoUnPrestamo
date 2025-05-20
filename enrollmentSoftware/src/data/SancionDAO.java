@@ -15,15 +15,14 @@ public class SancionDAO {
 
     // Crear una nueva sanción
     public void guardar(Sancion sancion) throws SQLException {
-        String sql = "INSERT INTO sancion (id_sancion, id_solicitante, motivo, monto, estado, id_devolucion) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO sancion (id_sancion, id_solicitante, motivo, monto, estado, id_devolucion) VALUES (seq_sancion.NEXTVAL, ?, ?, ?, ?, ?)";
         
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, sancion.getid_sancion());
-            stmt.setInt(2, sancion.getid_solicitante());
-            stmt.setString(3, sancion.getmotivo());
-            stmt.setInt(4, sancion.getmonto());
-            stmt.setString(5, sancion.getestado());
-            stmt.setObject(6, sancion.getId_devolucion()); // Maneja null
+            stmt.setInt(1, sancion.getid_solicitante());
+            stmt.setString(2, sancion.getmotivo());
+            stmt.setInt(3, sancion.getmonto());
+            stmt.setString(4, sancion.getestado());
+            stmt.setInt(5, sancion.getId_devolucion());
             stmt.executeUpdate();
         }
     }
@@ -43,7 +42,7 @@ public class SancionDAO {
                     rs.getString("motivo"),
                     rs.getInt("monto"),
                     rs.getString("estado"),
-                    rs.getObject("id_devolucion") != null ? rs.getInt("id_devolucion") : null
+                    rs.getInt("id_devolucion")
                 );
             }
             return null;
@@ -65,7 +64,7 @@ public class SancionDAO {
                     rs.getString("motivo"),
                     rs.getInt("monto"),
                     rs.getString("estado"),
-                    rs.getObject("id_devolucion") != null ? rs.getInt("id_devolucion") : null
+                    rs.getInt("id_devolucion")
                 ));
             }
         }
@@ -81,7 +80,7 @@ public class SancionDAO {
             stmt.setString(2, sancion.getmotivo());
             stmt.setInt(3, sancion.getmonto());
             stmt.setString(4, sancion.getestado());
-            stmt.setObject(5, sancion.getId_devolucion()); // Maneja null
+            stmt.setInt(5, sancion.getId_devolucion());
             stmt.setInt(6, sancion.getid_sancion());
             stmt.executeUpdate();
         }

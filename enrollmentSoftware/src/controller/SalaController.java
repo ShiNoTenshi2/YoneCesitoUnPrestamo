@@ -32,33 +32,26 @@ public class SalaController {
     public void RegistrarSala(ActionEvent event) {
         try {
             // Validar campos vacíos
-            if (txtIdSala.getText().isEmpty() || 
-                txtCapacidad.getText().isEmpty() ||
+            if (txtCapacidad.getText().isEmpty() ||
                 txtDetallesSala.getText().isEmpty() ||
                 txtEstadoSala.getText().isEmpty()) {
                 
-                mostrarAlerta("Error", "Campos vacíos", "Todos los campos son obligatorios.");
+                mostrarAlerta("Error", "Campos vacíos", "Capacidad, Detalles y Estado son obligatorios.");
                 return;
             }
 
-            // Validar ID y Capacidad
-            int id, capacidad;
+            // Validar Capacidad
+            int capacidad;
             try {
-                id = Integer.parseInt(txtIdSala.getText());
                 capacidad = Integer.parseInt(txtCapacidad.getText());
             } catch (NumberFormatException e) {
-                mostrarAlerta("Error", "Valor inválido", "ID y Capacidad deben ser números.");
+                mostrarAlerta("Error", "Valor inválido", "Capacidad debe ser un número.");
                 return;
             }
 
-            // Verificar ID único
-            if (salaDAO.existeId(id)) {
-                mostrarAlerta("Error", "ID duplicado", "Este ID de sala ya está registrado.");
-                return;
-            }
-
+            // Crear sala sin ID (la secuencia lo genera)
             Sala sala = new Sala(
-                id,
+                0, // ID no se usa, se asigna automáticamente
                 capacidad,
                 txtDetallesSala.getText().trim(),
                 txtEstadoSala.getText().trim()
@@ -88,16 +81,35 @@ public class SalaController {
     }
 
     @FXML
-    public void BorrarSala(ActionEvent event) {
+    public void ActualizarSala(ActionEvent event) {
         try {
-            if (txtIdSala.getText().isEmpty()) {
-                mostrarAlerta("Error", "Campo vacío", "Ingrese un ID para actualizar");
+            // Validar campos vacíos
+            if (txtIdSala.getText().isEmpty() || 
+                txtCapacidad.getText().isEmpty() ||
+                txtDetallesSala.getText().isEmpty() ||
+                txtEstadoSala.getText().isEmpty()) {
+                
+                mostrarAlerta("Error", "Campos vacíos", "Todos los campos son obligatorios para actualizar.");
                 return;
             }
-            
-            int id = Integer.parseInt(txtIdSala.getText());
-            int capacidad = Integer.parseInt(txtCapacidad.getText());
-            
+
+            // Validar ID y Capacidad
+            int id, capacidad;
+            try {
+                id = Integer.parseInt(txtIdSala.getText());
+                capacidad = Integer.parseInt(txtCapacidad.getText());
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Error", "Datos inválidos", "ID y Capacidad deben ser números.");
+                return;
+            }
+
+            // Verificar que el ID exista
+            if (!salaDAO.existeId(id)) {
+                mostrarAlerta("Error", "ID no encontrado", "No existe una sala con ese ID.");
+                return;
+            }
+
+            // Crear objeto Sala con los datos actualizados
             Sala sala = new Sala(
                 id,
                 capacidad,
@@ -106,39 +118,51 @@ public class SalaController {
             );
             
             salaDAO.actualizar(sala);
-            mostrarAlerta("Éxito", "Actualización exitosa", "Sala actualizada correctamente");
+            mostrarAlerta("Éxito", "Actualización exitosa", "Sala actualizada correctamente.");
+            limpiarCampos();
             
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "Datos inválidos", "ID y Capacidad deben ser números");
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error de BD", e.getMessage());
         }
     }
 
     @FXML
-    public void ActualizarSala(ActionEvent event) {
+    public void BorrarSala(ActionEvent event) {
         try {
+            // Validar campo ID
             if (txtIdSala.getText().isEmpty()) {
-                mostrarAlerta("Error", "Campo vacío", "Ingrese un ID para borrar");
+                mostrarAlerta("Error", "Campo vacío", "Ingrese un ID para borrar.");
                 return;
             }
             
-            int id = Integer.parseInt(txtIdSala.getText());
+            // Validar ID
+            int id;
+            try {
+                id = Integer.parseInt(txtIdSala.getText());
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Error", "ID inválido", "El ID debe ser un número.");
+                return;
+            }
             
+            // Verificar que el ID exista
+            if (!salaDAO.existeId(id)) {
+                mostrarAlerta("Error", "ID no encontrado", "No existe una sala con ese ID.");
+                return;
+            }
+
+            // Confirmar borrado
             Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
             confirmacion.setTitle("Confirmar borrado");
             confirmacion.setHeaderText("¿Está seguro de borrar esta sala?");
-            confirmacion.setContentText("Esta acción no se puede deshacer");
+            confirmacion.setContentText("Esta acción no se puede deshacer.");
             
             Optional<ButtonType> resultado = confirmacion.showAndWait();
             if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
                 salaDAO.eliminar(id);
-                mostrarAlerta("Éxito", "Borrado exitoso", "Sala eliminada correctamente");
+                mostrarAlerta("Éxito", "Borrado exitoso", "Sala borrada correctamente.");
                 limpiarCampos();
             }
             
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "ID inválido", "El ID debe ser un número");
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error de BD", e.getMessage());
         }

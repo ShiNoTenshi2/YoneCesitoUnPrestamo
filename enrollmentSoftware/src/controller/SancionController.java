@@ -18,7 +18,7 @@ public class SancionController {
 
     @FXML private TextField txtIdSancion;
     @FXML private ComboBox<Integer> comboBoxIdSolicitanteSancion;
-    @FXML private ComboBox<Integer> comboBoxIdDevolucionSancion; // Nuevo ComboBox
+    @FXML private ComboBox<Integer> comboBoxIdDevolucionSancion;
     @FXML private TextField txtMotivoSancion;
     @FXML private TextField txtMontoSancion;
     @FXML private TextField txtEstadoSancion;
@@ -70,19 +70,13 @@ public class SancionController {
 
             // Crear nueva sanción
             Sancion sancion = new Sancion(
-                Integer.parseInt(txtIdSancion.getText()),
+                0, // ID no se usa, la secuencia lo genera
                 comboBoxIdSolicitanteSancion.getValue(),
                 txtMotivoSancion.getText(),
                 Integer.parseInt(txtMontoSancion.getText()),
                 txtEstadoSancion.getText(),
                 comboBoxIdDevolucionSancion.getValue()
             );
-
-            // Verificar si el ID ya existe
-            if (sancionDAO.existeId(sancion.getid_sancion())) {
-                mostrarAlerta("Error", "El ID de sanción ya existe.");
-                return;
-            }
 
             // Guardar en la base de datos
             sancionDAO.guardar(sancion);
@@ -91,7 +85,7 @@ public class SancionController {
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error al registrar la sanción: " + e.getMessage());
         } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "El ID de sanción y el monto deben ser numéricos.");
+            mostrarAlerta("Error", "El monto debe ser numérico.");
         }
     }
 
@@ -121,26 +115,40 @@ public class SancionController {
     @FXML
     public void ActualizarSancion() {
         try {
-            // Validar campos
+            // Validar ID
+            String idText = txtIdSancion.getText();
+            if (idText.isEmpty()) {
+                mostrarAlerta("Error", "Por favor, ingrese el ID de la sanción.");
+                return;
+            }
+            int idSancion;
+            try {
+                idSancion = Integer.parseInt(idText);
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Error", "El ID de sanción debe ser numérico.");
+                return;
+            }
+
+            // Validar otros campos
             if (!validarCampos()) {
+                return;
+            }
+
+            // Verificar si el ID existe
+            if (!sancionDAO.existeId(idSancion)) {
+                mostrarAlerta("Error", "El ID de sanción no existe.");
                 return;
             }
 
             // Crear sanción actualizada
             Sancion sancion = new Sancion(
-                Integer.parseInt(txtIdSancion.getText()),
+                idSancion,
                 comboBoxIdSolicitanteSancion.getValue(),
                 txtMotivoSancion.getText(),
                 Integer.parseInt(txtMontoSancion.getText()),
                 txtEstadoSancion.getText(),
                 comboBoxIdDevolucionSancion.getValue()
             );
-
-            // Verificar si el ID existe
-            if (!sancionDAO.existeId(sancion.getid_sancion())) {
-                mostrarAlerta("Error", "El ID de sanción no existe.");
-                return;
-            }
 
             // Actualizar en la base de datos
             sancionDAO.actualizar(sancion);
@@ -149,7 +157,7 @@ public class SancionController {
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error al actualizar la sanción: " + e.getMessage());
         } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "El ID de sanción y el monto deben ser numéricos.");
+            mostrarAlerta("Error", "El monto debe ser numérico.");
         }
     }
 
@@ -163,7 +171,13 @@ public class SancionController {
                 return;
             }
 
-            int idSancion = Integer.parseInt(idText);
+            int idSancion;
+            try {
+                idSancion = Integer.parseInt(idText);
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Error", "El ID de sanción debe ser numérico.");
+                return;
+            }
 
             // Verificar si el ID existe
             if (!sancionDAO.existeId(idSancion)) {
@@ -177,8 +191,6 @@ public class SancionController {
             limpiarCampos();
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error al eliminar la sanción: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "El ID de sanción debe ser numérico.");
         }
     }
 
@@ -188,8 +200,8 @@ public class SancionController {
     }
 
     private boolean validarCampos() {
-        if (txtIdSancion.getText().isEmpty() ||
-            comboBoxIdSolicitanteSancion.getValue() == null ||
+        // Validar campos obligatorios (excluimos txtIdSancion para registro)
+        if (comboBoxIdSolicitanteSancion.getValue() == null ||
             txtMotivoSancion.getText().isEmpty() ||
             txtMontoSancion.getText().isEmpty() ||
             txtEstadoSancion.getText().isEmpty() ||

@@ -19,18 +19,17 @@ public class PrestamoDAO {
     // Guardar un nuevo préstamo
     public void guardar(Prestamo prestamo) throws SQLException {
         String sql = "INSERT INTO prestamo (id_prestamo, id_solicitante, fecha_solicitud, estado, nombre_usuario, id_audiovisual, id_sala, detalle_prestamo, hora_inicio, hora_fin) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "VALUES (seq_prestamo.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, prestamo.getId_prestamo());
-            stmt.setInt(2, prestamo.getId_solicitante());
-            stmt.setDate(3, Date.valueOf(prestamo.getFecha_solicitud()));
-            stmt.setString(4, prestamo.getEstado());
-            stmt.setString(5, prestamo.getNombre_usuario());
-            stmt.setObject(6, prestamo.getId_audiovisual());
-            stmt.setObject(7, prestamo.getId_sala());
-            stmt.setString(8, prestamo.getDetalle_prestamo());
-            stmt.setString(9, prestamo.getHora_inicio());
-            stmt.setString(10, prestamo.getHora_fin());
+            stmt.setInt(1, prestamo.getId_solicitante());
+            stmt.setDate(2, Date.valueOf(prestamo.getFecha_solicitud()));
+            stmt.setString(3, prestamo.getEstado());
+            stmt.setString(4, prestamo.getNombre_usuario());
+            stmt.setObject(5, prestamo.getId_audiovisual());
+            stmt.setObject(6, prestamo.getId_sala());
+            stmt.setString(7, prestamo.getDetalle_prestamo());
+            stmt.setString(8, prestamo.getHora_inicio());
+            stmt.setString(9, prestamo.getHora_fin());
             stmt.executeUpdate();
         }
     }

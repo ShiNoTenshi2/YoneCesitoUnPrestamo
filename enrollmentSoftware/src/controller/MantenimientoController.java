@@ -40,7 +40,6 @@ public class MantenimientoController {
         try {
             ObservableList<Integer> salaIds = mantenimientoDAO.obtenerIdsSalas();
             comboBoxIdSalaMantenimiento.setItems(salaIds);
-            // No seleccionamos automáticamente para permitir que el usuario elija
         } catch (SQLException e) {
             mostrarAlerta("Error", "No se pudieron cargar los IDs de salas: " + e.getMessage());
         }
@@ -49,7 +48,6 @@ public class MantenimientoController {
         try {
             ObservableList<Integer> audiovisualIds = mantenimientoDAO.obtenerIdsAudiovisuales();
             comboBoxIdAudiovisualMantenimiento.setItems(audiovisualIds);
-            // No seleccionamos automáticamente para permitir que el usuario elija
         } catch (SQLException e) {
             mostrarAlerta("Error", "No se pudieron cargar los IDs de audiovisuales: " + e.getMessage());
         }
@@ -65,7 +63,7 @@ public class MantenimientoController {
 
             // Crear nuevo mantenimiento
             Mantenimiento mantenimiento = new Mantenimiento(
-                Integer.parseInt(txtIdMantenimiento.getText()),
+                0, // ID no se usa, la secuencia lo genera
                 fechaMantDatePicker.getValue(),
                 txtDescripcionMantenimiento.getText(),
                 txtResponsableMantenimiento.getText(),
@@ -73,20 +71,12 @@ public class MantenimientoController {
                 comboBoxIdAudiovisualMantenimiento.getValue()
             );
 
-            // Verificar si el ID ya existe
-            if (mantenimientoDAO.existeId(mantenimiento.getId_mantenimiento())) {
-                mostrarAlerta("Error", "El ID de mantenimiento ya existe.");
-                return;
-            }
-
             // Guardar en la base de datos
             mantenimientoDAO.guardar(mantenimiento);
             mostrarAlerta("Éxito", "Mantenimiento registrado correctamente.");
             limpiarCampos();
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error al registrar el mantenimiento: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "El ID de mantenimiento debe ser numérico.");
         }
     }
 
@@ -116,14 +106,34 @@ public class MantenimientoController {
     @FXML
     public void ActualizarMantenimiento() {
         try {
-            // Validar campos
+            // Validar ID
+            String idText = txtIdMantenimiento.getText();
+            if (idText.isEmpty()) {
+                mostrarAlerta("Error", "Por favor, ingrese el ID del mantenimiento.");
+                return;
+            }
+            int idMantenimiento;
+            try {
+                idMantenimiento = Integer.parseInt(idText);
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Error", "El ID de mantenimiento debe ser numérico.");
+                return;
+            }
+
+            // Validar otros campos
             if (!validarCampos()) {
+                return;
+            }
+
+            // Verificar si el ID existe
+            if (!mantenimientoDAO.existeId(idMantenimiento)) {
+                mostrarAlerta("Error", "El ID de mantenimiento no existe.");
                 return;
             }
 
             // Crear mantenimiento actualizado
             Mantenimiento mantenimiento = new Mantenimiento(
-                Integer.parseInt(txtIdMantenimiento.getText()),
+                idMantenimiento,
                 fechaMantDatePicker.getValue(),
                 txtDescripcionMantenimiento.getText(),
                 txtResponsableMantenimiento.getText(),
@@ -131,20 +141,12 @@ public class MantenimientoController {
                 comboBoxIdAudiovisualMantenimiento.getValue()
             );
 
-            // Verificar si el ID existe
-            if (!mantenimientoDAO.existeId(mantenimiento.getId_mantenimiento())) {
-                mostrarAlerta("Error", "El ID de mantenimiento no existe.");
-                return;
-            }
-
             // Actualizar en la base de datos
             mantenimientoDAO.actualizar(mantenimiento);
             mostrarAlerta("Éxito", "Mantenimiento actualizado correctamente.");
             limpiarCampos();
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error al actualizar el mantenimiento: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "El ID de mantenimiento debe ser numérico.");
         }
     }
 
@@ -158,7 +160,13 @@ public class MantenimientoController {
                 return;
             }
 
-            int idMantenimiento = Integer.parseInt(idText);
+            int idMantenimiento;
+            try {
+                idMantenimiento = Integer.parseInt(idText);
+            } catch (NumberFormatException e) {
+                mostrarAlerta("Error", "El ID de mantenimiento debe ser numérico.");
+                return;
+            }
 
             // Verificar si el ID existe
             if (!mantenimientoDAO.existeId(idMantenimiento)) {
@@ -168,12 +176,10 @@ public class MantenimientoController {
 
             // Eliminar de la base de datos
             mantenimientoDAO.eliminar(idMantenimiento);
-            mostrarAlerta("Éxito", "Mantenimiento eliminado correctamente.");
+            mostrarAlerta("Éxito", "Mantenimiento borrado correctamente.");
             limpiarCampos();
         } catch (SQLException e) {
             mostrarAlerta("Error", "Error al eliminar el mantenimiento: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "El ID de mantenimiento debe ser numérico.");
         }
     }
 
@@ -183,9 +189,8 @@ public class MantenimientoController {
     }
 
     private boolean validarCampos() {
-        // Validar campos obligatorios
-        if (txtIdMantenimiento.getText().isEmpty() ||
-            fechaMantDatePicker.getValue() == null ||
+        // Validar campos obligatorios (excluimos txtIdMantenimiento para registro)
+        if (fechaMantDatePicker.getValue() == null ||
             txtDescripcionMantenimiento.getText().isEmpty() ||
             txtResponsableMantenimiento.getText().isEmpty()) {
             mostrarAlerta("Error", "Por favor, complete todos los campos obligatorios.");
