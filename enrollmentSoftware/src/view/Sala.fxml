@@ -26,11 +26,17 @@
          <Insets />
       </opaqueInsets>
     </Label>
-    <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="ID" />
-    <TextField fx:id="txtIdSala" prefHeight="40" prefWidth="300" promptText="Ingrese el ID del Sala" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;">
+    <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="ID de la Sala" />
+    <TextField fx:id="txtIdSala" prefHeight="40" prefWidth="300" promptText="Ingrese el ID del Sala (Solo para actualizar o borrar)" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;">
       <opaqueInsets>
          <Insets />
       </opaqueInsets></TextField>
+   <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Nombre de la Sala" />
+   <TextField fx:id="txtNombreSala" prefHeight="40" prefWidth="300" promptText="Ingrese el nombre de la Sala" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;">
+      <opaqueInsets>
+         <Insets />
+      </opaqueInsets>
+   </TextField>
     <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Capacidad" />
     <TextField fx:id="txtCapacidad" prefHeight="40" prefWidth="300" promptText="Ingrese Capacidad de la Sala" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;" />
     <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Detalles Sala" />

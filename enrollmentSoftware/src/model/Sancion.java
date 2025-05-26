@@ -2,15 +2,15 @@ package model;
 
 public class Sancion {
     private int id_sancion;
-    private int id_solicitante;
+    private long cedula_usuario;
     private String motivo;
     private int monto;
     private String estado;
-    private Integer id_devolucion; // Nuevo campo, Integer para permitir null
+    private int id_devolucion;
 
-    public Sancion(int id_sancion, int id_solicitante, String motivo, int monto, String estado, Integer id_devolucion) {
+    public Sancion(int id_sancion, long cedula_usuario, String motivo, int monto, String estado, int id_devolucion) {
         this.id_sancion = id_sancion;
-        this.id_solicitante = id_solicitante;
+        this.cedula_usuario = cedula_usuario;
         this.motivo = motivo;
         this.monto = monto;
         this.estado = estado;
@@ -18,60 +18,60 @@ public class Sancion {
     }
 
     // Getters
-    public int getid_sancion() {
+    public int getId_sancion() {
         return id_sancion;
     }
 
-    public int getid_solicitante() {
-        return id_solicitante;
+    public long getCedula_usuario() {
+        return cedula_usuario;
     }
 
-    public String getmotivo() {
+    public String getMotivo() {
         return motivo;
     }
 
-    public int getmonto() {
+    public int getMonto() {
         return monto;
     }
 
-    public String getestado() {
+    public String getEstado() {
         return estado;
     }
 
-    public Integer getId_devolucion() {
+    public int getId_devolucion() {
         return id_devolucion;
     }
 
     // Setters
-    public void setid_sancion(int id_sancion) {
+    public void setId_sancion(int id_sancion) {
         this.id_sancion = id_sancion;
     }
 
-    public void setid_solicitante(int id_solicitante) {
-        this.id_solicitante = id_solicitante;
+    public void setCedula_usuario(long cedula_usuario) {
+        this.cedula_usuario = cedula_usuario;
     }
 
-    public void setmotivo(String motivo) {
+    public void setMotivo(String motivo) {
         this.motivo = motivo;
     }
 
-    public void setmonto(int monto) {
+    public void setMonto(int monto) {
         this.monto = monto;
     }
 
-    public void setestado(String estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 
-    public void setId_devolucion(Integer id_devolucion) {
+    public void setId_devolucion(int id_devolucion) {
         this.id_devolucion = id_devolucion;
     }
 
     @Override
     public String toString() {
         return String.format(
-            "Sancion [id_sancion: %d, id_solicitante: %d, motivo: %s, monto: %d, estado: %s, id_devolucion: %s]",
-            id_sancion, id_solicitante, motivo, monto, estado, id_devolucion != null ? id_devolucion : "null"
+            "Sancion [id_sancion: %d, cedula_usuario: %d, motivo: %s, monto: %d, estado: %s, id_devolucion: %d]",
+            id_sancion, cedula_usuario, motivo, monto, estado, id_devolucion
         );
     }
 }

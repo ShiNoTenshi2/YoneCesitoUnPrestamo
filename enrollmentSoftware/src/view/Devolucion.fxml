@@ -9,6 +9,7 @@
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -34,10 +35,52 @@
          <Insets />
       </opaqueInsets>
    </TextField>
-    <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Fecha Devolucion" />
-   <DatePicker fx:id="fechaDevDatePicker" />
-   <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Estado Devolucion" />
-   <TextField fx:id="txtEstadoDevolucion" prefHeight="40" prefWidth="300" promptText="Estado del equipo o sala despues de la Devolucion" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;" />
+   <GridPane>
+     <columnConstraints>
+       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+     </columnConstraints>
+     <rowConstraints>
+       <RowConstraints minHeight="10.0" prefHeight="30.0" />
+       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+     </rowConstraints>
+      <children>
+         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+            <children>
+               <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Entrega" />
+            </children>
+         </HBox>
+         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
+            <children>
+               <ComboBox fx:id="comboBoxEntregaDevo" prefWidth="150.0" />
+            </children>
+         </HBox>
+         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+            <children>
+                <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Fecha Devolucion" />
+            </children>
+         </HBox>
+         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <children>
+               <DatePicker fx:id="fechaDevDatePicker" />
+            </children>
+         </HBox>
+         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
+            <children>
+               <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Estado Devolucion" />
+            </children>
+         </HBox>
+         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <children>
+               <ComboBox fx:id="comboBoxEstadoDecoEntrega" prefWidth="150.0" />
+            </children>
+         </HBox>
+      </children>
+   </GridPane>
+   <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Descripcion" />
+   <TextField fx:id="txtDescripcionDevol" prefHeight="40" prefWidth="300" promptText="Estado del equipo o sala despues de la Devolucion" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;" />
     <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="ID Prestamo" />
    <ComboBox fx:id="comboBoxIdPrestamoDevolucion" prefHeight="32.0" prefWidth="617.0" />
    <GridPane translateY="1.0">
@@ -54,26 +97,42 @@
          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
      </rowConstraints>
       <children>
-          <Button fx:id="btnRegistrarDevolucion" alignment="CENTER" contentDisplay="CENTER" onAction="#RegistrarDevolucion" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Registrar Devolucion" GridPane.rowIndex="1">
-              <effect>
-                  <DropShadow color="#2980b9" radius="3" />
-              </effect>
-          </Button>
-         <Button fx:id="btnLeerDevolucion" alignment="CENTER" contentDisplay="CENTER" onAction="#LeerDevolucion" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Leer Devolucion" GridPane.columnIndex="1" GridPane.rowIndex="1">
-            <effect>
-               <DropShadow color="#2980b9" radius="3" />
-            </effect>
-         </Button>
-         <Button fx:id="btnBorrarDevolucion" alignment="CENTER" contentDisplay="CENTER" nodeOrientation="LEFT_TO_RIGHT" onAction="#BorrarDevolucion" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Borrar Devolucion" GridPane.columnIndex="1" GridPane.rowIndex="4">
-            <effect>
-               <DropShadow color="#2980b9" radius="3" />
-            </effect>
-         </Button>
-         <Button fx:id="btnActualizarDevolucion" alignment="CENTER" contentDisplay="CENTER" onAction="#ActualizarDevolucion" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Actualizar Devolucion" GridPane.rowIndex="4">
-            <effect>
-               <DropShadow color="#2980b9" radius="3" />
-            </effect>
-         </Button>
+         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+            <children>
+                <Button fx:id="btnRegistrarDevolucion" alignment="CENTER" contentDisplay="CENTER" onAction="#RegistrarDevolucion" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Registrar Devolucion">
+                    <effect>
+                        <DropShadow color="#2980b9" radius="3" />
+                    </effect>
+                </Button>
+            </children>
+         </HBox>
+         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="4">
+            <children>
+               <Button fx:id="btnActualizarDevolucion" alignment="CENTER" contentDisplay="CENTER" onAction="#ActualizarDevolucion" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Actualizar Devolucion">
+                  <effect>
+                     <DropShadow color="#2980b9" radius="3" />
+                  </effect>
+               </Button>
+            </children>
+         </HBox>
+         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <children>
+               <Button fx:id="btnLeerDevolucion" alignment="CENTER" contentDisplay="CENTER" onAction="#LeerDevolucion" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Leer Devolucion">
+                  <effect>
+                     <DropShadow color="#2980b9" radius="3" />
+                  </effect>
+               </Button>
+            </children>
+         </HBox>
+         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <children>
+               <Button fx:id="btnBorrarDevolucion" alignment="CENTER" contentDisplay="CENTER" nodeOrientation="LEFT_TO_RIGHT" onAction="#BorrarDevolucion" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Borrar Devolucion">
+                  <effect>
+                     <DropShadow color="#2980b9" radius="3" />
+                  </effect>
+               </Button>
+            </children>
+         </HBox>
       </children>
    </GridPane>
 	<Button fx:id="btnMenu" onAction="#GoToMenu" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Volver al Menú">	
