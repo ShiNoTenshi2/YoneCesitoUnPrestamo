@@ -119,6 +119,17 @@ public class PrestamoDAO {
         }
     }
 
+    public boolean actualizarEstado(long id_prestamo, String nuevoEstado) throws SQLException {
+        Connection connection = dbConnection.getConnection();
+        String query = "UPDATE prestamo SET estado = ? WHERE id_prestamo = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, nuevoEstado);
+            stmt.setLong(2, id_prestamo);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
+
     public boolean eliminarPrestamo(long id_prestamo) throws SQLException {
         Connection connection = dbConnection.getConnection();
         String query = "DELETE FROM prestamo WHERE id_prestamo = ?";

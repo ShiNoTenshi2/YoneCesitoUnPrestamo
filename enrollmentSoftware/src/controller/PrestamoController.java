@@ -3,15 +3,13 @@ package controller;
 import data.PrestamoDAO;
 import data.UsuarioDAO;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Prestamo;
 import java.io.IOException;
@@ -27,6 +25,7 @@ import java.util.Locale;
 
 public class PrestamoController {
 
+    // Elementos de Prestamo.fxml (ya existentes)
     @FXML private TextField txtIdPrestamo;
     @FXML private ComboBox<Long> comboBoxCedulaUsuarioPrestamo;
     @FXML private DatePicker fechaDatePicker;
@@ -40,6 +39,15 @@ public class PrestamoController {
     @FXML private Button btnActualizarPrestamo;
     @FXML private Button btnBorrarPrestamo;
     @FXML private Button btnMenu;
+
+    // Elementos de PrestamoEstado.fxml (nuevos)
+    @FXML private TableView<Prestamo> tablaPrestamo;
+    @FXML private TableColumn<Prestamo, Long> columnIdPrestamo;
+    @FXML private TableColumn<Prestamo, Long> columnIdUsuarioPrestamo;
+    @FXML private TableColumn<Prestamo, LocalDate> columnFechaPrestamo;
+    @FXML private TableColumn<Prestamo, String> columnEstadoPrestamo;
+    @FXML private Button btnConfirmarPrestamo;
+    @FXML private Button btnDenegarPrestamo;
 
     private String userRol;
 
@@ -59,6 +67,13 @@ public class PrestamoController {
             return;
         }
 
+        // Si estamos en PrestamoEstado.fxml (tablaPrestamo no es null), inicializamos la tabla
+        if (tablaPrestamo != null) {
+            inicializarTablaPrestamo();
+            return; // Salimos para no ejecutar la inicialización de Prestamo.fxml
+        }
+
+        // Inicialización para Prestamo.fxml
         // Deshabilitar botones para Estudiantes y Profesores
         if (!userRol.equals("Coordinador")) {
             btnActualizarPrestamo.setDisable(true);
@@ -109,6 +124,28 @@ public class PrestamoController {
         comboBoxHoraFin.getSelectionModel().selectFirst();
     }
 
+    private void inicializarTablaPrestamo() {
+        // Configurar las columnas de la tabla con los nombres correctos de las propiedades
+        columnIdPrestamo.setCellValueFactory(new PropertyValueFactory<>("id_prestamo"));
+        columnIdUsuarioPrestamo.setCellValueFactory(new PropertyValueFactory<>("cedula_usuario"));
+        columnFechaPrestamo.setCellValueFactory(new PropertyValueFactory<>("fecha_solicitud"));
+        columnEstadoPrestamo.setCellValueFactory(new PropertyValueFactory<>("estado"));
+
+        // Cargar solo los préstamos en estado "EnRevision"
+        try {
+            ObservableList<Prestamo> prestamos = FXCollections.observableArrayList(PrestamoDAO.getInstance().obtenerEnRevision());
+            tablaPrestamo.setItems(prestamos);
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error de BD", "No se pudieron cargar los préstamos: " + e.getMessage());
+        }
+
+        // Deshabilitar botones para usuarios no coordinadores
+        if (!userRol.equals("Coordinador")) {
+            btnConfirmarPrestamo.setDisable(true);
+            btnDenegarPrestamo.setDisable(true);
+        }
+    }
+
     @FXML
     private void RegistrarPrestamo() {
         try {
@@ -132,17 +169,15 @@ public class PrestamoController {
                 return;
             }
 
-            // Usamos el patrón con espacio y especificamos el locale
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US);
-            LocalTime horaInicioTime = LocalTime.parse(comboBoxHoraInicio.getValue(), formatter); // Parsear como LocalTime
-            LocalTime horaFinTime = LocalTime.parse(comboBoxHoraFin.getValue(), formatter); // Parsear como LocalTime
-            LocalDateTime horaInicio = LocalDateTime.of(fechaSolicitud, horaInicioTime); // Combinar con la fecha
-            LocalDateTime horaFin = LocalDateTime.of(fechaSolicitud, horaFinTime); // Combinar con la fecha
+            LocalTime horaInicioTime = LocalTime.parse(comboBoxHoraInicio.getValue(), formatter);
+            LocalTime horaFinTime = LocalTime.parse(comboBoxHoraFin.getValue(), formatter);
+            LocalDateTime horaInicio = LocalDateTime.of(fechaSolicitud, horaInicioTime);
+            LocalDateTime horaFin = LocalDateTime.of(fechaSolicitud, horaFinTime);
 
-            // Validar que la hora de inicio sea anterior a la hora de fin
             if (!horaInicio.isBefore(horaFin)) {
-                showAlert(Alert.AlertType.ERROR, "Horas Inválidas", 
-                    "La hora de inicio (" + comboBoxHoraInicio.getValue() + 
+                showAlert(Alert.AlertType.ERROR, "Horas Inválidas",
+                    "La hora de inicio (" + comboBoxHoraInicio.getValue() +
                     ") debe ser anterior a la hora de fin (" + comboBoxHoraFin.getValue() + ").");
                 return;
             }
@@ -164,7 +199,7 @@ public class PrestamoController {
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al registrar: " + e.getMessage());
         } catch (DateTimeParseException e) {
-            showAlert(Alert.AlertType.ERROR, "Error de Formato", 
+            showAlert(Alert.AlertType.ERROR, "Error de Formato",
                 "El formato de la hora es inválido. Usa el formato 'h:mm AM/PM' (ejemplo: '8:00 AM'). Detalle: " + e.getMessage());
         }
     }
@@ -178,7 +213,9 @@ public class PrestamoController {
                 showAlert(Alert.AlertType.INFORMATION, "Información", "No hay préstamos registrados.");
             } else {
                 StringBuilder sb = new StringBuilder("=== LISTADO DE PRÉSTAMOS ===\n");
-                for (Prestamo p : prestamos) sb.append(p.toString()).append("\n");
+                for (Prestamo p : prestamos) {
+                    sb.append(p.toString()).append("\n");
+                }
                 sb.append("===========================");
                 showAlert(Alert.AlertType.INFORMATION, "Préstamos", sb.toString());
             }
@@ -210,17 +247,15 @@ public class PrestamoController {
                 return;
             }
 
-            // Usamos el patrón con espacio y especificamos el locale
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US);
-            LocalTime horaInicioTime = LocalTime.parse(comboBoxHoraInicio.getValue(), formatter); // Parsear como LocalTime
-            LocalTime horaFinTime = LocalTime.parse(comboBoxHoraFin.getValue(), formatter); // Parsear como LocalTime
-            LocalDateTime horaInicio = LocalDateTime.of(fechaSolicitud, horaInicioTime); // Combinar con la fecha
-            LocalDateTime horaFin = LocalDateTime.of(fechaSolicitud, horaFinTime); // Combinar con la fecha
+            LocalTime horaInicioTime = LocalTime.parse(comboBoxHoraInicio.getValue(), formatter);
+            LocalTime horaFinTime = LocalTime.parse(comboBoxHoraFin.getValue(), formatter);
+            LocalDateTime horaInicio = LocalDateTime.of(fechaSolicitud, horaInicioTime);
+            LocalDateTime horaFin = LocalDateTime.of(fechaSolicitud, horaFinTime);
 
-            // Validar que la hora de inicio sea anterior a la hora de fin
             if (!horaInicio.isBefore(horaFin)) {
-                showAlert(Alert.AlertType.ERROR, "Horas Inválidas", 
-                    "La hora de inicio (" + comboBoxHoraInicio.getValue() + 
+                showAlert(Alert.AlertType.ERROR, "Horas Inválidas",
+                    "La hora de inicio (" + comboBoxHoraInicio.getValue() +
                     ") debe ser anterior a la hora de fin (" + comboBoxHoraFin.getValue() + ").");
                 return;
             }
@@ -241,7 +276,7 @@ public class PrestamoController {
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al actualizar: " + e.getMessage());
         } catch (DateTimeParseException e) {
-            showAlert(Alert.AlertType.ERROR, "Error de Formato", 
+            showAlert(Alert.AlertType.ERROR, "Error de Formato",
                 "El formato de la hora es inválido. Usa el formato 'h:mm AM/PM' (ejemplo: '8:00 AM'). Detalle: " + e.getMessage());
         }
     }
@@ -268,6 +303,58 @@ public class PrestamoController {
             }
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al borrar: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void ConfirmarPrestamo() {
+        Prestamo prestamoSeleccionado = tablaPrestamo.getSelectionModel().getSelectedItem();
+        if (prestamoSeleccionado == null) {
+            showAlert(Alert.AlertType.WARNING, "Selección Requerida", "Por favor, selecciona un préstamo de la tabla.");
+            return;
+        }
+
+        if (!prestamoSeleccionado.getEstado().equals("EnRevision")) {
+            showAlert(Alert.AlertType.WARNING, "Estado Inválido", "El préstamo ya ha sido procesado (estado: " + prestamoSeleccionado.getEstado() + ").");
+            return;
+        }
+
+        try {
+            if (PrestamoDAO.getInstance().actualizarEstado(prestamoSeleccionado.getId_prestamo(), "Aprobado")) {
+                showAlert(Alert.AlertType.INFORMATION, "Éxito", "Préstamo confirmado (estado: Aprobado).");
+                // Refrescar la tabla con solo los préstamos en "EnRevision"
+                tablaPrestamo.setItems(FXCollections.observableArrayList(PrestamoDAO.getInstance().obtenerEnRevision()));
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Error", "No se pudo confirmar el préstamo.");
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al confirmar el préstamo: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void DenegarPrestamo() {
+        Prestamo prestamoSeleccionado = tablaPrestamo.getSelectionModel().getSelectedItem();
+        if (prestamoSeleccionado == null) {
+            showAlert(Alert.AlertType.WARNING, "Selección Requerida", "Por favor, selecciona un préstamo de la tabla.");
+            return;
+        }
+
+        if (!prestamoSeleccionado.getEstado().equals("EnRevision")) {
+            showAlert(Alert.AlertType.WARNING, "Estado Inválido", "El préstamo ya ha sido procesado (estado: " + prestamoSeleccionado.getEstado() + ").");
+            return;
+        }
+
+        try {
+            if (PrestamoDAO.getInstance().eliminarPrestamo(prestamoSeleccionado.getId_prestamo())) {
+                showAlert(Alert.AlertType.INFORMATION, "Éxito", "Préstamo denegado y eliminado de la base de datos.");
+                // Refrescar la tabla con solo los préstamos en "EnRevision"
+                tablaPrestamo.setItems(FXCollections.observableArrayList(PrestamoDAO.getInstance().obtenerEnRevision()));
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Error", "No se pudo denegar y eliminar el préstamo.");
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al denegar el préstamo: " + e.getMessage());
         }
     }
 

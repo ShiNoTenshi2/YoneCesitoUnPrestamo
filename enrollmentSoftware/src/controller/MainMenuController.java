@@ -34,6 +34,9 @@ public class MainMenuController {
     private Button btnMantenimiento;
 
     @FXML
+    private Button btnGestionPrestamos;
+
+    @FXML
     private Button btnGenerarReporte;
 
     @FXML
@@ -53,7 +56,12 @@ public class MainMenuController {
             goToMenuInicial();
         }
     }
-
+    
+    @FXML
+    private void GoToGestionPrestamos() {
+        loadView("/view/PrestamoEstado.fxml", "Gestión de Prestamos");
+    }
+    
     @FXML
     private void GoToSolicitudes() {
         loadView("/view/Solicitudes.fxml", "Gestión de Solicitudes");
