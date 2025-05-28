@@ -36,7 +36,7 @@ public class SolicitudesController {
         columnRolUsu.setCellValueFactory(new PropertyValueFactory<>("rol"));
         columnEstadoUsu.setCellValueFactory(new PropertyValueFactory<>("estado"));
 
-        // Cargar solicitudes
+        // Cargar solicitudes al iniciar
         cargarSolicitudes();
 
         // Verificar que el usuario sea Coordinador
@@ -53,7 +53,7 @@ public class SolicitudesController {
 
     private void cargarSolicitudes() {
         try {
-            UsuarioDAO usuarioDAO = UsuarioDAO.getInstance(); // Cambiado
+            UsuarioDAO usuarioDAO = UsuarioDAO.getInstance();
             List<Usuario> solicitudes = usuarioDAO.obtenerSolicitudes();
             tablaSolicitudes.setItems(FXCollections.observableArrayList(solicitudes));
         } catch (SQLException e) {
@@ -70,7 +70,7 @@ public class SolicitudesController {
         }
 
         try {
-            UsuarioDAO usuarioDAO = UsuarioDAO.getInstance(); // Cambiado
+            UsuarioDAO usuarioDAO = UsuarioDAO.getInstance();
             if (usuarioDAO.confirmarUsuario(selectedUser.getCedulaUsuario())) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Usuario confirmado exitosamente.");
                 cargarSolicitudes(); // Actualizar tabla
@@ -91,7 +91,7 @@ public class SolicitudesController {
         }
 
         try {
-            UsuarioDAO usuarioDAO = UsuarioDAO.getInstance(); // Cambiado
+            UsuarioDAO usuarioDAO = UsuarioDAO.getInstance();
             if (usuarioDAO.denegarUsuario(selectedUser.getCedulaUsuario())) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Usuario denegado exitosamente.");
                 cargarSolicitudes(); // Actualizar tabla
