@@ -345,16 +345,25 @@ public class PrestamoController {
             return;
         }
 
+        long idPrestamo = prestamoSeleccionado.getId_prestamo();
+        System.out.println("Intentando eliminar préstamo con ID: " + idPrestamo); // Depuración
+
         try {
-            if (PrestamoDAO.getInstance().eliminarPrestamo(prestamoSeleccionado.getId_prestamo())) {
+            // Verificar si el ID existe antes de intentar eliminar
+            if (!PrestamoDAO.getInstance().existeId(idPrestamo)) {
+                showAlert(Alert.AlertType.ERROR, "Error", "El préstamo con ID " + idPrestamo + " no existe en la base de datos.");
+                return;
+            }
+
+            if (PrestamoDAO.getInstance().eliminarPrestamo(idPrestamo)) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Préstamo denegado y eliminado de la base de datos.");
                 // Refrescar la tabla con solo los préstamos en "EnRevision"
                 tablaPrestamo.setItems(FXCollections.observableArrayList(PrestamoDAO.getInstance().obtenerEnRevision()));
             } else {
-                showAlert(Alert.AlertType.ERROR, "Error", "No se pudo denegar y eliminar el préstamo.");
+                showAlert(Alert.AlertType.ERROR, "Error", "No se pudo eliminar el préstamo con ID " + idPrestamo + ". Verifique los datos o restricciones en la base de datos.");
             }
         } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al denegar el préstamo: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al denegar el préstamo: " + e.getMessage() + " (ID: " + idPrestamo + ")");
         }
     }
 

@@ -136,6 +136,7 @@ public class PrestamoDAO {
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setLong(1, id_prestamo);
             int rowsAffected = stmt.executeUpdate();
+            System.out.println("Eliminando préstamo con ID: " + id_prestamo + ", Filas afectadas: " + rowsAffected); // Depuración
             return rowsAffected > 0;
         }
     }
