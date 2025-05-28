@@ -1,0 +1,335 @@
+package controller;
+
+import data.PrestamoDAO;
+import data.UsuarioDAO;
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import model.Prestamo;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Locale;
+
+public class PrestamoController {
+
+    @FXML private TextField txtIdPrestamo;
+    @FXML private ComboBox<Long> comboBoxCedulaUsuarioPrestamo;
+    @FXML private DatePicker fechaDatePicker;
+    @FXML private ComboBox<String> comboBoxHoraInicio;
+    @FXML private ComboBox<String> comboBoxHoraFin;
+    @FXML private TextField txtDetallesPrestamo;
+    @FXML private ComboBox<Long> comboBoxIdSalaPrestamo;
+    @FXML private ComboBox<Long> comboBoxIdAudiovisualPrestamo;
+    @FXML private Button btnRegistrarPrestamo;
+    @FXML private Button btnLeerPrestamo;
+    @FXML private Button btnActualizarPrestamo;
+    @FXML private Button btnBorrarPrestamo;
+    @FXML private Button btnMenu;
+
+    private String userRol;
+
+    @FXML
+    public void initialize() {
+        // Verificar rol del usuario
+        try {
+            userRol = UsuarioDAO.getInstance().getRol();
+            if (!userRol.equals("Coordinador") && !userRol.equals("Estudiante") && !userRol.equals("Profesor")) {
+                showAlert(Alert.AlertType.ERROR, "Acceso Denegado", "Esta vista es solo para Coordinadores, Estudiantes y Profesores.");
+                GoToMenu();
+                return;
+            }
+        } catch (IllegalStateException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "No hay una sesión activa.");
+            GoToMenu();
+            return;
+        }
+
+        // Deshabilitar botones para Estudiantes y Profesores
+        if (!userRol.equals("Coordinador")) {
+            btnActualizarPrestamo.setDisable(true);
+            btnBorrarPrestamo.setDisable(true);
+        }
+
+        // Inicializar ComboBox de cédulas
+        try {
+            PrestamoDAO prestamoDAO = PrestamoDAO.getInstance();
+            List<Long> cedulas = prestamoDAO.obtenerCedulasUsuariosDisponibles();
+            if (cedulas.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Sin Datos", "No se encontraron cédulas de usuarios disponibles (estado 'Aprobado'). Verifique la base de datos.");
+            } else {
+                comboBoxCedulaUsuarioPrestamo.setItems(FXCollections.observableArrayList(cedulas));
+            }
+            if (!userRol.equals("Coordinador")) {
+                try {
+                    long cedulaUsuario = UsuarioDAO.getInstance().getCedula();
+                    comboBoxCedulaUsuarioPrestamo.setValue(cedulaUsuario);
+                    comboBoxCedulaUsuarioPrestamo.setDisable(true);
+                } catch (IllegalStateException e) {
+                    showAlert(Alert.AlertType.ERROR, "Error", "La cédula no está disponible en la sesión.");
+                    GoToMenu();
+                    return;
+                }
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error de BD", "No se pudieron cargar las cédulas: " + e.getMessage());
+        }
+
+        // Inicializar ComboBox de IDs de salas y audiovisuales (solo disponibles)
+        try {
+            PrestamoDAO prestamoDAO = PrestamoDAO.getInstance();
+            List<Long> salas = prestamoDAO.obtenerIdsSalasDisponibles();
+            comboBoxIdSalaPrestamo.setItems(FXCollections.observableArrayList(salas));
+            List<Long> audiovisuales = prestamoDAO.obtenerIdsAudiovisualesDisponibles();
+            comboBoxIdAudiovisualPrestamo.setItems(FXCollections.observableArrayList(audiovisuales));
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "No se pudieron cargar los IDs: " + e.getMessage());
+        }
+
+        // Inicializar ComboBox de horas con espacio
+        comboBoxHoraInicio.setItems(FXCollections.observableArrayList("6:00 AM", "8:00 AM", "9:45 AM"));
+        comboBoxHoraInicio.setEditable(false);
+        comboBoxHoraInicio.getSelectionModel().selectFirst();
+        comboBoxHoraFin.setItems(FXCollections.observableArrayList("7:30 AM", "9:30 AM", "11:15 AM"));
+        comboBoxHoraFin.setEditable(false);
+        comboBoxHoraFin.getSelectionModel().selectFirst();
+    }
+
+    @FXML
+    private void RegistrarPrestamo() {
+        try {
+            if (!validarCampos()) return;
+
+            long idPrestamo = Long.parseLong(txtIdPrestamo.getText());
+            if (idPrestamo <= 0) {
+                showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID debe ser un número positivo.");
+                return;
+            }
+
+            String detalle = txtDetallesPrestamo.getText().trim();
+            if (detalle.length() > 200) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Los detalles no pueden exceder 200 caracteres.");
+                return;
+            }
+
+            LocalDate fechaSolicitud = fechaDatePicker.getValue();
+            if (fechaSolicitud == null || fechaSolicitud.isBefore(LocalDate.now())) {
+                showAlert(Alert.AlertType.ERROR, "Fecha Inválida", "La fecha debe ser hoy o posterior.");
+                return;
+            }
+
+            // Usamos el patrón con espacio y especificamos el locale
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US);
+            LocalTime horaInicioTime = LocalTime.parse(comboBoxHoraInicio.getValue(), formatter); // Parsear como LocalTime
+            LocalTime horaFinTime = LocalTime.parse(comboBoxHoraFin.getValue(), formatter); // Parsear como LocalTime
+            LocalDateTime horaInicio = LocalDateTime.of(fechaSolicitud, horaInicioTime); // Combinar con la fecha
+            LocalDateTime horaFin = LocalDateTime.of(fechaSolicitud, horaFinTime); // Combinar con la fecha
+
+            // Validar que la hora de inicio sea anterior a la hora de fin
+            if (!horaInicio.isBefore(horaFin)) {
+                showAlert(Alert.AlertType.ERROR, "Horas Inválidas", 
+                    "La hora de inicio (" + comboBoxHoraInicio.getValue() + 
+                    ") debe ser anterior a la hora de fin (" + comboBoxHoraFin.getValue() + ").");
+                return;
+            }
+
+            Prestamo prestamo = new Prestamo(
+                idPrestamo, fechaSolicitud, detalle, "EnRevision",
+                Timestamp.valueOf(horaInicio), Timestamp.valueOf(horaFin),
+                comboBoxCedulaUsuarioPrestamo.getValue(),
+                comboBoxIdSalaPrestamo.getValue(), comboBoxIdAudiovisualPrestamo.getValue()
+            );
+
+            PrestamoDAO prestamoDAO = PrestamoDAO.getInstance();
+            if (prestamoDAO.registrarPrestamo(prestamo)) {
+                showAlert(Alert.AlertType.INFORMATION, "Éxito", "Préstamo registrado con estado EnRevision.");
+                limpiarCampos();
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Error", "El ID ya está registrado.");
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al registrar: " + e.getMessage());
+        } catch (DateTimeParseException e) {
+            showAlert(Alert.AlertType.ERROR, "Error de Formato", 
+                "El formato de la hora es inválido. Usa el formato 'h:mm AM/PM' (ejemplo: '8:00 AM'). Detalle: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void LeerPrestamo() {
+        try {
+            PrestamoDAO prestamoDAO = PrestamoDAO.getInstance();
+            List<Prestamo> prestamos = prestamoDAO.obtenerTodos();
+            if (prestamos.isEmpty()) {
+                showAlert(Alert.AlertType.INFORMATION, "Información", "No hay préstamos registrados.");
+            } else {
+                StringBuilder sb = new StringBuilder("=== LISTADO DE PRÉSTAMOS ===\n");
+                for (Prestamo p : prestamos) sb.append(p.toString()).append("\n");
+                sb.append("===========================");
+                showAlert(Alert.AlertType.INFORMATION, "Préstamos", sb.toString());
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al leer: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void ActualizarPrestamo() {
+        try {
+            if (!validarCampos()) return;
+
+            long idPrestamo = Long.parseLong(txtIdPrestamo.getText());
+            if (idPrestamo <= 0 || !PrestamoDAO.getInstance().existeId(idPrestamo)) {
+                showAlert(Alert.AlertType.ERROR, "ID Inválido", "ID no válido o no encontrado.");
+                return;
+            }
+
+            String detalle = txtDetallesPrestamo.getText().trim();
+            if (detalle.length() > 200) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Los detalles no pueden exceder 200 caracteres.");
+                return;
+            }
+
+            LocalDate fechaSolicitud = fechaDatePicker.getValue();
+            if (fechaSolicitud == null || fechaSolicitud.isBefore(LocalDate.now())) {
+                showAlert(Alert.AlertType.ERROR, "Fecha Inválida", "La fecha debe ser hoy o posterior.");
+                return;
+            }
+
+            // Usamos el patrón con espacio y especificamos el locale
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.US);
+            LocalTime horaInicioTime = LocalTime.parse(comboBoxHoraInicio.getValue(), formatter); // Parsear como LocalTime
+            LocalTime horaFinTime = LocalTime.parse(comboBoxHoraFin.getValue(), formatter); // Parsear como LocalTime
+            LocalDateTime horaInicio = LocalDateTime.of(fechaSolicitud, horaInicioTime); // Combinar con la fecha
+            LocalDateTime horaFin = LocalDateTime.of(fechaSolicitud, horaFinTime); // Combinar con la fecha
+
+            // Validar que la hora de inicio sea anterior a la hora de fin
+            if (!horaInicio.isBefore(horaFin)) {
+                showAlert(Alert.AlertType.ERROR, "Horas Inválidas", 
+                    "La hora de inicio (" + comboBoxHoraInicio.getValue() + 
+                    ") debe ser anterior a la hora de fin (" + comboBoxHoraFin.getValue() + ").");
+                return;
+            }
+
+            Prestamo prestamo = new Prestamo(
+                idPrestamo, fechaSolicitud, detalle, "EnRevision",
+                Timestamp.valueOf(horaInicio), Timestamp.valueOf(horaFin),
+                comboBoxCedulaUsuarioPrestamo.getValue(),
+                comboBoxIdSalaPrestamo.getValue(), comboBoxIdAudiovisualPrestamo.getValue()
+            );
+
+            if (PrestamoDAO.getInstance().actualizarPrestamo(prestamo)) {
+                showAlert(Alert.AlertType.INFORMATION, "Éxito", "Préstamo actualizado.");
+                limpiarCampos();
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Error", "No se pudo actualizar.");
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al actualizar: " + e.getMessage());
+        } catch (DateTimeParseException e) {
+            showAlert(Alert.AlertType.ERROR, "Error de Formato", 
+                "El formato de la hora es inválido. Usa el formato 'h:mm AM/PM' (ejemplo: '8:00 AM'). Detalle: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void BorrarPrestamo() {
+        try {
+            if (txtIdPrestamo.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, "Campo Vacío", "Ingrese un ID.");
+                return;
+            }
+
+            long idPrestamo = Long.parseLong(txtIdPrestamo.getText());
+            if (idPrestamo <= 0 || !PrestamoDAO.getInstance().existeId(idPrestamo)) {
+                showAlert(Alert.AlertType.ERROR, "ID Inválido", "ID no válido o no encontrado.");
+                return;
+            }
+
+            if (PrestamoDAO.getInstance().eliminarPrestamo(idPrestamo)) {
+                showAlert(Alert.AlertType.INFORMATION, "Éxito", "Préstamo borrado.");
+                limpiarCampos();
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Error", "No se pudo borrar.");
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al borrar: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void GoToMenu() {
+        loadView(userRol.equals("Coordinador") ? "/view/MainMenu.fxml" : "/view/MainMenuProfeEstud.fxml",
+                 userRol.equals("Coordinador") ? "Menú Coordinador" : "Menú Estudiante/Profesor");
+    }
+
+    private boolean validarCampos() {
+        if (txtIdPrestamo.getText().isEmpty() || comboBoxCedulaUsuarioPrestamo.getValue() == null ||
+            fechaDatePicker.getValue() == null || comboBoxHoraInicio.getValue() == null ||
+            comboBoxHoraFin.getValue() == null || txtDetallesPrestamo.getText().isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, "Campos Vacíos", "Todos los campos obligatorios deben estar llenos.");
+            return false;
+        }
+        if (comboBoxIdSalaPrestamo.getValue() == null && comboBoxIdAudiovisualPrestamo.getValue() == null) {
+            showAlert(Alert.AlertType.ERROR, "Selección Requerida", "Debe seleccionar al menos una sala o un audiovisual.");
+            return false;
+        }
+        return true;
+    }
+
+    private void loadView(String fxmlPath, String title) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Stage stage = (Stage) btnMenu.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle(title);
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Error al cargar la vista: " + e.getMessage());
+        }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void limpiarCampos() {
+        txtIdPrestamo.clear();
+        if (!userRol.equals("Coordinador")) {
+            try {
+                comboBoxCedulaUsuarioPrestamo.setValue(UsuarioDAO.getInstance().getCedula());
+            } catch (IllegalStateException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "La cédula no está disponible en la sesión.");
+                GoToMenu();
+                return;
+            }
+        } else {
+            comboBoxCedulaUsuarioPrestamo.getSelectionModel().clearSelection();
+        }
+        fechaDatePicker.setValue(null);
+        comboBoxHoraInicio.getSelectionModel().selectFirst();
+        comboBoxHoraFin.getSelectionModel().selectFirst();
+        txtDetallesPrestamo.clear();
+        comboBoxIdSalaPrestamo.getSelectionModel().clearSelection();
+        comboBoxIdAudiovisualPrestamo.getSelectionModel().clearSelection();
+    }
+}

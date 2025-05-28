@@ -12,6 +12,8 @@ public class UsuarioDAO {
     private static UsuarioDAO instance;
     private ArrayList<Usuario> userList = new ArrayList<>(); // Lista en memoria para optimización
     private DBConnection dbConnection = DBConnectionFactory.getConnectionByRole("Coordinador");
+    private String rol; // Almacena el rol del usuario logueado
+    private Long cedula; // Almacena la cédula del usuario logueado
 
     private UsuarioDAO() {
         try {
@@ -55,7 +57,7 @@ public class UsuarioDAO {
         }
     }
 
-    // Método para autenticar un usuario
+    // Método para autenticar un usuario y almacenar su cédula y rol en la sesión
     public boolean autenticarUsuario(long cedulaUsuario, String contrasena, String rol) throws SQLException {
         Connection connection = dbConnection.getConnection();
         String query = "SELECT COUNT(*) FROM usuario WHERE cedula_usuario = ? AND contrasena = ? AND rol = ? AND estado = 'Aprobado'";
@@ -64,8 +66,11 @@ public class UsuarioDAO {
             stmt.setString(2, contrasena);
             stmt.setString(3, rol);
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
+            if (rs.next() && rs.getInt(1) > 0) {
+                // Autenticación exitosa, almacenamos cédula y rol
+                this.cedula = cedulaUsuario;
+                this.rol = rol;
+                return true;
             }
             return false;
         }
@@ -170,5 +175,34 @@ public class UsuarioDAO {
                 user.getRol(), user.getEstado(), user.getCorreo())) {
             userList.add(user);
         }
+    }
+
+    // Métodos para manejar la sesión (añadidos para PrestamoController)
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
+    public String getRol() {
+        if (rol == null) {
+            throw new IllegalStateException("El rol no ha sido inicializado en la sesión.");
+        }
+        return rol;
+    }
+
+    public void setCedula(Long cedula) {
+        this.cedula = cedula;
+    }
+
+    public Long getCedula() {
+        if (cedula == null) {
+            throw new IllegalStateException("La cédula no ha sido inicializada en la sesión.");
+        }
+        return cedula;
+    }
+
+    public void logout() {
+        this.rol = null;
+        this.cedula = null;
+        instance = null;
     }
 }
