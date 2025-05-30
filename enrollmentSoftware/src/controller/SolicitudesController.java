@@ -24,6 +24,7 @@ public class SolicitudesController {
     @FXML private TableColumn<Usuario, String> columnNombreUsu;
     @FXML private TableColumn<Usuario, String> columnRolUsu;
     @FXML private TableColumn<Usuario, String> columnEstadoUsu;
+    @FXML private TableColumn<Usuario, String> columnCorreoUsu;
     @FXML private Button btnConfirmarUsuario;
     @FXML private Button btnDenegarUsuario;
     @FXML private Button btnMenu;
@@ -35,8 +36,9 @@ public class SolicitudesController {
         columnNombreUsu.setCellValueFactory(new PropertyValueFactory<>("nombreCompleto"));
         columnRolUsu.setCellValueFactory(new PropertyValueFactory<>("rol"));
         columnEstadoUsu.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        columnCorreoUsu.setCellValueFactory(new PropertyValueFactory<>("correo"));
 
-        // Cargar solicitudes al iniciar
+        // Cargar todos los usuarios al iniciar
         cargarSolicitudes();
 
         // Verificar que el usuario sea Coordinador
@@ -54,10 +56,11 @@ public class SolicitudesController {
     private void cargarSolicitudes() {
         try {
             UsuarioDAO usuarioDAO = UsuarioDAO.getInstance();
-            List<Usuario> solicitudes = usuarioDAO.obtenerSolicitudes();
-            tablaSolicitudes.setItems(FXCollections.observableArrayList(solicitudes));
-        } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "No se pudieron cargar las solicitudes: " + e.getMessage());
+            // Cargar todos los usuarios usando getUsers()
+            List<Usuario> usuarios = usuarioDAO.getUsers();
+            tablaSolicitudes.setItems(FXCollections.observableArrayList(usuarios));
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "No se pudieron cargar los usuarios: " + e.getMessage());
         }
     }
 
@@ -69,11 +72,16 @@ public class SolicitudesController {
             return;
         }
 
+        if (!selectedUser.getEstado().equals("EnRevision")) {
+            showAlert(Alert.AlertType.WARNING, "Estado Inválido", "El usuario ya ha sido procesado (estado: " + selectedUser.getEstado() + ").");
+            return;
+        }
+
         try {
             UsuarioDAO usuarioDAO = UsuarioDAO.getInstance();
             if (usuarioDAO.confirmarUsuario(selectedUser.getCedulaUsuario())) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Usuario confirmado exitosamente.");
-                cargarSolicitudes(); // Actualizar tabla
+                cargarSolicitudes(); // Actualizar tabla con todos los usuarios
             } else {
                 showAlert(Alert.AlertType.ERROR, "Error", "No se pudo confirmar el usuario.");
             }
@@ -86,20 +94,20 @@ public class SolicitudesController {
     private void DenegarUsuario() {
         Usuario selectedUser = tablaSolicitudes.getSelectionModel().getSelectedItem();
         if (selectedUser == null) {
-            showAlert(Alert.AlertType.WARNING, "Advertencia", "Seleccione un usuario para denegar.");
+            showAlert(Alert.AlertType.WARNING, "Advertencia", "Seleccione un usuario para eliminar.");
             return;
         }
 
         try {
             UsuarioDAO usuarioDAO = UsuarioDAO.getInstance();
             if (usuarioDAO.denegarUsuario(selectedUser.getCedulaUsuario())) {
-                showAlert(Alert.AlertType.INFORMATION, "Éxito", "Usuario denegado exitosamente.");
-                cargarSolicitudes(); // Actualizar tabla
+                showAlert(Alert.AlertType.INFORMATION, "Éxito", "Usuario eliminado exitosamente.");
+                cargarSolicitudes(); // Actualizar tabla con todos los usuarios
             } else {
-                showAlert(Alert.AlertType.ERROR, "Error", "No se pudo denegar el usuario.");
+                showAlert(Alert.AlertType.ERROR, "Error", "No se pudo eliminar el usuario.");
             }
         } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Error al denegar el usuario: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Error", "Error al eliminar el usuario: " + e.getMessage());
         }
     }
 

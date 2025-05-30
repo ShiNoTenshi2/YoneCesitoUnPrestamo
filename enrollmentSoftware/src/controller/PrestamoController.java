@@ -40,12 +40,17 @@ public class PrestamoController {
     @FXML private Button btnBorrarPrestamo;
     @FXML private Button btnMenu;
 
-    // Elementos de PrestamoEstado.fxml (nuevos)
+    // Elementos de PrestamoEstado.fxml (actualizados con nuevas columnas)
     @FXML private TableView<Prestamo> tablaPrestamo;
     @FXML private TableColumn<Prestamo, Long> columnIdPrestamo;
     @FXML private TableColumn<Prestamo, Long> columnIdUsuarioPrestamo;
+    @FXML private TableColumn<Prestamo, Long> columnIdSalaPrestamo;
+    @FXML private TableColumn<Prestamo, Long> columnIdAudiovPrestamo;
+    @FXML private TableColumn<Prestamo, Timestamp> columnHoraInicioPrestamo;
+    @FXML private TableColumn<Prestamo, Timestamp> columnIdHoraFinPrestamo;
     @FXML private TableColumn<Prestamo, LocalDate> columnFechaPrestamo;
     @FXML private TableColumn<Prestamo, String> columnEstadoPrestamo;
+    @FXML private TableColumn<Prestamo, String> columnDetallePrestamo;
     @FXML private Button btnConfirmarPrestamo;
     @FXML private Button btnDenegarPrestamo;
 
@@ -78,6 +83,7 @@ public class PrestamoController {
         if (!userRol.equals("Coordinador")) {
             btnActualizarPrestamo.setDisable(true);
             btnBorrarPrestamo.setDisable(true);
+            btnLeerPrestamo.setDisable(true); // Deshabilitar "Leer" para Estudiante y Profesor
         }
 
         // Inicializar ComboBox de cédulas
@@ -111,6 +117,11 @@ public class PrestamoController {
             comboBoxIdSalaPrestamo.setItems(FXCollections.observableArrayList(salas));
             List<Long> audiovisuales = prestamoDAO.obtenerIdsAudiovisualesDisponibles();
             comboBoxIdAudiovisualPrestamo.setItems(FXCollections.observableArrayList(audiovisuales));
+
+            // Deshabilitar ComboBox de salas para Estudiantes
+            if (userRol.equals("Estudiante")) {
+                comboBoxIdSalaPrestamo.setDisable(true);
+            }
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "No se pudieron cargar los IDs: " + e.getMessage());
         }
@@ -128,12 +139,16 @@ public class PrestamoController {
         // Configurar las columnas de la tabla con los nombres correctos de las propiedades
         columnIdPrestamo.setCellValueFactory(new PropertyValueFactory<>("id_prestamo"));
         columnIdUsuarioPrestamo.setCellValueFactory(new PropertyValueFactory<>("cedula_usuario"));
-        columnFechaPrestamo.setCellValueFactory(new PropertyValueFactory<>("fecha_solicitud"));
+        columnIdSalaPrestamo.setCellValueFactory(new PropertyValueFactory<>("id_sala"));
+        columnIdAudiovPrestamo.setCellValueFactory(new PropertyValueFactory<>("id_audiovisual"));
+        columnHoraInicioPrestamo.setCellValueFactory(new PropertyValueFactory<>("hora_inicio"));
+        columnIdHoraFinPrestamo.setCellValueFactory(new PropertyValueFactory<>("hora_fin"));
         columnEstadoPrestamo.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        columnDetallePrestamo.setCellValueFactory(new PropertyValueFactory<>("detalle_prestamo"));
 
-        // Cargar solo los préstamos en estado "EnRevision"
+        // Cargar todos los préstamos (EnRevision y Aprobado)
         try {
-            ObservableList<Prestamo> prestamos = FXCollections.observableArrayList(PrestamoDAO.getInstance().obtenerEnRevision());
+            ObservableList<Prestamo> prestamos = FXCollections.observableArrayList(PrestamoDAO.getInstance().obtenerTodos());
             tablaPrestamo.setItems(prestamos);
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Error de BD", "No se pudieron cargar los préstamos: " + e.getMessage());
@@ -206,6 +221,12 @@ public class PrestamoController {
 
     @FXML
     private void LeerPrestamo() {
+        // Solo los coordinadores pueden leer préstamos
+        if (!userRol.equals("Coordinador")) {
+            showAlert(Alert.AlertType.ERROR, "Acceso Denegado", "Solo los coordinadores pueden leer préstamos.");
+            return;
+        }
+
         try {
             PrestamoDAO prestamoDAO = PrestamoDAO.getInstance();
             List<Prestamo> prestamos = prestamoDAO.obtenerTodos();
@@ -226,6 +247,12 @@ public class PrestamoController {
 
     @FXML
     private void ActualizarPrestamo() {
+        // Solo los coordinadores pueden actualizar préstamos
+        if (!userRol.equals("Coordinador")) {
+            showAlert(Alert.AlertType.ERROR, "Acceso Denegado", "Solo los coordinadores pueden actualizar préstamos.");
+            return;
+        }
+
         try {
             if (!validarCampos()) return;
 
@@ -283,6 +310,12 @@ public class PrestamoController {
 
     @FXML
     private void BorrarPrestamo() {
+        // Solo los coordinadores pueden borrar préstamos
+        if (!userRol.equals("Coordinador")) {
+            showAlert(Alert.AlertType.ERROR, "Acceso Denegado", "Solo los coordinadores pueden borrar préstamos.");
+            return;
+        }
+
         try {
             if (txtIdPrestamo.getText().isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, "Campo Vacío", "Ingrese un ID.");
@@ -322,8 +355,8 @@ public class PrestamoController {
         try {
             if (PrestamoDAO.getInstance().actualizarEstado(prestamoSeleccionado.getId_prestamo(), "Aprobado")) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Préstamo confirmado (estado: Aprobado).");
-                // Refrescar la tabla con solo los préstamos en "EnRevision"
-                tablaPrestamo.setItems(FXCollections.observableArrayList(PrestamoDAO.getInstance().obtenerEnRevision()));
+                // Refrescar la tabla con todos los préstamos
+                tablaPrestamo.setItems(FXCollections.observableArrayList(PrestamoDAO.getInstance().obtenerTodos()));
             } else {
                 showAlert(Alert.AlertType.ERROR, "Error", "No se pudo confirmar el préstamo.");
             }
@@ -346,8 +379,6 @@ public class PrestamoController {
         }
 
         long idPrestamo = prestamoSeleccionado.getId_prestamo();
-        System.out.println("Intentando eliminar préstamo con ID: " + idPrestamo); // Depuración
-
         try {
             // Verificar si el ID existe antes de intentar eliminar
             if (!PrestamoDAO.getInstance().existeId(idPrestamo)) {
@@ -357,8 +388,8 @@ public class PrestamoController {
 
             if (PrestamoDAO.getInstance().eliminarPrestamo(idPrestamo)) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Préstamo denegado y eliminado de la base de datos.");
-                // Refrescar la tabla con solo los préstamos en "EnRevision"
-                tablaPrestamo.setItems(FXCollections.observableArrayList(PrestamoDAO.getInstance().obtenerEnRevision()));
+                // Refrescar la tabla con todos los préstamos
+                tablaPrestamo.setItems(FXCollections.observableArrayList(PrestamoDAO.getInstance().obtenerTodos()));
             } else {
                 showAlert(Alert.AlertType.ERROR, "Error", "No se pudo eliminar el préstamo con ID " + idPrestamo + ". Verifique los datos o restricciones en la base de datos.");
             }
@@ -374,15 +405,31 @@ public class PrestamoController {
     }
 
     private boolean validarCampos() {
+        // Validar campos obligatorios básicos
         if (txtIdPrestamo.getText().isEmpty() || comboBoxCedulaUsuarioPrestamo.getValue() == null ||
             fechaDatePicker.getValue() == null || comboBoxHoraInicio.getValue() == null ||
             comboBoxHoraFin.getValue() == null || txtDetallesPrestamo.getText().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Campos Vacíos", "Todos los campos obligatorios deben estar llenos.");
             return false;
         }
-        if (comboBoxIdSalaPrestamo.getValue() == null && comboBoxIdAudiovisualPrestamo.getValue() == null) {
-            showAlert(Alert.AlertType.ERROR, "Selección Requerida", "Debe seleccionar al menos una sala o un audiovisual.");
-            return false;
+
+        // Validaciones específicas para Estudiante
+        if (userRol.equals("Estudiante")) {
+            // Estudiantes solo pueden solicitar audiovisuales, no salas
+            if (comboBoxIdSalaPrestamo.getValue() != null) {
+                showAlert(Alert.AlertType.ERROR, "Selección No Permitida", "Los estudiantes no pueden solicitar salas, solo audiovisuales.");
+                return false;
+            }
+            if (comboBoxIdAudiovisualPrestamo.getValue() == null) {
+                showAlert(Alert.AlertType.ERROR, "Selección Requerida", "Los estudiantes deben seleccionar un audiovisual.");
+                return false;
+            }
+        } else {
+            // Para Coordinador y Profesor: deben seleccionar al menos una sala o un audiovisual
+            if (comboBoxIdSalaPrestamo.getValue() == null && comboBoxIdAudiovisualPrestamo.getValue() == null) {
+                showAlert(Alert.AlertType.ERROR, "Selección Requerida", "Debe seleccionar al menos una sala o un audiovisual.");
+                return false;
+            }
         }
         return true;
     }

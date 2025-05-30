@@ -8,11 +8,12 @@
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" prefHeight="816.0" prefWidth="697.0" spacing="20" style="-fx-background-color: #c2c2c2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AudiovisualController">
+<VBox alignment="TOP_CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" style="-fx-background-color: #c2c2c2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AudiovisualController">
     <padding>
         <Insets bottom="40" left="40" right="40" top="40" />
     </padding>
@@ -52,26 +53,42 @@
          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
      </rowConstraints>
       <children>
-          <Button fx:id="btnRegistrarAudiovisual" onAction="#RegistrarAudiovisual" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Registrar Audiovisual" GridPane.rowIndex="1">
-              <effect>
-                  <DropShadow color="#2980b9" radius="3" />
-              </effect>
-          </Button>
-         <Button fx:id="btnLeerAudiovisual" onAction="#LeerAudiovisual" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Leer Audiovisual" GridPane.columnIndex="1" GridPane.rowIndex="1">
-            <effect>
-               <DropShadow color="#2980b9" radius="3" />
-            </effect>
-         </Button>
-         <Button fx:id="btnBorrarAudiovisual" onAction="#BorrarAudiovisual" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Borrar Audiovisual" GridPane.columnIndex="1" GridPane.rowIndex="4">
-            <effect>
-               <DropShadow color="#2980b9" radius="3" />
-            </effect>
-         </Button>
-         <Button fx:id="btnActualizarAudiovisual" onAction="#ActualizarAudiovisual" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Actualizar Audiovisual" GridPane.rowIndex="4">
-            <effect>
-               <DropShadow color="#2980b9" radius="3" />
-            </effect>
-         </Button>
+         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+            <children>
+                <Button fx:id="btnRegistrarAudiovisual" onAction="#RegistrarAudiovisual" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Registrar Audiovisual">
+                    <effect>
+                        <DropShadow color="#2980b9" radius="3" />
+                    </effect>
+                </Button>
+            </children>
+         </HBox>
+         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="4">
+            <children>
+               <Button fx:id="btnActualizarAudiovisual" onAction="#ActualizarAudiovisual" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Actualizar Audiovisual">
+                  <effect>
+                     <DropShadow color="#2980b9" radius="3" />
+                  </effect>
+               </Button>
+            </children>
+         </HBox>
+         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <children>
+               <Button fx:id="btnLeerAudiovisual" onAction="#LeerAudiovisual" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Leer Audiovisual">
+                  <effect>
+                     <DropShadow color="#2980b9" radius="3" />
+                  </effect>
+               </Button>
+            </children>
+         </HBox>
+         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <children>
+               <Button fx:id="btnBorrarAudiovisual" onAction="#BorrarAudiovisual" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Borrar Audiovisual">
+                  <effect>
+                     <DropShadow color="#2980b9" radius="3" />
+                  </effect>
+               </Button>
+            </children>
+         </HBox>
       </children>
    </GridPane>
 	<Button fx:id="btnMenu" onAction="#GoToMenu" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Volver al Menú">	

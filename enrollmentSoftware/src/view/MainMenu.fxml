@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="560.0" prefWidth="704.0" spacing="20" style="-fx-background-color: #c2c2c2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainMenuController">
+<VBox alignment="CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" style="-fx-background-color: #c2c2c2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainMenuController">
     <padding>
         <Insets bottom="50" left="50" right="50" top="50" />
     </padding>
@@ -26,11 +26,11 @@
          <Insets bottom="50.0" />
       </VBox.margin>
     </Label>
-   <GridPane prefWidth="602.0">
+   <GridPane>
      <columnConstraints>
-       <ColumnConstraints hgrow="SOMETIMES" maxWidth="255.0" minWidth="10.0" prefWidth="255.0" />
-       <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="94.0" />
-         <ColumnConstraints hgrow="SOMETIMES" maxWidth="256.0" minWidth="10.0" prefWidth="255.0" />
+       <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="264.0" />
+       <ColumnConstraints hgrow="SOMETIMES" maxWidth="375.0" minWidth="0.0" prefWidth="256.0" />
+         <ColumnConstraints hgrow="SOMETIMES" maxWidth="452.0" minWidth="10.0" prefWidth="264.0" />
      </columnConstraints>
      <rowConstraints>
        <RowConstraints minHeight="10.0" prefHeight="30.0" />
@@ -92,7 +92,7 @@
                </Button>
             </children>
          </HBox>
-         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
+         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="288.0" GridPane.columnIndex="2">
             <children>
                <Button fx:id="btnGenerarReporte" nodeOrientation="RIGHT_TO_LEFT" onAction="#GenerarReporte" prefHeight="50" prefWidth="200" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Generar Reporte">
                   <font>
@@ -116,7 +116,7 @@
                </Button>
             </children>
          </HBox>
-         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
+         <HBox alignment="CENTER" prefHeight="33.0" prefWidth="148.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
             <children>
                <Button fx:id="btnGestionPrestamos" onAction="#GoToGestionPrestamos" prefHeight="50" prefWidth="200" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Gestion Prestamos">
                   <font>
