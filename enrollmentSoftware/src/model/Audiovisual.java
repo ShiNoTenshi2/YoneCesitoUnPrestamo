@@ -49,6 +49,6 @@ public class Audiovisual {
     @Override
     public String toString() {
         return "Id='" + id_audiovisual + "', Nombre='" + nombre_audiov + 
-               "', Detalles='" + detalle_audiovisual + "', Estado='" + estado + "'}";
+               "', Detalles='" + detalle_audiovisual + "', Estado='" + estado + "'";
     }
 }

@@ -46,7 +46,7 @@ public class SalaController {
         }
 
         // Inicializar ComboBox con los estados
-        comboBoxEstadoSala.setItems(FXCollections.observableArrayList("Disponible", "Ocupada", "Mantenimiento"));
+        comboBoxEstadoSala.setItems(FXCollections.observableArrayList("Disponible", "Ocupado", "Mantenimiento"));
         comboBoxEstadoSala.setEditable(false);
         comboBoxEstadoSala.getSelectionModel().selectFirst();
     }
