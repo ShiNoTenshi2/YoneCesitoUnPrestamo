@@ -30,14 +30,18 @@ public class MantenimientoDAO {
             actualizarEstadoAudiovisual(mantenimiento.getId_audiovisual(), "Mantenimiento");
         }
 
-        String sql = "INSERT INTO mantenimiento (id_mantenimiento, fecha, descripcion, responsable, id_sala, id_audiovisual) " +
-                    "VALUES (seq_mantenimiento.NEXTVAL, ?, ?, ?, ?, ?)";
+        // Establecer el estado del mantenimiento como "EnProceso"
+        mantenimiento.setEstado("EnProceso");
+
+        String sql = "INSERT INTO mantenimiento (id_mantenimiento, fecha, descripcion, responsable, estado, id_sala, id_audiovisual) " +
+                    "VALUES (seq_mantenimiento.NEXTVAL, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDate(1, Date.valueOf(mantenimiento.getFecha()));
             stmt.setString(2, mantenimiento.getDescripcion());
             stmt.setString(3, mantenimiento.getResponsable());
-            stmt.setObject(4, mantenimiento.getId_sala()); // Maneja null
-            stmt.setObject(5, mantenimiento.getId_audiovisual()); // Maneja null
+            stmt.setString(4, mantenimiento.getEstado());
+            stmt.setObject(5, mantenimiento.getId_sala()); // Maneja null
+            stmt.setObject(6, mantenimiento.getId_audiovisual()); // Maneja null
             stmt.executeUpdate();
         }
     }
@@ -58,6 +62,7 @@ public class MantenimientoDAO {
                     rs.getDate("fecha").toLocalDate(),
                     rs.getString("descripcion"),
                     rs.getString("responsable"),
+                    rs.getString("estado"),
                     rs.getObject("id_sala") != null ? rs.getInt("id_sala") : null,
                     rs.getObject("id_audiovisual") != null ? rs.getInt("id_audiovisual") : null
                 );
@@ -81,15 +86,16 @@ public class MantenimientoDAO {
             actualizarEstadoAudiovisual(mantenimiento.getId_audiovisual(), "Mantenimiento");
         }
 
-        String sql = "UPDATE mantenimiento SET fecha = ?, descripcion = ?, responsable = ?, id_sala = ?, id_audiovisual = ? " +
+        String sql = "UPDATE mantenimiento SET fecha = ?, descripcion = ?, responsable = ?, estado = ?, id_sala = ?, id_audiovisual = ? " +
                     "WHERE id_mantenimiento = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDate(1, Date.valueOf(mantenimiento.getFecha()));
             stmt.setString(2, mantenimiento.getDescripcion());
             stmt.setString(3, mantenimiento.getResponsable());
-            stmt.setObject(4, mantenimiento.getId_sala()); // Maneja null
-            stmt.setObject(5, mantenimiento.getId_audiovisual()); // Maneja null
-            stmt.setInt(6, mantenimiento.getId_mantenimiento());
+            stmt.setString(4, mantenimiento.getEstado());
+            stmt.setObject(5, mantenimiento.getId_sala()); // Maneja null
+            stmt.setObject(6, mantenimiento.getId_audiovisual()); // Maneja null
+            stmt.setInt(7, mantenimiento.getId_mantenimiento());
             stmt.executeUpdate();
         }
     }
@@ -152,6 +158,7 @@ public class MantenimientoDAO {
                         rs.getDate("fecha").toLocalDate(),
                         rs.getString("descripcion"),
                         rs.getString("responsable"),
+                        rs.getString("estado"),
                         rs.getObject("id_sala") != null ? rs.getInt("id_sala") : null,
                         rs.getObject("id_audiovisual") != null ? rs.getInt("id_audiovisual") : null
                     );

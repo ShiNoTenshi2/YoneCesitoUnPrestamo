@@ -29,17 +29,16 @@ public class PrestamoDAO {
     public boolean registrarPrestamo(Prestamo prestamo) throws SQLException {
         Connection connection = dbConnection.getConnection();
         String query = "INSERT INTO prestamo (id_prestamo, fecha_solicitud, detalle_prestamo, estado, hora_inicio, hora_fin, cedula_usuario, id_sala, id_audiovisual) " +
-                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                      "VALUES (seq_prestamo.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setLong(1, prestamo.getId_prestamo());
-            stmt.setDate(2, java.sql.Date.valueOf(prestamo.getFecha_solicitud()));
-            stmt.setString(3, prestamo.getDetalle_prestamo());
-            stmt.setString(4, prestamo.getEstado());
-            stmt.setTimestamp(5, prestamo.getHora_inicio());
-            stmt.setTimestamp(6, prestamo.getHora_fin());
-            stmt.setLong(7, prestamo.getCedula_usuario());
-            stmt.setObject(8, prestamo.getId_sala(), java.sql.Types.NUMERIC);
-            stmt.setObject(9, prestamo.getId_audiovisual(), java.sql.Types.NUMERIC);
+            stmt.setDate(1, java.sql.Date.valueOf(prestamo.getFecha_solicitud()));
+            stmt.setString(2, prestamo.getDetalle_prestamo());
+            stmt.setString(3, prestamo.getEstado());
+            stmt.setTimestamp(4, prestamo.getHora_inicio());
+            stmt.setTimestamp(5, prestamo.getHora_fin());
+            stmt.setLong(6, prestamo.getCedula_usuario());
+            stmt.setObject(7, prestamo.getId_sala(), java.sql.Types.NUMERIC);
+            stmt.setObject(8, prestamo.getId_audiovisual(), java.sql.Types.NUMERIC);
 
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0;

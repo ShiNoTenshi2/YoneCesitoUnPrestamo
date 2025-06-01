@@ -86,6 +86,7 @@ public class MantenimientoController {
                 fechaMantDatePicker.getValue(),
                 txtDescripcionMantenimiento.getText(),
                 txtResponsableMantenimiento.getText(),
+                null, // El estado se establecerá como "EnProceso" en el DAO
                 comboBoxIdSalaMantenimiento.getValue(),
                 comboBoxIdAudiovisualMantenimiento.getValue()
             );
@@ -160,6 +161,7 @@ public class MantenimientoController {
                 fechaMantDatePicker.getValue(),
                 txtDescripcionMantenimiento.getText(),
                 txtResponsableMantenimiento.getText(),
+                "EnProceso", // Mantenemos "EnProceso" al actualizar, ya que no hay interfaz para cambiar el estado
                 comboBoxIdSalaMantenimiento.getValue(),
                 comboBoxIdAudiovisualMantenimiento.getValue()
             );

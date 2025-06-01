@@ -14,9 +14,25 @@ public class Prestamo {
     private Long id_sala;
     private Long id_audiovisual;
 
+    // Constructor para registrar (id_prestamo se genera automáticamente)
+    public Prestamo(LocalDate fecha_solicitud, String detalle_prestamo, String estado,
+                   Timestamp hora_inicio, Timestamp hora_fin, Long cedula_usuario,
+                   Long id_sala, Long id_audiovisual) {
+        this.id_prestamo = 0; // Valor placeholder, la secuencia lo generará
+        this.fecha_solicitud = fecha_solicitud;
+        this.detalle_prestamo = detalle_prestamo;
+        this.estado = estado;
+        this.hora_inicio = hora_inicio;
+        this.hora_fin = hora_fin;
+        this.cedula_usuario = cedula_usuario;
+        this.id_sala = id_sala;
+        this.id_audiovisual = id_audiovisual;
+    }
+
+    // Constructor para actualizar (con id_prestamo explícito)
     public Prestamo(long id_prestamo, LocalDate fecha_solicitud, String detalle_prestamo, String estado,
-                    Timestamp hora_inicio, Timestamp hora_fin, Long cedula_usuario,
-                    Long id_sala, Long id_audiovisual) {
+                   Timestamp hora_inicio, Timestamp hora_fin, Long cedula_usuario,
+                   Long id_sala, Long id_audiovisual) {
         this.id_prestamo = id_prestamo;
         this.fecha_solicitud = fecha_solicitud;
         this.detalle_prestamo = detalle_prestamo;

@@ -110,7 +110,7 @@ public class PrestamoController {
             showAlert(Alert.AlertType.ERROR, "Error de BD", "No se pudieron cargar las cédulas: " + e.getMessage());
         }
 
-        // Inicializar ComboBox de IDs de salas y audiovisuales (solo disponibles)
+        // Inicializar ComboBox de IDs de salas y audiovisuales (solo disponibles o en espera)
         try {
             PrestamoDAO prestamoDAO = PrestamoDAO.getInstance();
             List<Long> salas = prestamoDAO.obtenerIdsSalasDisponibles();
@@ -164,13 +164,8 @@ public class PrestamoController {
     @FXML
     private void RegistrarPrestamo() {
         try {
-            if (!validarCampos()) return;
-
-            long idPrestamo = Long.parseLong(txtIdPrestamo.getText());
-            if (idPrestamo <= 0) {
-                showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID debe ser un número positivo.");
-                return;
-            }
+            // Validar campos, pero no requerimos txtIdPrestamo para registrar
+            if (!validarCampos(false)) return;
 
             String detalle = txtDetallesPrestamo.getText().trim();
             if (detalle.length() > 200) {
@@ -198,7 +193,7 @@ public class PrestamoController {
             }
 
             Prestamo prestamo = new Prestamo(
-                idPrestamo, fechaSolicitud, detalle, "EnRevision",
+                fechaSolicitud, detalle, "EnRevision",
                 Timestamp.valueOf(horaInicio), Timestamp.valueOf(horaFin),
                 comboBoxCedulaUsuarioPrestamo.getValue(),
                 comboBoxIdSalaPrestamo.getValue(), comboBoxIdAudiovisualPrestamo.getValue()
@@ -208,8 +203,10 @@ public class PrestamoController {
             if (prestamoDAO.registrarPrestamo(prestamo)) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Préstamo registrado con estado EnRevision.");
                 limpiarCampos();
+                // Refrescar ComboBox de salas y audiovisuales
+                refrescarComboBoxSalasYAudiovisuales();
             } else {
-                showAlert(Alert.AlertType.ERROR, "Error", "El ID ya está registrado.");
+                showAlert(Alert.AlertType.ERROR, "Error", "El registro falló (posible duplicación de datos).");
             }
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al registrar: " + e.getMessage());
@@ -254,7 +251,8 @@ public class PrestamoController {
         }
 
         try {
-            if (!validarCampos()) return;
+            // Validar campos, requerimos txtIdPrestamo para actualizar
+            if (!validarCampos(true)) return;
 
             long idPrestamo = Long.parseLong(txtIdPrestamo.getText());
             if (idPrestamo <= 0 || !PrestamoDAO.getInstance().existeId(idPrestamo)) {
@@ -297,6 +295,8 @@ public class PrestamoController {
             if (PrestamoDAO.getInstance().actualizarPrestamo(prestamo)) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Préstamo actualizado.");
                 limpiarCampos();
+                // Refrescar ComboBox de salas y audiovisuales
+                refrescarComboBoxSalasYAudiovisuales();
             } else {
                 showAlert(Alert.AlertType.ERROR, "Error", "No se pudo actualizar.");
             }
@@ -331,6 +331,8 @@ public class PrestamoController {
             if (PrestamoDAO.getInstance().eliminarPrestamo(idPrestamo)) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Préstamo borrado.");
                 limpiarCampos();
+                // Refrescar ComboBox de salas y audiovisuales
+                refrescarComboBoxSalasYAudiovisuales();
             } else {
                 showAlert(Alert.AlertType.ERROR, "Error", "No se pudo borrar.");
             }
@@ -404,11 +406,14 @@ public class PrestamoController {
                  userRol.equals("Coordinador") ? "Menú Coordinador" : "Menú Estudiante/Profesor");
     }
 
-    private boolean validarCampos() {
-        // Validar campos obligatorios básicos
-        if (txtIdPrestamo.getText().isEmpty() || comboBoxCedulaUsuarioPrestamo.getValue() == null ||
-            fechaDatePicker.getValue() == null || comboBoxHoraInicio.getValue() == null ||
-            comboBoxHoraFin.getValue() == null || txtDetallesPrestamo.getText().isEmpty()) {
+    private boolean validarCampos(boolean requiereId) {
+        // Validar campos obligatorios básicos (excepto ID si no se requiere)
+        if ((requiereId && txtIdPrestamo.getText().isEmpty()) || 
+            comboBoxCedulaUsuarioPrestamo.getValue() == null ||
+            fechaDatePicker.getValue() == null || 
+            comboBoxHoraInicio.getValue() == null ||
+            comboBoxHoraFin.getValue() == null || 
+            txtDetallesPrestamo.getText().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Campos Vacíos", "Todos los campos obligatorios deben estar llenos.");
             return false;
         }
@@ -474,5 +479,17 @@ public class PrestamoController {
         txtDetallesPrestamo.clear();
         comboBoxIdSalaPrestamo.getSelectionModel().clearSelection();
         comboBoxIdAudiovisualPrestamo.getSelectionModel().clearSelection();
+    }
+
+    private void refrescarComboBoxSalasYAudiovisuales() {
+        try {
+            PrestamoDAO prestamoDAO = PrestamoDAO.getInstance();
+            List<Long> salas = prestamoDAO.obtenerIdsSalasDisponibles();
+            comboBoxIdSalaPrestamo.setItems(FXCollections.observableArrayList(salas));
+            List<Long> audiovisuales = prestamoDAO.obtenerIdsAudiovisualesDisponibles();
+            comboBoxIdAudiovisualPrestamo.setItems(FXCollections.observableArrayList(audiovisuales));
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "No se pudieron refrescar los IDs: " + e.getMessage());
+        }
     }
 }

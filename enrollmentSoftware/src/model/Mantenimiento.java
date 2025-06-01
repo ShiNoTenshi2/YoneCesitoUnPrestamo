@@ -7,14 +7,16 @@ public class Mantenimiento {
     private LocalDate fecha;
     private String descripcion;
     private String responsable;
+    private String estado;
     private Integer id_sala; // Puede ser null
     private Integer id_audiovisual; // Puede ser null
 
-    public Mantenimiento(int id_mantenimiento, LocalDate fecha, String descripcion, String responsable, Integer id_sala, Integer id_audiovisual) {
+    public Mantenimiento(int id_mantenimiento, LocalDate fecha, String descripcion, String responsable, String estado, Integer id_sala, Integer id_audiovisual) {
         this.id_mantenimiento = id_mantenimiento;
         this.fecha = fecha;
         this.descripcion = descripcion;
         this.responsable = responsable;
+        this.estado = estado;
         this.id_sala = id_sala;
         this.id_audiovisual = id_audiovisual;
     }
@@ -51,6 +53,14 @@ public class Mantenimiento {
         this.responsable = responsable;
     }
 
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
     public Integer getId_sala() {
         return id_sala;
     }
@@ -69,11 +79,11 @@ public class Mantenimiento {
 
     @Override
     public String toString() {
-        return 
-               "Id=" + id_mantenimiento +
+        return "Id=" + id_mantenimiento +
                ", Fecha=" + fecha +
                ", Descripcion='" + descripcion + '\'' +
                ", Responsable='" + responsable + '\'' +
+               ", Estado='" + estado + '\'' +
                ", Id Sala=" + (id_sala != null ? id_sala : "N/A") +
                ", Id Audiovisual=" + (id_audiovisual != null ? id_audiovisual : "N/A");
     }
