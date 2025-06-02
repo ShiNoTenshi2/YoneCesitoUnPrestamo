@@ -84,6 +84,7 @@ public class PrestamoController {
             btnActualizarPrestamo.setDisable(true);
             btnBorrarPrestamo.setDisable(true);
             btnLeerPrestamo.setDisable(true); // Deshabilitar "Leer" para Estudiante y Profesor
+            txtIdPrestamo.setDisable(true); // Deshabilitar el campo ID para Estudiante y Profesor
         }
 
         // Inicializar ComboBox de cédulas
@@ -325,6 +326,23 @@ public class PrestamoController {
             long idPrestamo = Long.parseLong(txtIdPrestamo.getText());
             if (idPrestamo <= 0 || !PrestamoDAO.getInstance().existeId(idPrestamo)) {
                 showAlert(Alert.AlertType.ERROR, "ID Inválido", "ID no válido o no encontrado.");
+                return;
+            }
+
+            // Verificar el estado del préstamo antes de borrar
+            Prestamo prestamo = PrestamoDAO.getInstance().obtenerPorId(idPrestamo);
+            if (prestamo == null) {
+                showAlert(Alert.AlertType.ERROR, "Error", "No se encontró el préstamo con el ID especificado.");
+                return;
+            }
+            if (!"Finalizado".equals(prestamo.getEstado())) {
+                showAlert(Alert.AlertType.ERROR, "Acceso Denegado", "Solo se pueden borrar préstamos con estado 'Finalizado'. Estado actual: " + prestamo.getEstado());
+                return;
+            }
+
+            // Verificar si hay dependencias (registros en la tabla devolucion)
+            if (PrestamoDAO.getInstance().tieneDependencias(idPrestamo)) {
+                showAlert(Alert.AlertType.ERROR, "Error de Dependencia", "No se puede borrar el préstamo porque tiene registros de devolución asociados.");
                 return;
             }
 

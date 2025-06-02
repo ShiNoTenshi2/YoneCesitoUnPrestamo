@@ -168,14 +168,14 @@ public class MantenimientoDAO {
         return null;
     }
 
-    // Obtener IDs de salas en estado "Disponible"
+    // Obtener IDs de salas en estado "Disponible" o "MalEstado"
     public ObservableList<Integer> obtenerIdsSalasDisponibles() throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
         }
 
         ObservableList<Integer> ids = FXCollections.observableArrayList();
-        String sql = "SELECT id_sala FROM sala WHERE estado = 'Disponible'";
+        String sql = "SELECT id_sala FROM sala WHERE estado IN ('Disponible', 'MalEstado')";
         try (PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
@@ -185,14 +185,14 @@ public class MantenimientoDAO {
         return ids;
     }
 
-    // Obtener IDs de audiovisuales en estado "Disponible"
+    // Obtener IDs de audiovisuales en estado "Disponible" o "MalEstado"
     public ObservableList<Integer> obtenerIdsAudiovisualesDisponibles() throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
         }
 
         ObservableList<Integer> ids = FXCollections.observableArrayList();
-        String sql = "SELECT id_audiovisual FROM audiovisual WHERE estado = 'Disponible'";
+        String sql = "SELECT id_audiovisual FROM audiovisual WHERE estado IN ('Disponible', 'MalEstado')";
         try (PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {

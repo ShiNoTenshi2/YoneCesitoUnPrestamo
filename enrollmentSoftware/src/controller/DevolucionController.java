@@ -102,7 +102,14 @@ public class DevolucionController {
             mostrarAlerta("Éxito", "Devolución registrada correctamente.");
             limpiarCampos();
         } catch (SQLException e) {
-            mostrarAlerta("Error", "Error al registrar la devolución: " + e.getMessage());
+            // Extraer solo el mensaje útil del error
+            String mensajeError = e.getMessage();
+            String mensajeLimpio = mensajeError.contains("ORA-20002") 
+                ? "La fecha de devolución no puede ser anterior a la fecha de solicitud del préstamo."
+                : (mensajeError.contains("ORA-20003") 
+                    ? "La fecha de devolución no puede ser anterior a la fecha del mantenimiento."
+                    : mensajeError);
+            mostrarAlerta("Error", mensajeLimpio);
         }
     }
 

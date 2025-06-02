@@ -1,6 +1,7 @@
 package data;
 
 import model.Sala;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,21 +26,27 @@ public class SalaDAO {
 
     public boolean registrarSala(Sala sala) throws SQLException {
         Connection connection = dbConnection.getConnection();
-        String query = "INSERT INTO sala (id_sala, nombre_sala, capacidad, detalles_sala, estado) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setLong(1, sala.getId_sala());
-            stmt.setString(2, sala.getNombre_sala());
-            stmt.setInt(3, sala.getCapacidad());
-            stmt.setString(4, sala.getDetalles_sala());
-            stmt.setString(5, sala.getEstado());
+        String procedureCall = "{call registrar_sala(?, ?, ?, ?, ?)}";
+        try (CallableStatement stmt = connection.prepareCall(procedureCall)) {
+            // Configurar los parámetros de entrada
+            stmt.setString(1, sala.getNombre_sala());
+            stmt.setInt(2, sala.getCapacidad());
+            stmt.setString(3, sala.getDetalles_sala());
+            stmt.setString(4, sala.getEstado());
+            // Registrar el parámetro de salida
+            stmt.registerOutParameter(5, java.sql.Types.VARCHAR);
 
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            if (e.getErrorCode() == 1) { // ORA-00001: violación de restricción única
-                return false;
+            // Ejecutar el procedimiento
+            stmt.execute();
+
+            // Obtener el resultado
+            String resultado = stmt.getString(5);
+            if ("0".equals(resultado)) {
+                return true; // Operación exitosa
+            } else {
+                // Si hay un error (1 o 2), lanzar excepción con el mensaje
+                throw new SQLException("Error al registrar la sala: " + resultado.substring(2));
             }
-            throw e;
         }
     }
 

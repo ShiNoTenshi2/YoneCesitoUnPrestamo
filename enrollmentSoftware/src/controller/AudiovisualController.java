@@ -54,22 +54,9 @@ public class AudiovisualController {
     private void RegistrarAudiovisual() {
         try {
             // Validar campos vacíos
-            if (txtIdAudiovisual.getText().isEmpty() || txtNombreAudiovisual.getText().isEmpty() || 
-                txtDetalleAudiovisual.getText().isEmpty() || comboBoxEstadoAudiovisual.getValue() == null) {
+            if (txtNombreAudiovisual.getText().isEmpty() || txtDetalleAudiovisual.getText().isEmpty() || 
+                comboBoxEstadoAudiovisual.getValue() == null) {
                 showAlert(Alert.AlertType.ERROR, "Campos Vacíos", "Todos los campos son obligatorios.");
-                return;
-            }
-
-            // Validar ID
-            long idAudiovisual;
-            try {
-                idAudiovisual = Long.parseLong(txtIdAudiovisual.getText());
-                if (idAudiovisual <= 0) {
-                    showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID debe ser un número positivo.");
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID debe ser un número.");
                 return;
             }
 
@@ -85,7 +72,8 @@ public class AudiovisualController {
                 return;
             }
 
-            // Crear objeto Audiovisual
+            // Crear objeto Audiovisual (id se generará automáticamente si está vacío)
+            long idAudiovisual = txtIdAudiovisual.getText().isEmpty() ? 0 : Long.parseLong(txtIdAudiovisual.getText());
             Audiovisual audiovisual = new Audiovisual(idAudiovisual, nombreAudiov, detalleAudiovisual, comboBoxEstadoAudiovisual.getValue());
 
             // Registrar audiovisual usando Singleton
@@ -95,7 +83,7 @@ public class AudiovisualController {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Audiovisual registrado exitosamente.");
                 limpiarCampos();
             } else {
-                showAlert(Alert.AlertType.ERROR, "Error", "No se pudo registrar el audiovisual. Verifique que el ID no esté registrado.");
+                showAlert(Alert.AlertType.ERROR, "Error", "No se pudo registrar el audiovisual. Verifique los datos.");
             }
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al registrar el audiovisual: " + e.getMessage());

@@ -28,8 +28,8 @@ public class PrestamoDAO {
 
     public boolean registrarPrestamo(Prestamo prestamo) throws SQLException {
         Connection connection = dbConnection.getConnection();
-        String query = "INSERT INTO prestamo (id_prestamo, fecha_solicitud, detalle_prestamo, estado, hora_inicio, hora_fin, cedula_usuario, id_sala, id_audiovisual) " +
-                      "VALUES (seq_prestamo.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO COORDINADORYNC.prestamo (id_prestamo, fecha_solicitud, detalle_prestamo, estado, hora_inicio, hora_fin, cedula_usuario, id_sala, id_audiovisual) " +
+                      "VALUES (COORDINADORYNC.seq_prestamo.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setDate(1, java.sql.Date.valueOf(prestamo.getFecha_solicitud()));
             stmt.setString(2, prestamo.getDetalle_prestamo());
@@ -53,7 +53,7 @@ public class PrestamoDAO {
     public List<Prestamo> obtenerTodos() throws SQLException {
         Connection connection = dbConnection.getConnection();
         String query = "SELECT id_prestamo, fecha_solicitud, detalle_prestamo, estado, hora_inicio, hora_fin, cedula_usuario, id_sala, id_audiovisual " +
-                      "FROM prestamo";
+                      "FROM COORDINADORYNC.prestamo";
         List<Prestamo> prestamos = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
@@ -77,7 +77,7 @@ public class PrestamoDAO {
     public List<Prestamo> obtenerEnRevision() throws SQLException {
         Connection connection = dbConnection.getConnection();
         String query = "SELECT id_prestamo, fecha_solicitud, detalle_prestamo, estado, hora_inicio, hora_fin, cedula_usuario, id_sala, id_audiovisual " +
-                      "FROM prestamo WHERE estado = 'EnRevision'";
+                      "FROM COORDINADORYNC.prestamo WHERE estado = 'EnRevision'";
         List<Prestamo> prestamos = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
@@ -98,9 +98,48 @@ public class PrestamoDAO {
         return prestamos;
     }
 
+    public Prestamo obtenerPorId(long idPrestamo) throws SQLException {
+        Connection connection = dbConnection.getConnection();
+        String query = "SELECT id_prestamo, fecha_solicitud, detalle_prestamo, estado, hora_inicio, hora_fin, cedula_usuario, id_sala, id_audiovisual " +
+                      "FROM COORDINADORYNC.prestamo WHERE id_prestamo = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setLong(1, idPrestamo);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Prestamo(
+                        rs.getLong("id_prestamo"),
+                        rs.getDate("fecha_solicitud").toLocalDate(),
+                        rs.getString("detalle_prestamo"),
+                        rs.getString("estado"),
+                        rs.getTimestamp("hora_inicio"),
+                        rs.getTimestamp("hora_fin"),
+                        rs.getLong("cedula_usuario"),
+                        rs.getObject("id_sala") != null ? rs.getLong("id_sala") : null,
+                        rs.getObject("id_audiovisual") != null ? rs.getLong("id_audiovisual") : null
+                    );
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean tieneDependencias(long idPrestamo) throws SQLException {
+        Connection connection = dbConnection.getConnection();
+        String query = "SELECT COUNT(*) FROM COORDINADORYNC.devolucion WHERE id_prestamo = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setLong(1, idPrestamo);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean actualizarPrestamo(Prestamo prestamo) throws SQLException {
         Connection connection = dbConnection.getConnection();
-        String query = "UPDATE prestamo SET fecha_solicitud = ?, detalle_prestamo = ?, estado = ?, hora_inicio = ?, hora_fin = ?, " +
+        String query = "UPDATE COORDINADORYNC.prestamo SET fecha_solicitud = ?, detalle_prestamo = ?, estado = ?, hora_inicio = ?, hora_fin = ?, " +
                       "cedula_usuario = ?, id_sala = ?, id_audiovisual = ? WHERE id_prestamo = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setDate(1, java.sql.Date.valueOf(prestamo.getFecha_solicitud()));
@@ -120,7 +159,7 @@ public class PrestamoDAO {
 
     public boolean actualizarEstado(long id_prestamo, String nuevoEstado) throws SQLException {
         Connection connection = dbConnection.getConnection();
-        String query = "UPDATE prestamo SET estado = ? WHERE id_prestamo = ?";
+        String query = "UPDATE COORDINADORYNC.prestamo SET estado = ? WHERE id_prestamo = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, nuevoEstado);
             stmt.setLong(2, id_prestamo);
@@ -131,7 +170,7 @@ public class PrestamoDAO {
 
     public boolean eliminarPrestamo(long id_prestamo) throws SQLException {
         Connection connection = dbConnection.getConnection();
-        String query = "DELETE FROM prestamo WHERE id_prestamo = ?";
+        String query = "DELETE FROM COORDINADORYNC.prestamo WHERE id_prestamo = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setLong(1, id_prestamo);
             int rowsAffected = stmt.executeUpdate();
@@ -141,7 +180,7 @@ public class PrestamoDAO {
 
     public boolean existeId(long id_prestamo) throws SQLException {
         Connection connection = dbConnection.getConnection();
-        String query = "SELECT COUNT(*) FROM prestamo WHERE id_prestamo = ?";
+        String query = "SELECT COUNT(*) FROM COORDINADORYNC.prestamo WHERE id_prestamo = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setLong(1, id_prestamo);
             ResultSet rs = stmt.executeQuery();
@@ -154,7 +193,7 @@ public class PrestamoDAO {
 
     public List<Long> obtenerCedulasUsuariosDisponibles() throws SQLException {
         Connection connection = dbConnection.getConnection();
-        String query = "SELECT cedula_usuario FROM usuario WHERE estado = 'Aprobado'";
+        String query = "SELECT cedula_usuario FROM COORDINADORYNC.usuario WHERE estado = 'Aprobado'";
         List<Long> cedulas = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
@@ -162,7 +201,7 @@ public class PrestamoDAO {
                 cedulas.add(rs.getLong("cedula_usuario"));
             }
         } catch (SQLException e) {
-            System.err.println("Error al obtener cédulas: " + e.getMessage()); // Depuración
+            System.err.println("Error al obtener cédulas: " + e.getMessage());
             throw e;
         }
         return cedulas;
@@ -170,7 +209,7 @@ public class PrestamoDAO {
 
     public List<Long> obtenerIdsSalasDisponibles() throws SQLException {
         Connection connection = dbConnection.getConnection();
-        String query = "SELECT id_sala FROM sala WHERE estado = 'Disponible'";
+        String query = "SELECT id_sala FROM COORDINADORYNC.sala WHERE estado = 'Disponible'";
         List<Long> ids = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
@@ -183,7 +222,7 @@ public class PrestamoDAO {
 
     public List<Long> obtenerIdsAudiovisualesDisponibles() throws SQLException {
         Connection connection = dbConnection.getConnection();
-        String query = "SELECT id_audiovisual FROM audiovisual WHERE estado = 'Disponible'";
+        String query = "SELECT id_audiovisual FROM COORDINADORYNC.audiovisual WHERE estado = 'Disponible'";
         List<Long> ids = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {

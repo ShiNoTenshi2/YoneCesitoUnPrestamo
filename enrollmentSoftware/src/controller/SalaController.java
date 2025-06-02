@@ -15,7 +15,7 @@ import model.Sala;
 import model.UsuarioSesion;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List; // Importación añadida para List
+import java.util.List;
 
 public class SalaController {
 
@@ -55,29 +55,22 @@ public class SalaController {
     private void RegistrarSala() {
         try {
             // Validar campos vacíos
-            if (txtIdSala.getText().isEmpty() || txtNombreSala.getText().isEmpty() || 
-                txtCapacidad.getText().isEmpty() || txtDetallesSala.getText().isEmpty() || 
-                comboBoxEstadoSala.getValue() == null) {
+            if (txtNombreSala.getText().isEmpty() || txtCapacidad.getText().isEmpty() || 
+                txtDetallesSala.getText().isEmpty() || comboBoxEstadoSala.getValue() == null) {
                 showAlert(Alert.AlertType.ERROR, "Campos Vacíos", "Todos los campos son obligatorios.");
                 return;
             }
 
-            // Validar ID y Capacidad
-            long idSala;
+            // Validar Capacidad
             int capacidad;
             try {
-                idSala = Long.parseLong(txtIdSala.getText());
-                if (idSala <= 0) {
-                    showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID debe ser un número positivo.");
-                    return;
-                }
                 capacidad = Integer.parseInt(txtCapacidad.getText());
                 if (capacidad <= 0) {
                     showAlert(Alert.AlertType.ERROR, "Capacidad Inválida", "La capacidad debe ser un número positivo.");
                     return;
                 }
             } catch (NumberFormatException e) {
-                showAlert(Alert.AlertType.ERROR, "Datos Inválidos", "ID y Capacidad deben ser números.");
+                showAlert(Alert.AlertType.ERROR, "Datos Inválidos", "Capacidad debe ser un número.");
                 return;
             }
 
@@ -93,7 +86,8 @@ public class SalaController {
                 return;
             }
 
-            // Crear objeto Sala
+            // Crear objeto Sala con ID automático o manual
+            long idSala = txtIdSala.getText().isEmpty() ? 0 : Long.parseLong(txtIdSala.getText());
             Sala sala = new Sala(idSala, nombreSala, capacidad, detallesSala, comboBoxEstadoSala.getValue());
 
             // Registrar sala usando Singleton
@@ -103,7 +97,7 @@ public class SalaController {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Sala registrada exitosamente.");
                 limpiarCampos();
             } else {
-                showAlert(Alert.AlertType.ERROR, "Error", "No se pudo registrar la sala. Verifique que el ID no esté registrado.");
+                showAlert(Alert.AlertType.ERROR, "Error", "No se pudo registrar la sala. Verifique los datos.");
             }
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al registrar la sala: " + e.getMessage());
