@@ -3,40 +3,39 @@ package model;
 import java.time.LocalDate;
 
 public class Devolucion {
-    private int id_devolucion;
-    private LocalDate fecha_devolucion;
+    private int idDevolucion;
+    private LocalDate fechaDevolucion;
     private String entrega;
     private String descripcion;
-    private String estado_equipo;
-    private Integer id_prestamo; // Puede ser null
-    private Integer id_mantenimiento; // Puede ser null
+    private String estadoEquipo;
+    private Integer idPrestamo; // Puede ser null
+    private Integer idMantenimiento; // Puede ser null
 
-    public Devolucion(int id_devolucion, LocalDate fecha_devolucion, String entrega, String descripcion, 
-                     String estado_equipo, Integer id_prestamo, Integer id_mantenimiento) {
-        this.id_devolucion = id_devolucion;
-        this.fecha_devolucion = fecha_devolucion;
+    public Devolucion(int idDevolucion, LocalDate fechaDevolucion, String entrega, String descripcion, 
+                     String estadoEquipo, Integer idPrestamo, Integer idMantenimiento) {
+        this.idDevolucion = idDevolucion;
+        this.fechaDevolucion = fechaDevolucion;
         this.entrega = entrega;
         this.descripcion = descripcion;
-        this.estado_equipo = estado_equipo;
-        this.id_prestamo = id_prestamo;
-        this.id_mantenimiento = id_mantenimiento;
+        this.estadoEquipo = estadoEquipo;
+        this.idPrestamo = idPrestamo;
+        this.idMantenimiento = idMantenimiento;
     }
 
-    // Getters y setters
-    public int getId_devolucion() {
-        return id_devolucion;
+    public int getIdDevolucion() {
+        return idDevolucion;
     }
 
-    public void setId_devolucion(int id_devolucion) {
-        this.id_devolucion = id_devolucion;
+    public void setIdDevolucion(int idDevolucion) {
+        this.idDevolucion = idDevolucion;
     }
 
-    public LocalDate getFecha_devolucion() {
-        return fecha_devolucion;
+    public LocalDate getFechaDevolucion() {
+        return fechaDevolucion;
     }
 
-    public void setFecha_devolucion(LocalDate fecha_devolucion) {
-        this.fecha_devolucion = fecha_devolucion;
+    public void setFechaDevolucion(LocalDate fechaDevolucion) {
+        this.fechaDevolucion = fechaDevolucion;
     }
 
     public String getEntrega() {
@@ -55,40 +54,40 @@ public class Devolucion {
         this.descripcion = descripcion;
     }
 
-    public String getEstado_equipo() {
-        return estado_equipo;
+    public String getEstadoEquipo() {
+        return estadoEquipo;
     }
 
-    public void setEstado_equipo(String estado_equipo) {
-        this.estado_equipo = estado_equipo;
+    public void setEstadoEquipo(String estadoEquipo) {
+        this.estadoEquipo = estadoEquipo;
     }
 
-    public Integer getId_prestamo() {
-        return id_prestamo;
+    public Integer getIdPrestamo() {
+        return idPrestamo;
     }
 
-    public void setId_prestamo(Integer id_prestamo) {
-        this.id_prestamo = id_prestamo;
+    public void setIdPrestamo(Integer idPrestamo) {
+        this.idPrestamo = idPrestamo;
     }
 
-    public Integer getId_mantenimiento() {
-        return id_mantenimiento;
+    public Integer getIdMantenimiento() {
+        return idMantenimiento;
     }
 
-    public void setId_mantenimiento(Integer id_mantenimiento) {
-        this.id_mantenimiento = id_mantenimiento;
+    public void setIdMantenimiento(Integer idMantenimiento) {
+        this.idMantenimiento = idMantenimiento;
     }
 
     @Override
     public String toString() {
         return "Devolucion{" +
-               "id_devolucion=" + id_devolucion +
-               ", fecha_devolucion=" + fecha_devolucion +
+               "idDevolucion=" + idDevolucion +
+               ", fechaDevolucion=" + fechaDevolucion +
                ", entrega='" + entrega + '\'' +
                ", descripcion='" + descripcion + '\'' +
-               ", estado_equipo='" + estado_equipo + '\'' +
-               ", id_prestamo=" + (id_prestamo != null ? id_prestamo : "N/A") +
-               ", id_mantenimiento=" + (id_mantenimiento != null ? id_mantenimiento : "N/A") +
+               ", estadoEquipo='" + estadoEquipo + '\'' +
+               ", idPrestamo=" + (idPrestamo != null ? idPrestamo : "N/A") +
+               ", idMantenimiento=" + (idMantenimiento != null ? idMantenimiento : "N/A") +
                '}';
     }
 }

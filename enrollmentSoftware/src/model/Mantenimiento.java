@@ -3,30 +3,31 @@ package model;
 import java.time.LocalDate;
 
 public class Mantenimiento {
-    private int id_mantenimiento;
+    private int idMantenimiento;
     private LocalDate fecha;
     private String descripcion;
     private String responsable;
     private String estado;
-    private Integer id_sala; // Puede ser null
-    private Integer id_audiovisual; // Puede ser null
+    private Integer idSala;
+    private Integer idAudiovisual;
 
-    public Mantenimiento(int id_mantenimiento, LocalDate fecha, String descripcion, String responsable, String estado, Integer id_sala, Integer id_audiovisual) {
-        this.id_mantenimiento = id_mantenimiento;
+    public Mantenimiento(int idMantenimiento, LocalDate fecha, String descripcion, String responsable, 
+                        String estado, Integer idSala, Integer idAudiovisual) {
+        this.idMantenimiento = idMantenimiento;
         this.fecha = fecha;
         this.descripcion = descripcion;
         this.responsable = responsable;
         this.estado = estado;
-        this.id_sala = id_sala;
-        this.id_audiovisual = id_audiovisual;
+        this.idSala = idSala;
+        this.idAudiovisual = idAudiovisual;
     }
 
-    public int getId_mantenimiento() {
-        return id_mantenimiento;
+    public int getIdMantenimiento() {
+        return idMantenimiento;
     }
 
-    public void setId_mantenimiento(int id_mantenimiento) {
-        this.id_mantenimiento = id_mantenimiento;
+    public void setIdMantenimiento(int idMantenimiento) {
+        this.idMantenimiento = idMantenimiento;
     }
 
     public LocalDate getFecha() {
@@ -61,30 +62,32 @@ public class Mantenimiento {
         this.estado = estado;
     }
 
-    public Integer getId_sala() {
-        return id_sala;
+    public Integer getIdSala() {
+        return idSala;
     }
 
-    public void setId_sala(Integer id_sala) {
-        this.id_sala = id_sala;
+    public void setIdSala(Integer idSala) {
+        this.idSala = idSala;
     }
 
-    public Integer getId_audiovisual() {
-        return id_audiovisual;
+    public Integer getIdAudiovisual() {
+        return idAudiovisual;
     }
 
-    public void setId_audiovisual(Integer id_audiovisual) {
-        this.id_audiovisual = id_audiovisual;
+    public void setIdAudiovisual(Integer idAudiovisual) {
+        this.idAudiovisual = idAudiovisual;
     }
 
     @Override
     public String toString() {
-        return "Id=" + id_mantenimiento +
-               ", Fecha=" + fecha +
-               ", Descripcion='" + descripcion + '\'' +
-               ", Responsable='" + responsable + '\'' +
-               ", Estado='" + estado + '\'' +
-               ", Id Sala=" + (id_sala != null ? id_sala : "N/A") +
-               ", Id Audiovisual=" + (id_audiovisual != null ? id_audiovisual : "N/A");
+        return "Mantenimiento{" +
+               "idMantenimiento=" + idMantenimiento +
+               ", fecha=" + fecha +
+               ", descripcion='" + descripcion + '\'' +
+               ", responsable='" + responsable + '\'' +
+               ", estado='" + estado + '\'' +
+               ", idSala=" + (idSala != null ? idSala : "N/A") +
+               ", idAudiovisual=" + (idAudiovisual != null ? idAudiovisual : "N/A") +
+               '}';
     }
 }

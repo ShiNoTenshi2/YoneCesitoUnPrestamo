@@ -1,6 +1,5 @@
 package controller;
 
-import data.DBConnectionFactory;
 import data.SancionDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,7 +34,7 @@ public class SancionController {
     public void initialize() {
         try {
             // Obtener la conexión
-            Connection connection = DBConnectionFactory.getConnectionByRole("Coordinador").getConnection();
+            Connection connection = data.DBConnectionFactory.getConnectionByRole("Coordinador").getConnection();
             if (connection == null || connection.isClosed()) {
                 throw new SQLException("La conexión a la base de datos no está disponible.");
             }
@@ -50,12 +49,8 @@ public class SancionController {
             comboBoxEstadoSancion.getItems().addAll("Pendiente", "Pagado");
             comboBoxEstadoSancion.setDisable(true); // Deshabilitar al registrar
 
-            // Llenar ComboBox de IDs de devolución (solo los asociados a préstamos)
-            try {
-                comboBoxIdDevolucionSancion.setItems(sancionDAO.obtenerIdsDevoluciones());
-            } catch (SQLException e) {
-                mostrarAlerta("Error", "No se pudieron cargar los IDs de devoluciones: " + e.getMessage());
-            }
+            // Llenar ComboBox de IDs de devolución
+            comboBoxIdDevolucionSancion.setItems(sancionDAO.obtenerIdsDevoluciones());
 
             // Añadir listener para actualizar la cédula del usuario cuando cambie el id_devolucion
             comboBoxIdDevolucionSancion.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
@@ -95,10 +90,8 @@ public class SancionController {
         }
 
         try {
-            // Validar campos
             if (!validarCampos()) return;
 
-            // Crear nueva sanción (estado se manejará por el trigger)
             Sancion sancion = new Sancion(
                 0, // ID se genera con la secuencia
                 txtMotivoSancion.getText(),
@@ -108,7 +101,6 @@ public class SancionController {
                 comboBoxCedulaUsuarioSancion.getValue()
             );
 
-            // Guardar en la base de datos
             sancionDAO.guardar(sancion);
             mostrarAlerta("Éxito", "Sanción registrada correctamente.");
             limpiarCampos();
@@ -121,28 +113,16 @@ public class SancionController {
 
     @FXML
     public void LeerSancion() {
-        if (sancionDAO == null) {
-            mostrarAlerta("Error", "No se puede leer: la conexión a la base de datos no está disponible.");
-            return;
-        }
-
         try {
-            var sanciones = sancionDAO.obtenerTodas();
-
-            if (sanciones.isEmpty()) {
-                mostrarAlerta("Información", "No hay sanciones registradas.");
-                return;
-            }
-
-            StringBuilder sb = new StringBuilder();
-            sb.append("Lista de Sanciones:\n\n");
-            for (Sancion sancion : sanciones) {
-                sb.append(sancion.toString()).append("\n");
-            }
-
-            mostrarAlerta("Sanciones Registradas", sb.toString());
-        } catch (SQLException e) {
-            mostrarAlerta("Error", "Error al leer las sanciones: " + e.getMessage());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SancionTabla.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) btnLeerSancion.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Tabla de Sanciones");
+            stage.show();
+        } catch (IOException e) {
+            mostrarAlerta("Error", "No se pudo cargar la vista de tabla: " + e.getMessage());
         }
     }
 
@@ -154,51 +134,41 @@ public class SancionController {
         }
 
         try {
-            // Validar ID
-            String idText = txtIdSancion.getText();
-            if (idText.isEmpty()) {
+            if (txtIdSancion.getText().isEmpty()) {
                 mostrarAlerta("Error", "Por favor, ingrese el ID de la sanción.");
                 return;
             }
-            int idSancion = Integer.parseInt(idText);
-
-            // Validar otros campos
             if (!validarCampos()) return;
 
-            // Verificar si el ID existe
+            int idSancion = Integer.parseInt(txtIdSancion.getText());
             if (!sancionDAO.existeId(idSancion)) {
                 mostrarAlerta("Error", "El ID de sanción no existe.");
                 return;
             }
 
-            // Habilitar comboBoxEstado para actualizar
             comboBoxEstadoSancion.setDisable(false);
 
-            // Validar que se haya seleccionado un estado
             if (comboBoxEstadoSancion.getValue() == null) {
                 mostrarAlerta("Error", "Por favor, seleccione un estado para la sanción. Ahora puedes cambiarlo a 'Pendiente' o 'Pagado'.");
                 return;
             }
 
-            // Crear sanción actualizada
             Sancion sancion = new Sancion(
                 idSancion,
                 txtMotivoSancion.getText(),
                 Double.parseDouble(txtMontoSancion.getText()),
-                comboBoxEstadoSancion.getValue(), // Ahora está validado que no sea null
+                comboBoxEstadoSancion.getValue(),
                 comboBoxIdDevolucionSancion.getValue(),
                 comboBoxCedulaUsuarioSancion.getValue()
             );
 
-            // Actualizar en la base de datos
             sancionDAO.actualizar(sancion);
             mostrarAlerta("Éxito", "Sanción actualizada correctamente.");
             limpiarCampos();
-            comboBoxEstadoSancion.setDisable(true); // Deshabilitar de nuevo
+            comboBoxEstadoSancion.setDisable(true);
         } catch (NumberFormatException e) {
             mostrarAlerta("Error", "El monto o ID deben ser numéricos.");
         } catch (SQLException e) {
-            // Personalizar mensaje técnico
             String mensajeError = e.getMessage();
             String mensajeAmigable = mensajeError.contains("ORA-01407") 
                 ? "Por favor, seleccione un estado para la sanción. Ahora puedes cambiarlo a 'Pendiente' o 'Pagado'."
@@ -215,21 +185,17 @@ public class SancionController {
         }
 
         try {
-            // Validar ID
-            String idText = txtIdSancion.getText();
-            if (idText.isEmpty()) {
+            if (txtIdSancion.getText().isEmpty()) {
                 mostrarAlerta("Error", "Por favor, ingrese el ID de la sanción.");
                 return;
             }
-            int idSancion = Integer.parseInt(idText);
 
-            // Verificar si el ID existe
+            int idSancion = Integer.parseInt(txtIdSancion.getText());
             if (!sancionDAO.existeId(idSancion)) {
                 mostrarAlerta("Error", "El ID de sanción no existe.");
                 return;
             }
 
-            // Eliminar de la base de datos
             sancionDAO.eliminar(idSancion);
             mostrarAlerta("Éxito", "Sanción borrada correctamente.");
             limpiarCampos();
@@ -260,14 +226,12 @@ public class SancionController {
     }
 
     private boolean validarCampos() {
-        // Validar campos obligatorios
         if (txtMotivoSancion.getText().isEmpty() || txtMontoSancion.getText().isEmpty() ||
             comboBoxIdDevolucionSancion.getValue() == null || comboBoxCedulaUsuarioSancion.getValue() == null) {
             mostrarAlerta("Error", "Por favor, complete todos los campos obligatorios.");
             return false;
         }
 
-        // Validar que el monto sea un número positivo
         try {
             double monto = Double.parseDouble(txtMontoSancion.getText());
             if (monto <= 0) {

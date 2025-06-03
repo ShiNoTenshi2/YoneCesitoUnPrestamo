@@ -14,8 +14,8 @@ import javafx.stage.Stage;
 import model.Audiovisual;
 import model.UsuarioSesion;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
-import java.util.List;
 
 public class AudiovisualController {
 
@@ -29,38 +29,44 @@ public class AudiovisualController {
     @FXML private Button btnBorrarAudiovisual;
     @FXML private Button btnMenu;
 
+    private AudiovisualDAO audiovisualDAO;
+
     @FXML
     public void initialize() {
-        // Verificar que el usuario es Coordinador
         try {
+            // Verificar que el usuario es Coordinador
             if (!UsuarioSesion.getInstance().getRol().equals("Coordinador")) {
                 showAlert(Alert.AlertType.ERROR, "Acceso Denegado", "Esta vista es solo para Coordinadores.");
                 GoToMenu();
                 return;
             }
+
+            // Inicializar ComboBox con los estados
+            comboBoxEstadoAudiovisual.setItems(FXCollections.observableArrayList("Disponible", "Ocupado", "Mantenimiento"));
+            comboBoxEstadoAudiovisual.setEditable(false);
+            comboBoxEstadoAudiovisual.getSelectionModel().selectFirst();
+
+            // Inicializar DAO
+            audiovisualDAO = AudiovisualDAO.getInstance();
         } catch (IllegalStateException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "No hay una sesión activa.");
             GoToMenu();
-            return;
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Error al inicializar: " + e.getMessage());
         }
-
-        // Inicializar ComboBox con los estados
-        comboBoxEstadoAudiovisual.setItems(FXCollections.observableArrayList("Disponible", "Ocupado", "Mantenimiento"));
-        comboBoxEstadoAudiovisual.setEditable(false);
-        comboBoxEstadoAudiovisual.getSelectionModel().selectFirst();
     }
 
     @FXML
     private void RegistrarAudiovisual() {
         try {
-            // Validar campos vacíos
+            // Validar campos obligatorios
             if (txtNombreAudiovisual.getText().isEmpty() || txtDetalleAudiovisual.getText().isEmpty() || 
                 comboBoxEstadoAudiovisual.getValue() == null) {
                 showAlert(Alert.AlertType.ERROR, "Campos Vacíos", "Todos los campos son obligatorios.");
                 return;
             }
 
-            // Validar longitud de nombre_audiov y detalle_audiovisual
+            // Validar nombre y detalles
             String nombreAudiov = txtNombreAudiovisual.getText().trim();
             String detalleAudiovisual = txtDetalleAudiovisual.getText().trim();
             if (nombreAudiov.length() > 20) {
@@ -72,12 +78,22 @@ public class AudiovisualController {
                 return;
             }
 
-            // Crear objeto Audiovisual (id se generará automáticamente si está vacío)
-            long idAudiovisual = txtIdAudiovisual.getText().isEmpty() ? 0 : Long.parseLong(txtIdAudiovisual.getText());
-            Audiovisual audiovisual = new Audiovisual(idAudiovisual, nombreAudiov, detalleAudiovisual, comboBoxEstadoAudiovisual.getValue());
+            // Manejar ID (opcional para registrar)
+            long idAudiovisual = 0; // ID se genera automáticamente si está vacío
+            if (!txtIdAudiovisual.getText().isEmpty()) {
+                try {
+                    idAudiovisual = Long.parseLong(txtIdAudiovisual.getText());
+                    if (idAudiovisual < 0) {
+                        showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID no puede ser negativo.");
+                        return;
+                    }
+                } catch (NumberFormatException e) {
+                    showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID debe ser un número o dejarlo vacío para registrar.");
+                    return;
+                }
+            }
 
-            // Registrar audiovisual usando Singleton
-            AudiovisualDAO audiovisualDAO = AudiovisualDAO.getInstance();
+            Audiovisual audiovisual = new Audiovisual(idAudiovisual, nombreAudiov, detalleAudiovisual, comboBoxEstadoAudiovisual.getValue());
             boolean registrado = audiovisualDAO.registrarAudiovisual(audiovisual);
             if (registrado) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Audiovisual registrado exitosamente.");
@@ -93,27 +109,26 @@ public class AudiovisualController {
     @FXML
     private void LeerAudiovisual() {
         try {
-            AudiovisualDAO audiovisualDAO = AudiovisualDAO.getInstance();
-            List<Audiovisual> audiovisuales = audiovisualDAO.obtenerTodos();
-            if (audiovisuales.isEmpty()) {
-                showAlert(Alert.AlertType.INFORMATION, "Información", "No hay audiovisuales registrados.");
-            } else {
-                StringBuilder sb = new StringBuilder("=== LISTADO DE AUDIOVISUALES ===\n");
-                for (Audiovisual audiovisual : audiovisuales) {
-                    sb.append(audiovisual.toString()).append("\n");
-                }
-                sb.append("===============================");
-                showAlert(Alert.AlertType.INFORMATION, "Audiovisuales", sb.toString());
+            URL resource = getClass().getResource("/view/AudiovisualTabla.fxml");
+            if (resource == null) {
+                throw new IOException("No se encontró el archivo /view/AudiovisualTabla.fxml. Verifica la ruta en src/main/resources/view/");
             }
-        } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al leer los audiovisuales: " + e.getMessage());
+            FXMLLoader loader = new FXMLLoader(resource);
+            Parent root = loader.load();
+            Stage stage = (Stage) btnLeerAudiovisual.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Tabla de Audiovisuales");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar la vista de tabla: " + e.getMessage());
         }
     }
 
     @FXML
     private void ActualizarAudiovisual() {
         try {
-            // Validar campos vacíos
+            // Validar campos obligatorios
             if (txtIdAudiovisual.getText().isEmpty() || txtNombreAudiovisual.getText().isEmpty() || 
                 txtDetalleAudiovisual.getText().isEmpty() || comboBoxEstadoAudiovisual.getValue() == null) {
                 showAlert(Alert.AlertType.ERROR, "Campos Vacíos", "Todos los campos son obligatorios para actualizar.");
@@ -129,18 +144,17 @@ public class AudiovisualController {
                     return;
                 }
             } catch (NumberFormatException e) {
-                showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID debe ser un número.");
+                showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID debe ser un número válido.");
                 return;
             }
 
             // Verificar que el ID exista
-            AudiovisualDAO audiovisualDAO = AudiovisualDAO.getInstance();
             if (!audiovisualDAO.existeId(idAudiovisual)) {
                 showAlert(Alert.AlertType.ERROR, "ID No Encontrado", "No existe un audiovisual con ese ID.");
                 return;
             }
 
-            // Validar longitud de nombre_audiov y detalle_audiovisual
+            // Validar nombre y detalles
             String nombreAudiov = txtNombreAudiovisual.getText().trim();
             String detalleAudiovisual = txtDetalleAudiovisual.getText().trim();
             if (nombreAudiov.length() > 20) {
@@ -152,10 +166,7 @@ public class AudiovisualController {
                 return;
             }
 
-            // Crear objeto Audiovisual con los datos actualizados
             Audiovisual audiovisual = new Audiovisual(idAudiovisual, nombreAudiov, detalleAudiovisual, comboBoxEstadoAudiovisual.getValue());
-
-            // Actualizar audiovisual
             boolean actualizado = audiovisualDAO.actualizarAudiovisual(audiovisual);
             if (actualizado) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Audiovisual actualizado exitosamente.");
@@ -171,7 +182,6 @@ public class AudiovisualController {
     @FXML
     private void BorrarAudiovisual() {
         try {
-            // Validar campo ID
             if (txtIdAudiovisual.getText().isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, "Campo Vacío", "Ingrese un ID para borrar.");
                 return;
@@ -186,18 +196,16 @@ public class AudiovisualController {
                     return;
                 }
             } catch (NumberFormatException e) {
-                showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID debe ser un número.");
+                showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID debe ser un número válido.");
                 return;
             }
 
             // Verificar que el ID exista
-            AudiovisualDAO audiovisualDAO = AudiovisualDAO.getInstance();
             if (!audiovisualDAO.existeId(idAudiovisual)) {
                 showAlert(Alert.AlertType.ERROR, "ID No Encontrado", "No existe un audiovisual con ese ID.");
                 return;
             }
 
-            // Borrar audiovisual
             boolean eliminado = audiovisualDAO.eliminarAudiovisual(idAudiovisual);
             if (eliminado) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Audiovisual borrado exitosamente.");
@@ -217,7 +225,11 @@ public class AudiovisualController {
 
     private void loadView(String fxmlPath, String title) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                throw new IOException("No se encontró el archivo " + fxmlPath + ". Verifica la ruta en src/main/resources/view/");
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
             Stage stage = (Stage) btnMenu.getScene().getWindow();
             Scene scene = new Scene(root);

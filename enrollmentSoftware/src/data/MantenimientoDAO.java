@@ -16,21 +16,18 @@ public class MantenimientoDAO {
         this.conn = conn;
     }
 
-    // Guardar un nuevo mantenimiento y actualizar el estado
     public void guardar(Mantenimiento mantenimiento) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
         }
 
-        // Cambiar estado a "Mantenimiento" si hay ID de sala o audiovisual
-        if (mantenimiento.getId_sala() != null) {
-            actualizarEstadoSala(mantenimiento.getId_sala(), "Mantenimiento");
+        if (mantenimiento.getIdSala() != null) {
+            actualizarEstadoSala(mantenimiento.getIdSala(), "Mantenimiento");
         }
-        if (mantenimiento.getId_audiovisual() != null) {
-            actualizarEstadoAudiovisual(mantenimiento.getId_audiovisual(), "Mantenimiento");
+        if (mantenimiento.getIdAudiovisual() != null) {
+            actualizarEstadoAudiovisual(mantenimiento.getIdAudiovisual(), "Mantenimiento");
         }
 
-        // Establecer el estado del mantenimiento como "EnProceso"
         mantenimiento.setEstado("EnProceso");
 
         String sql = "INSERT INTO mantenimiento (id_mantenimiento, fecha, descripcion, responsable, estado, id_sala, id_audiovisual) " +
@@ -40,13 +37,12 @@ public class MantenimientoDAO {
             stmt.setString(2, mantenimiento.getDescripcion());
             stmt.setString(3, mantenimiento.getResponsable());
             stmt.setString(4, mantenimiento.getEstado());
-            stmt.setObject(5, mantenimiento.getId_sala()); // Maneja null
-            stmt.setObject(6, mantenimiento.getId_audiovisual()); // Maneja null
+            stmt.setObject(5, mantenimiento.getIdSala());
+            stmt.setObject(6, mantenimiento.getIdAudiovisual());
             stmt.executeUpdate();
         }
     }
 
-    // Obtener todos los mantenimientos
     public ObservableList<Mantenimiento> obtenerTodas() throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
@@ -72,18 +68,28 @@ public class MantenimientoDAO {
         return mantenimientos;
     }
 
-    // Actualizar un mantenimiento y actualizar el estado
     public void actualizar(Mantenimiento mantenimiento) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
         }
 
-        // Cambiar estado a "Mantenimiento" si hay ID de sala o audiovisual
-        if (mantenimiento.getId_sala() != null) {
-            actualizarEstadoSala(mantenimiento.getId_sala(), "Mantenimiento");
+        Mantenimiento viejoMantenimiento = obtenerPorId(mantenimiento.getIdMantenimiento());
+        if (viejoMantenimiento != null) {
+            if (viejoMantenimiento.getIdSala() != null && 
+                !viejoMantenimiento.getIdSala().equals(mantenimiento.getIdSala())) {
+                actualizarEstadoSala(viejoMantenimiento.getIdSala(), "Disponible");
+            }
+            if (viejoMantenimiento.getIdAudiovisual() != null && 
+                !viejoMantenimiento.getIdAudiovisual().equals(mantenimiento.getIdAudiovisual())) {
+                actualizarEstadoAudiovisual(viejoMantenimiento.getIdAudiovisual(), "Disponible");
+            }
         }
-        if (mantenimiento.getId_audiovisual() != null) {
-            actualizarEstadoAudiovisual(mantenimiento.getId_audiovisual(), "Mantenimiento");
+
+        if (mantenimiento.getIdSala() != null) {
+            actualizarEstadoSala(mantenimiento.getIdSala(), "Mantenimiento");
+        }
+        if (mantenimiento.getIdAudiovisual() != null) {
+            actualizarEstadoAudiovisual(mantenimiento.getIdAudiovisual(), "Mantenimiento");
         }
 
         String sql = "UPDATE mantenimiento SET fecha = ?, descripcion = ?, responsable = ?, estado = ?, id_sala = ?, id_audiovisual = ? " +
@@ -93,46 +99,43 @@ public class MantenimientoDAO {
             stmt.setString(2, mantenimiento.getDescripcion());
             stmt.setString(3, mantenimiento.getResponsable());
             stmt.setString(4, mantenimiento.getEstado());
-            stmt.setObject(5, mantenimiento.getId_sala()); // Maneja null
-            stmt.setObject(6, mantenimiento.getId_audiovisual()); // Maneja null
-            stmt.setInt(7, mantenimiento.getId_mantenimiento());
+            stmt.setObject(5, mantenimiento.getIdSala());
+            stmt.setObject(6, mantenimiento.getIdAudiovisual());
+            stmt.setInt(7, mantenimiento.getIdMantenimiento());
             stmt.executeUpdate();
         }
     }
 
-    // Eliminar un mantenimiento
-    public void eliminar(int id_mantenimiento) throws SQLException {
+    public void eliminar(int idMantenimiento) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
         }
 
-        // Obtener el mantenimiento antes de eliminarlo para restaurar estados
-        Mantenimiento mantenimiento = obtenerPorId(id_mantenimiento);
+        Mantenimiento mantenimiento = obtenerPorId(idMantenimiento);
         if (mantenimiento != null) {
-            if (mantenimiento.getId_sala() != null) {
-                actualizarEstadoSala(mantenimiento.getId_sala(), "Disponible");
+            if (mantenimiento.getIdSala() != null) {
+                actualizarEstadoSala(mantenimiento.getIdSala(), "Disponible");
             }
-            if (mantenimiento.getId_audiovisual() != null) {
-                actualizarEstadoAudiovisual(mantenimiento.getId_audiovisual(), "Disponible");
+            if (mantenimiento.getIdAudiovisual() != null) {
+                actualizarEstadoAudiovisual(mantenimiento.getIdAudiovisual(), "Disponible");
             }
         }
 
         String sql = "DELETE FROM mantenimiento WHERE id_mantenimiento = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id_mantenimiento);
+            stmt.setInt(1, idMantenimiento);
             stmt.executeUpdate();
         }
     }
 
-    // Verificar si un ID de mantenimiento ya existe
-    public boolean existeId(int id_mantenimiento) throws SQLException {
+    public boolean existeId(int idMantenimiento) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
         }
 
         String sql = "SELECT COUNT(*) FROM mantenimiento WHERE id_mantenimiento = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id_mantenimiento);
+            stmt.setInt(1, idMantenimiento);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt(1) > 0;
@@ -142,15 +145,14 @@ public class MantenimientoDAO {
         return false;
     }
 
-    // Obtener un mantenimiento por ID
-    private Mantenimiento obtenerPorId(int id_mantenimiento) throws SQLException {
+    private Mantenimiento obtenerPorId(int idMantenimiento) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
         }
 
         String sql = "SELECT * FROM mantenimiento WHERE id_mantenimiento = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id_mantenimiento);
+            stmt.setInt(1, idMantenimiento);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new Mantenimiento(
@@ -168,7 +170,6 @@ public class MantenimientoDAO {
         return null;
     }
 
-    // Obtener IDs de salas en estado "Disponible" o "MalEstado"
     public ObservableList<Integer> obtenerIdsSalasDisponibles() throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
@@ -185,7 +186,6 @@ public class MantenimientoDAO {
         return ids;
     }
 
-    // Obtener IDs de audiovisuales en estado "Disponible" o "MalEstado"
     public ObservableList<Integer> obtenerIdsAudiovisualesDisponibles() throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
@@ -202,8 +202,7 @@ public class MantenimientoDAO {
         return ids;
     }
 
-    // Actualizar estado de una sala
-    private void actualizarEstadoSala(int id_sala, String estado) throws SQLException {
+    private void actualizarEstadoSala(int idSala, String estado) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
         }
@@ -211,13 +210,12 @@ public class MantenimientoDAO {
         String sql = "UPDATE sala SET estado = ? WHERE id_sala = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, estado);
-            stmt.setInt(2, id_sala);
+            stmt.setInt(2, idSala);
             stmt.executeUpdate();
         }
     }
 
-    // Actualizar estado de un audiovisual
-    private void actualizarEstadoAudiovisual(int id_audiovisual, String estado) throws SQLException {
+    private void actualizarEstadoAudiovisual(int idAudiovisual, String estado) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
         }
@@ -225,7 +223,7 @@ public class MantenimientoDAO {
         String sql = "UPDATE audiovisual SET estado = ? WHERE id_audiovisual = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, estado);
-            stmt.setInt(2, id_audiovisual);
+            stmt.setInt(2, idAudiovisual);
             stmt.executeUpdate();
         }
     }

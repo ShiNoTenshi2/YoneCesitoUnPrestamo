@@ -16,7 +16,6 @@ public class SancionDAO {
         this.conn = conn;
     }
 
-    // Guardar una nueva sanción usando procedimiento almacenado
     public void guardar(Sancion sancion) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
@@ -38,7 +37,6 @@ public class SancionDAO {
         }
     }
 
-    // Obtener todas las sanciones
     public ObservableList<Sancion> obtenerTodas() throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
@@ -63,7 +61,6 @@ public class SancionDAO {
         return sanciones;
     }
 
-    // Actualizar una sanción
     public void actualizar(Sancion sancion) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
@@ -81,7 +78,6 @@ public class SancionDAO {
         }
     }
 
-    // Eliminar una sanción
     public void eliminar(int idSancion) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
@@ -94,7 +90,6 @@ public class SancionDAO {
         }
     }
 
-    // Verificar si un ID de sanción ya existe
     public boolean existeId(int idSancion) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
@@ -112,7 +107,6 @@ public class SancionDAO {
         return false;
     }
 
-    // Obtener cédulas de usuarios existentes
     public ObservableList<Long> obtenerCedulasUsuarios() throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
@@ -129,7 +123,6 @@ public class SancionDAO {
         return cedulas;
     }
 
-    // Obtener IDs de devoluciones existentes que estén asociadas a un préstamo
     public ObservableList<Integer> obtenerIdsDevoluciones() throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
@@ -146,7 +139,6 @@ public class SancionDAO {
         return ids;
     }
 
-    // Obtener la cédula del usuario asociada a un id_devolucion
     public Long obtenerCedulaUsuarioPorDevolucion(int idDevolucion) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
@@ -164,6 +156,6 @@ public class SancionDAO {
                 }
             }
         }
-        return null; // Si no se encuentra, retornamos null
+        return null;
     }
 }

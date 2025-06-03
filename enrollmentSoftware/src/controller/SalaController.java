@@ -14,8 +14,8 @@ import javafx.stage.Stage;
 import model.Sala;
 import model.UsuarioSesion;
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
-import java.util.List;
 
 public class SalaController {
 
@@ -30,38 +30,44 @@ public class SalaController {
     @FXML private Button btnBorrarSala;
     @FXML private Button btnMenu;
 
+    private SalaDAO salaDAO;
+
     @FXML
     public void initialize() {
-        // Verificar que el usuario es Coordinador
         try {
+            // Verificar que el usuario es Coordinador
             if (!UsuarioSesion.getInstance().getRol().equals("Coordinador")) {
                 showAlert(Alert.AlertType.ERROR, "Acceso Denegado", "Esta vista es solo para Coordinadores.");
                 GoToMenu();
                 return;
             }
+
+            // Inicializar ComboBox con los estados
+            comboBoxEstadoSala.setItems(FXCollections.observableArrayList("Disponible", "Ocupado", "Mantenimiento"));
+            comboBoxEstadoSala.setEditable(false);
+            comboBoxEstadoSala.getSelectionModel().selectFirst();
+
+            // Inicializar DAO
+            salaDAO = SalaDAO.getInstance();
         } catch (IllegalStateException e) {
             showAlert(Alert.AlertType.ERROR, "Error", "No hay una sesión activa.");
             GoToMenu();
-            return;
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Error al inicializar: " + e.getMessage());
         }
-
-        // Inicializar ComboBox con los estados
-        comboBoxEstadoSala.setItems(FXCollections.observableArrayList("Disponible", "Ocupado", "Mantenimiento"));
-        comboBoxEstadoSala.setEditable(false);
-        comboBoxEstadoSala.getSelectionModel().selectFirst();
     }
 
     @FXML
     private void RegistrarSala() {
         try {
-            // Validar campos vacíos
+            // Validar campos obligatorios
             if (txtNombreSala.getText().isEmpty() || txtCapacidad.getText().isEmpty() || 
                 txtDetallesSala.getText().isEmpty() || comboBoxEstadoSala.getValue() == null) {
                 showAlert(Alert.AlertType.ERROR, "Campos Vacíos", "Todos los campos son obligatorios.");
                 return;
             }
 
-            // Validar Capacidad
+            // Validar capacidad
             int capacidad;
             try {
                 capacidad = Integer.parseInt(txtCapacidad.getText());
@@ -70,11 +76,11 @@ public class SalaController {
                     return;
                 }
             } catch (NumberFormatException e) {
-                showAlert(Alert.AlertType.ERROR, "Datos Inválidos", "Capacidad debe ser un número.");
+                showAlert(Alert.AlertType.ERROR, "Datos Inválidos", "La capacidad debe ser un número válido.");
                 return;
             }
 
-            // Validar longitud de nombre_sala y detalles_sala
+            // Validar nombre y detalles
             String nombreSala = txtNombreSala.getText().trim();
             String detallesSala = txtDetallesSala.getText().trim();
             if (nombreSala.length() > 20) {
@@ -86,12 +92,22 @@ public class SalaController {
                 return;
             }
 
-            // Crear objeto Sala con ID automático o manual
-            long idSala = txtIdSala.getText().isEmpty() ? 0 : Long.parseLong(txtIdSala.getText());
-            Sala sala = new Sala(idSala, nombreSala, capacidad, detallesSala, comboBoxEstadoSala.getValue());
+            // Manejar ID (opcional para registrar)
+            long idSala = 0; // ID se genera automáticamente si está vacío
+            if (!txtIdSala.getText().isEmpty()) {
+                try {
+                    idSala = Long.parseLong(txtIdSala.getText());
+                    if (idSala < 0) {
+                        showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID no puede ser negativo.");
+                        return;
+                    }
+                } catch (NumberFormatException e) {
+                    showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID debe ser un número o dejarlo vacío para registrar.");
+                    return;
+                }
+            }
 
-            // Registrar sala usando Singleton
-            SalaDAO salaDAO = SalaDAO.getInstance();
+            Sala sala = new Sala(idSala, nombreSala, capacidad, detallesSala, comboBoxEstadoSala.getValue());
             boolean registrado = salaDAO.registrarSala(sala);
             if (registrado) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Sala registrada exitosamente.");
@@ -107,27 +123,26 @@ public class SalaController {
     @FXML
     private void LeerSala() {
         try {
-            SalaDAO salaDAO = SalaDAO.getInstance();
-            List<Sala> salas = salaDAO.obtenerTodas();
-            if (salas.isEmpty()) {
-                showAlert(Alert.AlertType.INFORMATION, "Información", "No hay salas registradas.");
-            } else {
-                StringBuilder sb = new StringBuilder("=== LISTADO DE SALAS ===\n");
-                for (Sala sala : salas) {
-                    sb.append(sala.toString()).append("\n");
-                }
-                sb.append("=======================");
-                showAlert(Alert.AlertType.INFORMATION, "Salas", sb.toString());
+            URL resource = getClass().getResource("/view/SalaTabla.fxml");
+            if (resource == null) {
+                throw new IOException("No se encontró el archivo /view/SalaTabla.fxml. Verifica la ruta en src/main/resources/view/");
             }
-        } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Error de BD", "Error al leer las salas: " + e.getMessage());
+            FXMLLoader loader = new FXMLLoader(resource);
+            Parent root = loader.load();
+            Stage stage = (Stage) btnLeerSala.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Tabla de Salas");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "No se pudo cargar la vista de tabla: " + e.getMessage());
         }
     }
 
     @FXML
     private void ActualizarSala() {
         try {
-            // Validar campos vacíos
+            // Validar campos obligatorios
             if (txtIdSala.getText().isEmpty() || txtNombreSala.getText().isEmpty() || 
                 txtCapacidad.getText().isEmpty() || txtDetallesSala.getText().isEmpty() || 
                 comboBoxEstadoSala.getValue() == null) {
@@ -135,33 +150,39 @@ public class SalaController {
                 return;
             }
 
-            // Validar ID y Capacidad
+            // Validar ID
             long idSala;
-            int capacidad;
             try {
                 idSala = Long.parseLong(txtIdSala.getText());
                 if (idSala <= 0) {
                     showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID debe ser un número positivo.");
                     return;
                 }
+            } catch (NumberFormatException e) {
+                showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID debe ser un número válido.");
+                return;
+            }
+
+            // Validar capacidad
+            int capacidad;
+            try {
                 capacidad = Integer.parseInt(txtCapacidad.getText());
                 if (capacidad <= 0) {
                     showAlert(Alert.AlertType.ERROR, "Capacidad Inválida", "La capacidad debe ser un número positivo.");
                     return;
                 }
             } catch (NumberFormatException e) {
-                showAlert(Alert.AlertType.ERROR, "Datos Inválidos", "ID y Capacidad deben ser números.");
+                showAlert(Alert.AlertType.ERROR, "Datos Inválidos", "La capacidad debe ser un número válido.");
                 return;
             }
 
             // Verificar que el ID exista
-            SalaDAO salaDAO = SalaDAO.getInstance();
             if (!salaDAO.existeId(idSala)) {
                 showAlert(Alert.AlertType.ERROR, "ID No Encontrado", "No existe una sala con ese ID.");
                 return;
             }
 
-            // Validar longitud de nombre_sala y detalles_sala
+            // Validar nombre y detalles
             String nombreSala = txtNombreSala.getText().trim();
             String detallesSala = txtDetallesSala.getText().trim();
             if (nombreSala.length() > 20) {
@@ -173,10 +194,7 @@ public class SalaController {
                 return;
             }
 
-            // Crear objeto Sala con los datos actualizados
             Sala sala = new Sala(idSala, nombreSala, capacidad, detallesSala, comboBoxEstadoSala.getValue());
-
-            // Actualizar sala
             boolean actualizado = salaDAO.actualizarSala(sala);
             if (actualizado) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Sala actualizada exitosamente.");
@@ -192,7 +210,6 @@ public class SalaController {
     @FXML
     private void BorrarSala() {
         try {
-            // Validar campo ID
             if (txtIdSala.getText().isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, "Campo Vacío", "Ingrese un ID para borrar.");
                 return;
@@ -207,18 +224,16 @@ public class SalaController {
                     return;
                 }
             } catch (NumberFormatException e) {
-                showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID debe ser un número.");
+                showAlert(Alert.AlertType.ERROR, "ID Inválido", "El ID debe ser un número válido.");
                 return;
             }
 
             // Verificar que el ID exista
-            SalaDAO salaDAO = SalaDAO.getInstance();
             if (!salaDAO.existeId(idSala)) {
                 showAlert(Alert.AlertType.ERROR, "ID No Encontrado", "No existe una sala con ese ID.");
                 return;
             }
 
-            // Borrar sala
             boolean eliminado = salaDAO.eliminarSala(idSala);
             if (eliminado) {
                 showAlert(Alert.AlertType.INFORMATION, "Éxito", "Sala borrada exitosamente.");
@@ -238,11 +253,14 @@ public class SalaController {
 
     private void loadView(String fxmlPath, String title) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                throw new IOException("No se encontró el archivo " + fxmlPath + ". Verifica la ruta en src/main/resources/view/");
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
             Stage stage = (Stage) btnMenu.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            stage.setScene(new Scene(root));
             stage.setTitle(title);
             stage.show();
         } catch (IOException e) {

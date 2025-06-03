@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" style="-fx-background-color: #c2c2c2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TablaDevolucionController">
+    <padding>
+        <Insets bottom="40" left="40" right="40" top="40" />
+    </padding>
+    <Label alignment="TOP_CENTER" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Tabla de Devolucion">
+        <font>
+            <Font name="Arial" size="24" />
+        </font>
+        <effect>
+            <DropShadow color="#95a5a6" radius="3" />
+        </effect>
+      <opaqueInsets>
+         <Insets />
+      </opaqueInsets>
+    </Label>
+   <TableView fx:id="tablaDevolucion" prefHeight="677.0" prefWidth="820.0">
+     <columns>
+       <TableColumn fx:id="columnIdDevolucion" prefWidth="49.0" text="Id" />
+         <TableColumn fx:id="columnIdPrestamoDevolucion" prefWidth="72.0" text="Id Prestamo" />
+         <TableColumn fx:id="columnIdMantenimientoDevolucion" prefWidth="109.0" text="Id Mantenimiento" />
+         <TableColumn fx:id="columnEntregaDevolucion" prefWidth="78.0" text="Entrega" />
+         <TableColumn fx:id="columnEstadoDevolucion" prefWidth="85.0" text="Estado" />
+       <TableColumn fx:id="columnFechaDevolucion" prefWidth="82.0" text="Fecha" />
+         <TableColumn fx:id="columnDescripcionDevolucion" prefWidth="344.0" text="Descripcion" />
+     </columns>
+   </TableView>
+   <Button fx:id="btnDevolucion" onAction="#GoToDevolucion" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Volver Atras">
+      <effect>
+         <DropShadow color="#c0392b" radius="3" />
+      </effect>
+   </Button>
+</VBox>

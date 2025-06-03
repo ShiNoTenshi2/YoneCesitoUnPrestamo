@@ -1,7 +1,5 @@
 package model;
 
-import java.time.LocalDate;
-
 public class Sancion {
     private int idSancion;
     private String motivo;
@@ -9,8 +7,6 @@ public class Sancion {
     private String estado;
     private int idDevolucion;
     private long cedulaUsuario;
-
-    public Sancion() {}
 
     public Sancion(int idSancion, String motivo, double monto, String estado, int idDevolucion, long cedulaUsuario) {
         this.idSancion = idSancion;
@@ -21,27 +17,63 @@ public class Sancion {
         this.cedulaUsuario = cedulaUsuario;
     }
 
-    public int getIdSancion() { return idSancion; }
-    public void setIdSancion(int idSancion) { this.idSancion = idSancion; }
+    public int getIdSancion() {
+        return idSancion;
+    }
 
-    public String getMotivo() { return motivo; }
-    public void setMotivo(String motivo) { this.motivo = motivo; }
+    public void setIdSancion(int idSancion) {
+        this.idSancion = idSancion;
+    }
 
-    public double getMonto() { return monto; }
-    public void setMonto(double monto) { this.monto = monto; }
+    public String getMotivo() {
+        return motivo;
+    }
 
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
 
-    public int getIdDevolucion() { return idDevolucion; }
-    public void setIdDevolucion(int idDevolucion) { this.idDevolucion = idDevolucion; }
+    public double getMonto() {
+        return monto;
+    }
 
-    public long getCedulaUsuario() { return cedulaUsuario; }
-    public void setCedulaUsuario(long cedulaUsuario) { this.cedulaUsuario = cedulaUsuario; }
+    public void setMonto(double monto) {
+        this.monto = monto;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public int getIdDevolucion() {
+        return idDevolucion;
+    }
+
+    public void setIdDevolucion(int idDevolucion) {
+        this.idDevolucion = idDevolucion;
+    }
+
+    public long getCedulaUsuario() {
+        return cedulaUsuario;
+    }
+
+    public void setCedulaUsuario(long cedulaUsuario) {
+        this.cedulaUsuario = cedulaUsuario;
+    }
 
     @Override
     public String toString() {
-        return "Sancion{idSancion=" + idSancion + ", motivo='" + motivo + "', monto=" + monto + 
-               ", estado='" + estado + "', idDevolucion=" + idDevolucion + ", cedulaUsuario=" + cedulaUsuario + "}";
+        return "Sancion{" +
+               "idSancion=" + idSancion +
+               ", motivo='" + motivo + '\'' +
+               ", monto=" + monto +
+               ", estado='" + estado + '\'' +
+               ", idDevolucion=" + idDevolucion +
+               ", cedulaUsuario=" + cedulaUsuario +
+               '}';
     }
 }

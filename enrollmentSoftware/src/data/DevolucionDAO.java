@@ -17,7 +17,6 @@ public class DevolucionDAO {
         this.conn = conn;
     }
 
-    // Guardar una nueva devolución usando procedimiento almacenado
     public void guardar(Devolucion devolucion) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
@@ -25,12 +24,12 @@ public class DevolucionDAO {
 
         String procedureCall = "{call registrar_devolucion(?, ?, ?, ?, ?, ?, ?)}";
         try (CallableStatement stmt = conn.prepareCall(procedureCall)) {
-            stmt.setDate(1, Date.valueOf(devolucion.getFecha_devolucion()));
+            stmt.setDate(1, Date.valueOf(devolucion.getFechaDevolucion()));
             stmt.setString(2, devolucion.getEntrega());
             stmt.setString(3, devolucion.getDescripcion());
-            stmt.setString(4, devolucion.getEstado_equipo());
-            stmt.setObject(5, devolucion.getId_prestamo());
-            stmt.setObject(6, devolucion.getId_mantenimiento());
+            stmt.setString(4, devolucion.getEstadoEquipo());
+            stmt.setObject(5, devolucion.getIdPrestamo());
+            stmt.setObject(6, devolucion.getIdMantenimiento());
             stmt.registerOutParameter(7, java.sql.Types.VARCHAR);
             stmt.execute();
 
@@ -41,7 +40,6 @@ public class DevolucionDAO {
         }
     }
 
-    // Obtener todas las devoluciones
     public ObservableList<Devolucion> obtenerTodas() throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
@@ -67,52 +65,44 @@ public class DevolucionDAO {
         return devoluciones;
     }
 
-    // Actualizar una devolución y marcar préstamo/mantenimiento como Finalizado
     public void actualizar(Devolucion devolucion) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
         }
 
-        // Actualizar la devolución
-        String sqlUpdate = "UPDATE devolucion SET fecha_devolucion = ?, entrega = ?, descripcion = ?, estado_equipo = ?, id_prestamo = ?, id_mantenimiento = ? " +
-                         "WHERE id_devolucion = ?";
+        String sqlUpdate = "UPDATE devolucion SET fecha_devolucion = ?, entrega = ?, descripcion = ?, estado_equipo = ?, id_prestamo = ?, id_mantenimiento = ? WHERE id_devolucion = ?";
         try (PreparedStatement stmtUpdate = conn.prepareStatement(sqlUpdate)) {
-            stmtUpdate.setDate(1, Date.valueOf(devolucion.getFecha_devolucion()));
+            stmtUpdate.setDate(1, Date.valueOf(devolucion.getFechaDevolucion()));
             stmtUpdate.setString(2, devolucion.getEntrega());
             stmtUpdate.setString(3, devolucion.getDescripcion());
-            stmtUpdate.setString(4, devolucion.getEstado_equipo());
-            stmtUpdate.setObject(5, devolucion.getId_prestamo()); // Maneja null
-            stmtUpdate.setObject(6, devolucion.getId_mantenimiento()); // Maneja null
-            stmtUpdate.setInt(7, devolucion.getId_devolucion());
+            stmtUpdate.setString(4, devolucion.getEstadoEquipo());
+            stmtUpdate.setObject(5, devolucion.getIdPrestamo());
+            stmtUpdate.setObject(6, devolucion.getIdMantenimiento());
+            stmtUpdate.setInt(7, devolucion.getIdDevolucion());
             stmtUpdate.executeUpdate();
         }
-
-        // Actualizar el estado del préstamo o mantenimiento a "Finalizado"
-        actualizarEstadoPrestamoOMantenimiento(devolucion);
     }
 
-    // Eliminar una devolución
-    public void eliminar(int id_devolucion) throws SQLException {
+    public void eliminar(int idDevolucion) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
         }
 
         String sql = "DELETE FROM devolucion WHERE id_devolucion = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id_devolucion);
+            stmt.setInt(1, idDevolucion);
             stmt.executeUpdate();
         }
     }
 
-    // Verificar si un ID de devolución ya existe
-    public boolean existeId(int id_devolucion) throws SQLException {
+    public boolean existeId(int idDevolucion) throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
         }
 
         String sql = "SELECT COUNT(*) FROM devolucion WHERE id_devolucion = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id_devolucion);
+            stmt.setInt(1, idDevolucion);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt(1) > 0;
@@ -122,7 +112,6 @@ public class DevolucionDAO {
         return false;
     }
 
-    // Obtener IDs de préstamos existentes
     public ObservableList<Integer> obtenerIdsPrestamos() throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
@@ -139,7 +128,6 @@ public class DevolucionDAO {
         return ids;
     }
 
-    // Obtener IDs de mantenimientos existentes
     public ObservableList<Integer> obtenerIdsMantenimientos() throws SQLException {
         if (conn == null) {
             throw new SQLException("No hay conexión a la base de datos.");
@@ -154,26 +142,5 @@ public class DevolucionDAO {
             }
         }
         return ids;
-    }
-
-    // Actualizar el estado del préstamo o mantenimiento a "Finalizado"
-    private void actualizarEstadoPrestamoOMantenimiento(Devolucion devolucion) throws SQLException {
-        // Actualizar el estado del préstamo si existe
-        if (devolucion.getId_prestamo() != null) {
-            String sqlUpdatePrestamo = "UPDATE prestamo SET estado = 'Finalizado' WHERE id_prestamo = ?";
-            try (PreparedStatement stmtUpdate = conn.prepareStatement(sqlUpdatePrestamo)) {
-                stmtUpdate.setInt(1, devolucion.getId_prestamo());
-                stmtUpdate.executeUpdate();
-            }
-        }
-
-        // Actualizar el estado del mantenimiento si existe
-        if (devolucion.getId_mantenimiento() != null) {
-            String sqlUpdateMantenimiento = "UPDATE mantenimiento SET estado = 'Finalizado' WHERE id_mantenimiento = ?";
-            try (PreparedStatement stmtUpdate = conn.prepareStatement(sqlUpdateMantenimiento)) {
-                stmtUpdate.setInt(1, devolucion.getId_mantenimiento());
-                stmtUpdate.executeUpdate();
-            }
-        }
     }
 }

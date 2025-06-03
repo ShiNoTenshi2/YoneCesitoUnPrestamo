@@ -1,6 +1,5 @@
 package controller;
 
-import data.DBConnectionFactory;
 import data.MantenimientoDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,31 +35,17 @@ public class MantenimientoController {
     @FXML
     public void initialize() {
         try {
-            // Obtener la conexión
-            Connection connection = DBConnectionFactory.getConnectionByRole("Coordinador").getConnection();
+            Connection connection = data.DBConnectionFactory.getConnectionByRole("Coordinador").getConnection();
             if (connection == null || connection.isClosed()) {
                 throw new SQLException("La conexión a la base de datos no está disponible.");
             }
 
-            // Inicializar DAO
             mantenimientoDAO = new MantenimientoDAO(connection);
 
-            // Cargar IDs de salas disponibles en el ComboBox
-            try {
-                comboBoxIdSalaMantenimiento.setItems(mantenimientoDAO.obtenerIdsSalasDisponibles());
-            } catch (SQLException e) {
-                mostrarAlerta("Error", "No se pudieron cargar los IDs de salas: " + e.getMessage());
-            }
-
-            // Cargar IDs de audiovisuales disponibles en el ComboBox
-            try {
-                comboBoxIdAudiovisualMantenimiento.setItems(mantenimientoDAO.obtenerIdsAudiovisualesDisponibles());
-            } catch (SQLException e) {
-                mostrarAlerta("Error", "No se pudieron cargar los IDs de audiovisuales: " + e.getMessage());
-            }
+            comboBoxIdSalaMantenimiento.setItems(mantenimientoDAO.obtenerIdsSalasDisponibles());
+            comboBoxIdAudiovisualMantenimiento.setItems(mantenimientoDAO.obtenerIdsAudiovisualesDisponibles());
         } catch (SQLException e) {
             mostrarAlerta("Error", "No se pudo conectar a la base de datos: " + e.getMessage());
-            // Regresar al menú principal si no se puede conectar
             try {
                 GoToMenu();
             } catch (Exception ex) {
@@ -77,21 +62,18 @@ public class MantenimientoController {
         }
 
         try {
-            // Validar campos
             if (!validarCampos()) return;
 
-            // Crear nuevo mantenimiento
             Mantenimiento mantenimiento = new Mantenimiento(
-                0, // ID se genera con la secuencia
+                0,
                 fechaMantDatePicker.getValue(),
                 txtDescripcionMantenimiento.getText(),
                 txtResponsableMantenimiento.getText(),
-                null, // El estado se establecerá como "EnProceso" en el DAO
+                null,
                 comboBoxIdSalaMantenimiento.getValue(),
                 comboBoxIdAudiovisualMantenimiento.getValue()
             );
 
-            // Guardar en la base de datos
             mantenimientoDAO.guardar(mantenimiento);
             mostrarAlerta("Éxito", "Mantenimiento registrado correctamente.");
             limpiarCampos();
@@ -102,31 +84,16 @@ public class MantenimientoController {
 
     @FXML
     public void LeerMantenimiento() {
-        if (mantenimientoDAO == null) {
-            mostrarAlerta("Error", "No se puede leer: la conexión a la base de datos no está disponible.");
-            return;
-        }
-
         try {
-            // Obtener todos los mantenimientos
-            var mantenimientos = mantenimientoDAO.obtenerTodas();
-
-            if (mantenimientos.isEmpty()) {
-                mostrarAlerta("Información", "No hay mantenimientos registrados.");
-                return;
-            }
-
-            // Construir el texto para mostrar en la alerta
-            StringBuilder sb = new StringBuilder();
-            sb.append("Lista de Mantenimientos:\n\n");
-            for (Mantenimiento mantenimiento : mantenimientos) {
-                sb.append(mantenimiento.toString()).append("\n");
-            }
-
-            // Mostrar los mantenimientos en una alerta
-            mostrarAlerta("Mantenimientos Registrados", sb.toString());
-        } catch (SQLException e) {
-            mostrarAlerta("Error", "Error al leer los mantenimientos: " + e.getMessage());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/MantenimientoTabla.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) btnLeerMantenimiento.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Tabla de Mantenimientos");
+            stage.show();
+        } catch (IOException e) {
+            mostrarAlerta("Error", "No se pudo cargar la vista de tabla: " + e.getMessage());
         }
     }
 
@@ -138,35 +105,28 @@ public class MantenimientoController {
         }
 
         try {
-            // Validar ID
-            String idText = txtIdMantenimiento.getText();
-            if (idText.isEmpty()) {
+            if (txtIdMantenimiento.getText().isEmpty()) {
                 mostrarAlerta("Error", "Por favor, ingrese el ID del mantenimiento.");
                 return;
             }
-            int idMantenimiento = Integer.parseInt(idText);
-
-            // Validar otros campos
             if (!validarCampos()) return;
 
-            // Verificar si el ID existe
+            int idMantenimiento = Integer.parseInt(txtIdMantenimiento.getText());
             if (!mantenimientoDAO.existeId(idMantenimiento)) {
                 mostrarAlerta("Error", "El ID de mantenimiento no existe.");
                 return;
             }
 
-            // Crear mantenimiento actualizado
             Mantenimiento mantenimiento = new Mantenimiento(
                 idMantenimiento,
                 fechaMantDatePicker.getValue(),
                 txtDescripcionMantenimiento.getText(),
                 txtResponsableMantenimiento.getText(),
-                "EnProceso", // Mantenemos "EnProceso" al actualizar, ya que no hay interfaz para cambiar el estado
+                "EnProceso",
                 comboBoxIdSalaMantenimiento.getValue(),
                 comboBoxIdAudiovisualMantenimiento.getValue()
             );
 
-            // Actualizar en la base de datos
             mantenimientoDAO.actualizar(mantenimiento);
             mostrarAlerta("Éxito", "Mantenimiento actualizado correctamente.");
             limpiarCampos();
@@ -185,21 +145,17 @@ public class MantenimientoController {
         }
 
         try {
-            // Validar ID
-            String idText = txtIdMantenimiento.getText();
-            if (idText.isEmpty()) {
+            if (txtIdMantenimiento.getText().isEmpty()) {
                 mostrarAlerta("Error", "Por favor, ingrese el ID del mantenimiento.");
                 return;
             }
-            int idMantenimiento = Integer.parseInt(idText);
 
-            // Verificar si el ID existe
+            int idMantenimiento = Integer.parseInt(txtIdMantenimiento.getText());
             if (!mantenimientoDAO.existeId(idMantenimiento)) {
                 mostrarAlerta("Error", "El ID de mantenimiento no existe.");
                 return;
             }
 
-            // Eliminar de la base de datos
             mantenimientoDAO.eliminar(idMantenimiento);
             mostrarAlerta("Éxito", "Mantenimiento borrado correctamente.");
             limpiarCampos();
@@ -232,7 +188,6 @@ public class MantenimientoController {
     private boolean validarCampos() {
         LocalDate fechaActual = LocalDate.now();
 
-        // Validar campos obligatorios
         if (fechaMantDatePicker.getValue() == null ||
             txtDescripcionMantenimiento.getText().isEmpty() ||
             txtResponsableMantenimiento.getText().isEmpty()) {
@@ -240,17 +195,20 @@ public class MantenimientoController {
             return false;
         }
 
-        // Validar que la fecha no sea anterior a hoy
         if (fechaMantDatePicker.getValue().isBefore(fechaActual)) {
             mostrarAlerta("Error", "La fecha del mantenimiento no puede ser anterior a hoy (" + fechaActual + ").");
             return false;
         }
 
-        // Validar que al menos un ComboBox tenga un valor seleccionado
         Integer idSala = comboBoxIdSalaMantenimiento.getValue();
         Integer idAudiovisual = comboBoxIdAudiovisualMantenimiento.getValue();
         if (idSala == null && idAudiovisual == null) {
             mostrarAlerta("Error", "Debe seleccionar al menos un ID de sala o un ID de audiovisual.");
+            return false;
+        }
+
+        if (idSala != null && idAudiovisual != null) {
+            mostrarAlerta("Error", "No puede seleccionar un ID de sala y un ID de audiovisual al mismo tiempo.");
             return false;
         }
 
