@@ -94,7 +94,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="288.0" GridPane.columnIndex="2">
             <children>
-               <Button fx:id="btnGenerarReporte" nodeOrientation="RIGHT_TO_LEFT" onAction="#GenerarReporte" prefHeight="50" prefWidth="200" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Generar Reporte">
+               <Button fx:id="btnInformes" nodeOrientation="RIGHT_TO_LEFT" onAction="#GoToInformes" prefHeight="50" prefWidth="200" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Informes">
                   <font>
                      <Font size="18" />
                   </font>

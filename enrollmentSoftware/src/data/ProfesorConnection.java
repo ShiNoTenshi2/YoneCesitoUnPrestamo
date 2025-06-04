@@ -9,9 +9,9 @@ public class ProfesorConnection implements DBConnection {
     private Connection connection;
     private final String username = "profesorYNC";
     private final String password = "yonecesito";
-    private final String host = "192.168.254.215";
+    private final String host = "192.168.1.11";
     private final String port = "1521";
-    private final String service = "orcl";
+    private final String service = "xe";
 
     private ProfesorConnection() {
         try {

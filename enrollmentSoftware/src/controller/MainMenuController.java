@@ -12,35 +12,15 @@ import java.io.IOException;
 
 public class MainMenuController {
 
-    @FXML
-    private Button btnSolicitudes;
-
-    @FXML
-    private Button btnSala;
-
-    @FXML
-    private Button btnAudiovisual;
-
-    @FXML
-    private Button btnPrestamo;
-
-    @FXML
-    private Button btnDevolucion;
-
-    @FXML
-    private Button btnSancion;
-
-    @FXML
-    private Button btnMantenimiento;
-
-    @FXML
-    private Button btnGestionPrestamos;
-
-    @FXML
-    private Button btnGenerarReporte;
-
-    @FXML
-    private Button btnCerrarSesion;
+    @FXML private Button btnSolicitudes;
+    @FXML private Button btnSala;
+    @FXML private Button btnAudiovisual;
+    @FXML private Button btnPrestamo;
+    @FXML private Button btnDevolucion;
+    @FXML private Button btnSancion;
+    @FXML private Button btnMantenimiento;
+    @FXML private Button btnInformes;
+    @FXML private Button btnCerrarSesion;
 
     @FXML
     public void initialize() {
@@ -93,8 +73,8 @@ public class MainMenuController {
     }
 
     @FXML
-    private void GenerarReporte() {
-        loadView("/view/GenerarReporte.fxml", "Generar Reporte");
+    private void GoToInformes() {
+        loadView("/view/Informes.fxml", "Menú de Informes");
     }
 
     @FXML

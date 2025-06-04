@@ -71,26 +71,49 @@ public class SalaDAO {
 
     public boolean actualizarSala(Sala sala) throws SQLException {
         Connection connection = dbConnection.getConnection();
-        String query = "UPDATE sala SET nombre_sala = ?, capacidad = ?, detalles_sala = ?, estado = ? WHERE id_sala = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, sala.getNombre_sala());
-            stmt.setInt(2, sala.getCapacidad());
-            stmt.setString(3, sala.getDetalles_sala());
-            stmt.setString(4, sala.getEstado());
-            stmt.setLong(5, sala.getId_sala());
+        String procedureCall = "{call actualizar_sala(?, ?, ?, ?, ?, ?)}";
+        try (CallableStatement stmt = connection.prepareCall(procedureCall)) {
+            // Configurar los parámetros de entrada
+            stmt.setLong(1, sala.getId_sala());
+            stmt.setString(2, sala.getNombre_sala());
+            stmt.setInt(3, sala.getCapacidad());
+            stmt.setString(4, sala.getDetalles_sala());
+            stmt.setString(5, sala.getEstado());
+            // Registrar el parámetro de salida
+            stmt.registerOutParameter(6, java.sql.Types.VARCHAR);
 
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            // Ejecutar el procedimiento
+            stmt.execute();
+
+            // Obtener el resultado
+            String resultado = stmt.getString(6);
+            if ("0".equals(resultado)) {
+                return true; // Operación exitosa
+            } else {
+                throw new SQLException("Error al actualizar la sala: " + resultado.substring(2));
+            }
         }
     }
 
     public boolean eliminarSala(long id_sala) throws SQLException {
         Connection connection = dbConnection.getConnection();
-        String query = "DELETE FROM sala WHERE id_sala = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        String procedureCall = "{call eliminar_sala(?, ?)}";
+        try (CallableStatement stmt = connection.prepareCall(procedureCall)) {
+            // Configurar los parámetros de entrada
             stmt.setLong(1, id_sala);
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            // Registrar el parámetro de salida
+            stmt.registerOutParameter(2, java.sql.Types.VARCHAR);
+
+            // Ejecutar el procedimiento
+            stmt.execute();
+
+            // Obtener el resultado
+            String resultado = stmt.getString(2);
+            if ("0".equals(resultado)) {
+                return true; // Operación exitosa
+            } else {
+                throw new SQLException("Error al eliminar la sala: " + resultado.substring(2));
+            }
         }
     }
 

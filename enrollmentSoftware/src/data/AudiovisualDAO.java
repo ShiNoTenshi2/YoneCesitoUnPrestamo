@@ -68,25 +68,48 @@ public class AudiovisualDAO {
 
     public boolean actualizarAudiovisual(Audiovisual audiovisual) throws SQLException {
         Connection connection = dbConnection.getConnection();
-        String query = "UPDATE audiovisual SET nombre_audiov = ?, detalle_audiovisual = ?, estado = ? WHERE id_audiovisual = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, audiovisual.getNombre_audiov());
-            stmt.setString(2, audiovisual.getDetalle_audiovisual());
-            stmt.setString(3, audiovisual.getEstado());
-            stmt.setLong(4, audiovisual.getId_audiovisual());
+        String procedureCall = "{call actualizar_audiovisual(?, ?, ?, ?, ?)}";
+        try (CallableStatement stmt = connection.prepareCall(procedureCall)) {
+            // Configurar los parámetros de entrada
+            stmt.setLong(1, audiovisual.getId_audiovisual());
+            stmt.setString(2, audiovisual.getNombre_audiov());
+            stmt.setString(3, audiovisual.getDetalle_audiovisual());
+            stmt.setString(4, audiovisual.getEstado());
+            // Registrar el parámetro de salida
+            stmt.registerOutParameter(5, java.sql.Types.VARCHAR);
 
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            // Ejecutar el procedimiento
+            stmt.execute();
+
+            // Obtener el resultado
+            String resultado = stmt.getString(5);
+            if ("0".equals(resultado)) {
+                return true; // Operación exitosa
+            } else {
+                throw new SQLException("Error al actualizar el audiovisual: " + resultado.substring(2));
+            }
         }
     }
 
     public boolean eliminarAudiovisual(long id_audiovisual) throws SQLException {
         Connection connection = dbConnection.getConnection();
-        String query = "DELETE FROM audiovisual WHERE id_audiovisual = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        String procedureCall = "{call eliminar_audiovisual(?, ?)}";
+        try (CallableStatement stmt = connection.prepareCall(procedureCall)) {
+            // Configurar los parámetros de entrada
             stmt.setLong(1, id_audiovisual);
-            int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0;
+            // Registrar el parámetro de salida
+            stmt.registerOutParameter(2, java.sql.Types.VARCHAR);
+
+            // Ejecutar el procedimiento
+            stmt.execute();
+
+            // Obtener el resultado
+            String resultado = stmt.getString(2);
+            if ("0".equals(resultado)) {
+                return true; // Operación exitosa
+            } else {
+                throw new SQLException("Error al eliminar el audiovisual: " + resultado.substring(2));
+            }
         }
     }
 
