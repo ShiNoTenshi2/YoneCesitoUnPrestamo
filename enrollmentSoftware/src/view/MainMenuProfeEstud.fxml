@@ -8,11 +8,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" style="-fx-background-color: #c2c2c2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainMenuProfeEstudController">
+<VBox alignment="CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" stylesheets="@../../resources/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainMenuProfeEstudController">
     <padding>
         <Insets bottom="50" left="50" right="50" top="50" />
     </padding>
-    <Label alignment="CENTER" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Menu de Acceso">
+    <Label alignment="CENTER" style="-fx-font-size: 30;" text="Menu de Acceso">
         <font>
             <Font name="Arial" size="24" />
         </font>
@@ -23,7 +23,7 @@
          <Insets bottom="50.0" />
       </VBox.margin>
     </Label>
-   <Button fx:id="btnPrestamoProfeEstu" onAction="#GoToPrestamo" prefHeight="50" prefWidth="200" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Prestamos">
+   <Button fx:id="btnPrestamoProfeEstu" onAction="#GoToPrestamo" prefHeight="50" prefWidth="200" text="Prestamos">
       <font>
          <Font size="18" />
       </font>
@@ -33,7 +33,7 @@
    </Button>
    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
       <children>
-         <Button fx:id="btnCerrarSesion" onAction="#GoToMenuInicial" prefHeight="50" prefWidth="200" style="-fx-font-size: 16; -fx-background-color: red; -fx-text-fill: black; -fx-background-radius: 5;" text="Cerrar Sesion">
+         <Button fx:id="btnCerrarSesion" onAction="#GoToMenuInicial" prefHeight="50" prefWidth="200" text="Cerrar Sesion">
             <font>
                <Font size="18" />
             </font>

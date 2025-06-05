@@ -9,11 +9,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" style="-fx-background-color: #c2c2c2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TablaMantenimientoController">
+<VBox alignment="TOP_CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" stylesheets="@../../resources/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TablaMantenimientoController">
     <padding>
         <Insets bottom="40" left="40" right="40" top="40" />
     </padding>
-    <Label alignment="TOP_CENTER" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Tabla de Mantenimiento">
+    <Label alignment="TOP_CENTER" style="-fx-font-size: 24;" text="Tabla de Mantenimiento">
         <font>
             <Font name="Arial" size="24" />
         </font>
@@ -30,12 +30,12 @@
          <TableColumn fx:id="columnFechaMantenimiento" prefWidth="86.0" text="Fecha" />
        <TableColumn fx:id="columnResponsableMantenimiento" prefWidth="113.0" text="Responsable" />
          <TableColumn fx:id="columnEstadoMantenimiento" prefWidth="93.0" text="Estado" />
-         <TableColumn fx:id="columnIdSalaMantenimiento" prefWidth="64.0" text="Id Sala" />
-         <TableColumn fx:id="columnIdAudiovisualMantenimiento" prefWidth="98.0" text="Id Audiovisual" />
-         <TableColumn fx:id="columnDescripcionMantenimiento" prefWidth="310.0" text="Descripcion" />
+         <TableColumn fx:id="columnIdSalaMantenimiento" prefWidth="73.0" text="Id Sala" />
+         <TableColumn fx:id="columnIdAudiovisualMantenimiento" prefWidth="120.0" text="Id Audiovisual" />
+         <TableColumn fx:id="columnDescripcionMantenimiento" prefWidth="318.0" text="Descripcion" />
      </columns>
    </TableView>
-   <Button fx:id="btnMantenimiento" onAction="#GoToMantenimiento" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Volver Atras">
+   <Button fx:id="btnMantenimiento" onAction="#GoToMantenimiento" prefHeight="40" prefWidth="300" text="Volver Atras">
       <effect>
          <DropShadow color="#c0392b" radius="3" />
       </effect>

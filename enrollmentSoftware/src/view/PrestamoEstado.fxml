@@ -13,11 +13,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" style="-fx-background-color: #c2c2c2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PrestamoController">
+<VBox alignment="TOP_CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" stylesheets="@../../resources/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PrestamoController">
     <padding>
         <Insets bottom="40" left="40" right="40" top="40" />
     </padding>
-    <Label alignment="TOP_CENTER" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Tabla Prestamo">
+    <Label alignment="TOP_CENTER" style="-fx-font-size: 24;" text="Tabla Prestamo">
         <font>
             <Font name="Arial" size="24" />
         </font>
@@ -30,14 +30,14 @@
     </Label>
    <TableView fx:id="tablaPrestamo" prefHeight="648.0" prefWidth="820.0">
      <columns>
-       <TableColumn fx:id="columnIdPrestamo" prefWidth="83.0" text="ID Prestamo" />
-         <TableColumn fx:id="columnIdUsuarioPrestamo" prefWidth="98.0" text="Cedula Usuario" />
-         <TableColumn fx:id="columnIdSalaPrestamo" prefWidth="44.0" text="IdSala" />
-         <TableColumn fx:id="columnIdAudiovPrestamo" prefWidth="63.0" text="IdAudiov" />
-         <TableColumn fx:id="columnHoraInicioPrestamo" prefWidth="130.0" text="HoraInicio" />
-         <TableColumn fx:id="columnIdHoraFinPrestamo" minWidth="4.0" prefWidth="129.0" text="HoraFin" />
-         <TableColumn fx:id="columnEstadoPrestamo" prefWidth="63.0" text="Estado" />
-         <TableColumn fx:id="columnDetallePrestamo" prefWidth="209.0" text="Detalle" />
+       <TableColumn fx:id="columnIdPrestamo" prefWidth="66.0" text="ID Prestamo" />
+         <TableColumn fx:id="columnIdUsuarioPrestamo" prefWidth="126.0" text="Cedula Usuario" />
+         <TableColumn fx:id="columnIdSalaPrestamo" prefWidth="66.0" text="IdSala" />
+         <TableColumn fx:id="columnIdAudiovPrestamo" prefWidth="78.0" text="IdAudiov" />
+         <TableColumn fx:id="columnHoraInicioPrestamo" prefWidth="96.0" text="HoraInicio" />
+         <TableColumn fx:id="columnIdHoraFinPrestamo" minWidth="4.0" prefWidth="122.0" text="HoraFin" />
+         <TableColumn fx:id="columnEstadoPrestamo" prefWidth="118.0" text="Estado" />
+         <TableColumn fx:id="columnDetallePrestamo" prefWidth="186.0" text="Detalle" />
      </columns>
    </TableView>
    <GridPane translateY="1.0">
@@ -54,7 +54,7 @@
       <children>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
             <children>
-               <Button fx:id="btnConfirmarPrestamo" alignment="CENTER" contentDisplay="CENTER" onAction="#ConfirmarPrestamo" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Confirmar Prestamo">
+               <Button fx:id="btnConfirmarPrestamo" alignment="CENTER" contentDisplay="CENTER" onAction="#ConfirmarPrestamo" prefHeight="40" prefWidth="300" text="Confirmar Prestamo">
                   <effect>
                      <DropShadow color="#2980b9" radius="3" />
                   </effect>
@@ -63,7 +63,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
             <children>
-            	<Button fx:id="btnMenu" onAction="#GoToMenu" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Volver al Menú">	
+            	<Button fx:id="btnMenu" onAction="#GoToMenu" prefHeight="40" prefWidth="300" text="Volver al Menú">	
                     <effect>
                         <DropShadow color="#c0392b" radius="3" />
                     </effect>
@@ -72,7 +72,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
             <children>
-               <Button fx:id="btnDenegarPrestamo" alignment="CENTER" contentDisplay="CENTER" nodeOrientation="LEFT_TO_RIGHT" onAction="#DenegarPrestamo" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Denegar Prestamo">
+               <Button fx:id="btnDenegarPrestamo" alignment="CENTER" contentDisplay="CENTER" nodeOrientation="LEFT_TO_RIGHT" onAction="#DenegarPrestamo" prefHeight="40" prefWidth="300" text="Denegar Prestamo">
                   <effect>
                      <DropShadow color="#2980b9" radius="3" />
                   </effect>

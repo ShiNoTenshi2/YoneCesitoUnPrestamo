@@ -10,11 +10,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" style="-fx-background-color: #c2c2c2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MenuUsuariosController">
+<VBox alignment="CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" stylesheets="@../../resources/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MenuUsuariosController">
     <padding>
         <Insets bottom="40" left="40" right="40" top="40" />
     </padding>
-    <Label style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Inicio Sesion">
+    <Label style="-fx-font-size: 24;" text="Inicio Sesion">
         <font>
             <Font name="Arial" size="24" />
         </font>
@@ -22,18 +22,18 @@
             <DropShadow color="#95a5a6" radius="3" />
         </effect>
     </Label>
-    <Label style="-fx-font-size: 16; -fx-text-fill: #34495e;" text="Cedula Del usuario" />
-    <TextField fx:id="txtCedulaU" prefHeight="40" prefWidth="300" promptText="Ingrese cedula del usuario" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;" />
-    <Label style="-fx-font-size: 16; -fx-text-fill: #34495e;" text="Contraseña" />
+    <Label text="Cedula Del usuario" />
+    <TextField fx:id="txtCedulaU" prefHeight="40" prefWidth="300" promptText="Ingrese cedula del usuario" />
+    <Label text="Contraseña" />
    <PasswordField fx:id="txtContraseñaU" prefHeight="40.0" prefWidth="300.0" promptText="Ingrese contraseña" />
-   <Label style="-fx-font-size: 16; -fx-text-fill: #34495e;" text="Rol De Usuario" />
+   <Label text="Rol De Usuario" />
    <ComboBox fx:id="ComboBoxRolUsuario" prefWidth="150.0" />
-    <Button fx:id="btnIngresoUsuario" onAction="#GoToIngresoUsuario" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #3498db; -fx-text-fill: white; -fx-background-radius: 5;" text="Ingresar">
+    <Button fx:id="btnIngresoUsuario" onAction="#GoToIngresoUsuario" prefHeight="40" prefWidth="300" text="Ingresar">
         <effect>
             <DropShadow color="#2980b9" radius="3" />
         </effect>
     </Button>
-   <Button fx:id="btnMenuInicial" onAction="#GoToMenuInicial" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: green; -fx-text-fill: white; -fx-background-radius: 5;" text="Menu Inicial">
+   <Button fx:id="btnMenuInicial" onAction="#GoToMenuInicial" prefHeight="40" prefWidth="300" text="Menu Inicial">
       <effect>
          <DropShadow color="#2980b9" radius="3" />
       </effect>

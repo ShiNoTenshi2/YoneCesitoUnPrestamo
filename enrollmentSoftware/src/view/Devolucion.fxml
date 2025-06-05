@@ -14,11 +14,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" style="-fx-background-color: #c2c2c2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DevolucionController">
+<VBox alignment="TOP_CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" stylesheets="@../../resources/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DevolucionController">
     <padding>
         <Insets bottom="40" left="40" right="40" top="40" />
     </padding>
-    <Label alignment="TOP_CENTER" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Registro Devolucion">
+    <Label alignment="TOP_CENTER" style="-fx-font-size: 24;" text="Registro Devolucion">
         <font>
             <Font name="Arial" size="24" />
         </font>
@@ -29,8 +29,8 @@
          <Insets />
       </opaqueInsets>
     </Label>
-    <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="ID Devolucion" />
-    <TextField fx:id="txtIdDevolucion" prefHeight="32.0" prefWidth="617.0" promptText="Ingrese el ID de la Devolucion" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;">
+    <Label text="ID Devolucion" />
+    <TextField fx:id="txtIdDevolucion" prefHeight="32.0" prefWidth="617.0" promptText="Ingrese el ID de la Devolucion">
       <opaqueInsets>
          <Insets />
       </opaqueInsets>
@@ -49,7 +49,7 @@
       <children>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
             <children>
-               <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Entrega" />
+               <Label text="Entrega" />
             </children>
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
@@ -59,7 +59,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
             <children>
-                <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Fecha Devolucion" />
+                <Label text="Fecha Devolucion" />
             </children>
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
@@ -69,7 +69,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
             <children>
-               <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Estado Devolucion" />
+               <Label text="Estado Devolucion" />
             </children>
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
@@ -79,8 +79,8 @@
          </HBox>
       </children>
    </GridPane>
-   <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Descripcion" />
-   <TextField fx:id="txtDescripcionDevol" prefHeight="40" prefWidth="300" promptText="Estado del equipo o sala despues de la Devolucion" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;" />
+   <Label text="Descripcion" />
+   <TextField fx:id="txtDescripcionDevol" prefHeight="40" prefWidth="300" promptText="Estado del equipo o sala despues de la Devolucion" />
    <GridPane>
      <columnConstraints>
        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -94,7 +94,7 @@
       <children>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
             <children>
-                <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="ID Prestamo" />
+                <Label text="ID Prestamo" />
             </children>
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="2">
@@ -104,7 +104,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
             <children>
-               <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="ID Mantenimiento" />
+               <Label text="ID Mantenimiento" />
             </children>
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
@@ -130,7 +130,7 @@
       <children>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
             <children>
-                <Button fx:id="btnRegistrarDevolucion" alignment="CENTER" contentDisplay="CENTER" onAction="#RegistrarDevolucion" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Registrar Devolucion">
+                <Button fx:id="btnRegistrarDevolucion" alignment="CENTER" contentDisplay="CENTER" onAction="#RegistrarDevolucion" prefHeight="40" prefWidth="300" text="Registrar Devolucion">
                     <effect>
                         <DropShadow color="#2980b9" radius="3" />
                     </effect>
@@ -139,7 +139,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="4">
             <children>
-               <Button fx:id="btnActualizarDevolucion" alignment="CENTER" contentDisplay="CENTER" onAction="#ActualizarDevolucion" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Actualizar Devolucion">
+               <Button fx:id="btnActualizarDevolucion" alignment="CENTER" contentDisplay="CENTER" onAction="#ActualizarDevolucion" prefHeight="40" prefWidth="300" text="Actualizar Devolucion">
                   <effect>
                      <DropShadow color="#2980b9" radius="3" />
                   </effect>
@@ -148,7 +148,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <children>
-               <Button fx:id="btnLeerDevolucion" alignment="CENTER" contentDisplay="CENTER" onAction="#LeerDevolucion" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Leer Devolucion">
+               <Button fx:id="btnLeerDevolucion" alignment="CENTER" contentDisplay="CENTER" onAction="#LeerDevolucion" prefHeight="40" prefWidth="300" text="Leer Devolucion">
                   <effect>
                      <DropShadow color="#2980b9" radius="3" />
                   </effect>
@@ -157,7 +157,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
             <children>
-               <Button fx:id="btnBorrarDevolucion" alignment="CENTER" contentDisplay="CENTER" nodeOrientation="LEFT_TO_RIGHT" onAction="#BorrarDevolucion" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Borrar Devolucion">
+               <Button fx:id="btnBorrarDevolucion" alignment="CENTER" contentDisplay="CENTER" nodeOrientation="LEFT_TO_RIGHT" onAction="#BorrarDevolucion" prefHeight="40" prefWidth="300" text="Borrar Devolucion">
                   <effect>
                      <DropShadow color="#2980b9" radius="3" />
                   </effect>
@@ -166,7 +166,7 @@
          </HBox>
       </children>
    </GridPane>
-	<Button fx:id="btnMenu" onAction="#GoToMenu" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Volver al Menú">	
+	<Button fx:id="btnMenu" onAction="#GoToMenu" prefHeight="40" prefWidth="300" text="Volver al Menú">	
         <effect>
             <DropShadow color="#c0392b" radius="3" />
         </effect>

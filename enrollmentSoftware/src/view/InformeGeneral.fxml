@@ -13,11 +13,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" style="-fx-background-color: #c2c2c2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.InformeGeneralController">
+<VBox alignment="TOP_CENTER" prefHeight="1000.0" prefWidth="900.0" spacing="20" stylesheets="@../../resources/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.InformeGeneralController">
     <padding>
         <Insets bottom="40" left="40" right="40" top="40" />
     </padding>
-    <Label alignment="TOP_CENTER" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Informe General">
+    <Label alignment="TOP_CENTER" style="-fx-font-size: 24;" text="Informe General">
         <font>
             <Font name="Arial" size="24" />
         </font>
@@ -28,7 +28,7 @@
          <Insets />
       </opaqueInsets>
     </Label>
-   <Label alignment="TOP_CENTER" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Usuarios sin Sancion">
+   <Label alignment="TOP_CENTER" style="-fx-font-size: 20;" text="Usuarios sin Sancion">
       <font>
          <Font name="Arial" size="24" />
       </font>
@@ -39,16 +39,16 @@
          <Insets />
       </opaqueInsets>
    </Label>
-   <TableView fx:id="tablaUsuariosSinSancion" prefHeight="96.0" prefWidth="820.0">
+   <TableView fx:id="tablaUsuariosSinSancion" prefHeight="110.0" prefWidth="820.0">
      <columns>
        <TableColumn fx:id="columnCedulaUsuario" prefWidth="106.0" text="Cedula" />
        <TableColumn fx:id="columnNombreUsuario" prefWidth="326.0" text="Nombre" />
          <TableColumn fx:id="columnRolUsuario" prefWidth="127.0" text="Rol" />
          <TableColumn fx:id="columnEstadoUsuario" prefWidth="94.0" text="Estado" />
-         <TableColumn fx:id="columnCorreoUsuario" prefWidth="166.0" text="Correo" />
+         <TableColumn fx:id="columnCorreoUsuario" prefWidth="205.0" text="Correo" />
      </columns>
    </TableView>
-   <Label alignment="TOP_CENTER" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Usuarios Sancionados">
+   <Label alignment="TOP_CENTER" style="-fx-font-size: 20;" text="Usuarios Sancionados">
       <font>
          <Font name="Arial" size="24" />
       </font>
@@ -59,17 +59,17 @@
          <Insets />
       </opaqueInsets>
    </Label>
-   <TableView fx:id="tablaUsuariosConSancion" prefHeight="96.0" prefWidth="820.0">
+   <TableView fx:id="tablaUsuariosConSancion" prefHeight="140.0" prefWidth="820.0">
       <columns>
-         <TableColumn fx:id="columnIdSancion" prefWidth="65.0" text="Id Sancion" />
-         <TableColumn fx:id="columnCedulaUsuarioSancion" prefWidth="75.0" text="Cedula" />
-         <TableColumn fx:id="columnNombreUsuarioSancion" prefWidth="278.0" text="Nombre" />
-         <TableColumn fx:id="columnEstadoUsuarioSancion" prefWidth="75.0" text="Estado Sancion" />
-         <TableColumn fx:id="columnMontoSancion" minWidth="6.0" prefWidth="76.0" text="Monto" />
-         <TableColumn fx:id="columnMotivoSancion" prefWidth="250.0" text="Motivo" />
+         <TableColumn fx:id="columnIdSancion" prefWidth="83.0" text="Id Sancion" />
+         <TableColumn fx:id="columnCedulaUsuarioSancion" text="Cedula" />
+         <TableColumn fx:id="columnNombreUsuarioSancion" prefWidth="255.0" text="Nombre" />
+         <TableColumn fx:id="columnEstadoUsuarioSancion" prefWidth="133.0" text="Estado Sancion" />
+         <TableColumn fx:id="columnMontoSancion" minWidth="0.0" prefWidth="84.0" text="Monto" />
+         <TableColumn fx:id="columnMotivoSancion" prefWidth="223.0" text="Motivo" />
       </columns>
    </TableView>
-   <Label alignment="TOP_CENTER" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Prestamos Aprobados">
+   <Label alignment="TOP_CENTER" style="-fx-font-size: 20;" text="Prestamos Aprobados">
       <font>
          <Font name="Arial" size="24" />
       </font>
@@ -80,19 +80,19 @@
          <Insets />
       </opaqueInsets>
    </Label>
-   <TableView fx:id="tablaPrestamosAprobados" prefHeight="96.0" prefWidth="820.0">
+   <TableView fx:id="tablaPrestamosAprobados" prefHeight="150.0" prefWidth="820.0">
       <columns>
          <TableColumn fx:id="columnIdPrestamoAprobado" prefWidth="46.0" text="Id" />
          <TableColumn fx:id="columnCedulaPrestamoAprobado" prefWidth="92.0" text="Cedula" />
          <TableColumn fx:id="columnIdSalaPrestamoAprobado" prefWidth="75.0" text="Id Sala" />
-         <TableColumn fx:id="columnIdAudiovisualPrestamoAprobado" prefWidth="97.0" text="Id Audiovisual" />
-         <TableColumn fx:id="columnHoraInicioPrestamoAprobado" prefWidth="109.0" text="HoraInicio" />
-         <TableColumn fx:id="columnHoraFinPrestamoAprobado" prefWidth="99.0" text="HoraFin" />
-         <TableColumn fx:id="columnEstadoPrestamoAprobado" prefWidth="79.0" text="Estado" />
-         <TableColumn fx:id="columnDetallePrestamoAprobado" prefWidth="222.0" text="Detalle" />
+         <TableColumn fx:id="columnIdAudiovisualPrestamoAprobado" prefWidth="109.0" text="Id Audiovisual" />
+         <TableColumn fx:id="columnHoraInicioPrestamoAprobado" prefWidth="107.0" text="HoraInicio" />
+         <TableColumn fx:id="columnHoraFinPrestamoAprobado" prefWidth="110.0" text="HoraFin" />
+         <TableColumn fx:id="columnEstadoPrestamoAprobado" prefWidth="77.0" text="Estado" />
+         <TableColumn fx:id="columnDetallePrestamoAprobado" prefWidth="242.0" text="Detalle" />
       </columns>
    </TableView>
-   <Label alignment="TOP_CENTER" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Prestamos Finalizados">
+   <Label alignment="TOP_CENTER" style="-fx-font-size: 20;" text="Prestamos Finalizados">
       <font>
          <Font name="Arial" size="24" />
       </font>
@@ -103,16 +103,16 @@
          <Insets />
       </opaqueInsets>
    </Label>
-   <TableView fx:id="tablaPrestamosFinalizados" prefHeight="96.0" prefWidth="820.0">
+   <TableView fx:id="tablaPrestamosFinalizados" prefHeight="150.0" prefWidth="820.0">
       <columns>
          <TableColumn fx:id="columnIdPrestamoFinalizado" prefWidth="46.0" text="Id" />
          <TableColumn fx:id="columnCedulaPrestamoFinalizado" prefWidth="92.0" text="Cedula" />
          <TableColumn fx:id="columnIdSalaPrestamoFinalizado" prefWidth="75.0" text="Id Sala" />
-         <TableColumn fx:id="columnIdAudiovisualPrestamoFinalizado" prefWidth="97.0" text="Id Audiovisual" />
-         <TableColumn fx:id="columnHoraInicioPrestamoFinalizado" prefWidth="109.0" text="HoraInicio" />
-         <TableColumn fx:id="columnHoraFinPrestamoFinalizado" prefWidth="99.0" text="HoraFin" />
-         <TableColumn fx:id="columnEstadoPrestamoFinalizado" prefWidth="79.0" text="Estado" />
-         <TableColumn fx:id="columnDetallePrestamoFinalizado" prefWidth="222.0" text="Detalle" />
+         <TableColumn fx:id="columnIdAudiovisualPrestamoFinalizado" prefWidth="111.0" text="Id Audiovisual" />
+         <TableColumn fx:id="columnHoraInicioPrestamoFinalizado" prefWidth="95.0" text="HoraInicio" />
+         <TableColumn fx:id="columnHoraFinPrestamoFinalizado" prefWidth="119.0" text="HoraFin" />
+         <TableColumn fx:id="columnEstadoPrestamoFinalizado" prefWidth="106.0" text="Estado" />
+         <TableColumn fx:id="columnDetallePrestamoFinalizado" prefWidth="214.0" text="Detalle" />
       </columns>
    </TableView>
    <GridPane>
@@ -127,7 +127,7 @@
       <children>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
             <children>
-               <Button fx:id="btnInformes" onAction="#GoToInformes" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Volver a Informes">
+               <Button fx:id="btnInformes" onAction="#GoToInformes" prefHeight="40" prefWidth="300" text="Volver a Informes">
                   <effect>
                      <DropShadow color="#c0392b" radius="3" />
                   </effect>
@@ -136,7 +136,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <children>
-               <Button fx:id="btnMainMenu" onAction="#GoToMainMenu" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Ir a MainMenu">
+               <Button fx:id="btnMainMenu" onAction="#GoToMainMenu" prefHeight="40" prefWidth="300" text="Ir a MainMenu">
                   <effect>
                      <DropShadow color="#c0392b" radius="3" />
                   </effect>

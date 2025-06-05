@@ -14,11 +14,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" style="-fx-background-color: #c2c2c2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MantenimientoController">
+<VBox alignment="TOP_CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" stylesheets="@../../resources/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MantenimientoController">
     <padding>
         <Insets bottom="40" left="40" right="40" top="40" />
     </padding>
-    <Label alignment="TOP_CENTER" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Registro Mantenimiento">
+    <Label alignment="TOP_CENTER" style="-fx-font-size: 24;" text="Registro Mantenimiento">
         <font>
             <Font name="Arial" size="24" />
         </font>
@@ -29,15 +29,15 @@
          <Insets />
       </opaqueInsets>
     </Label>
-    <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="ID Mantenimiento" />
+    <Label text="ID Mantenimiento" />
     <TextField fx:id="txtIdMantenimiento" prefHeight="32.0" prefWidth="617.0" promptText="Ingrese el ID de el Mantenimiento" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;">
       <opaqueInsets>
          <Insets />
       </opaqueInsets>
    </TextField>
-   <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Responsable" />
+   <Label text="Responsable" />
    <TextField fx:id="txtResponsableMantenimiento" prefHeight="40" prefWidth="300" promptText="Nombre de la Empresa Encargada del Mantenimiento" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;" />
-   <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Descripcion" />
+   <Label text="Descripcion" />
    <TextField fx:id="txtDescripcionMantenimiento" prefHeight="40" prefWidth="300" promptText="Ingrese la Descripcion del Mantenimiento" style="-fx-font-size: 14; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7; -fx-padding: 5;" />
    <GridPane>
      <columnConstraints>
@@ -53,7 +53,7 @@
       <children>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
             <children>
-               <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="ID Sala" />
+               <Label text="ID Sala" />
             </children>
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
@@ -63,7 +63,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
             <children>
-                <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="Fecha Mantenimiento" />
+                <Label text="Fecha Mantenimiento" />
             </children>
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -73,7 +73,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
             <children>
-               <Label style="-fx-font-size: 16; -fx-text-fill: black;" text="ID Audiovisual" />
+               <Label text="ID Audiovisual" />
             </children>
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
@@ -98,7 +98,7 @@
       <children>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
             <children>
-                <Button fx:id="btnRegistrarMantenimiento" alignment="CENTER" contentDisplay="CENTER" onAction="#RegistrarMantenimiento" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Registrar Mantenimiento">
+                <Button fx:id="btnRegistrarMantenimiento" alignment="CENTER" contentDisplay="CENTER" onAction="#RegistrarMantenimiento" prefHeight="40" prefWidth="300" text="Registrar Mantenimiento">
                     <effect>
                         <DropShadow color="#2980b9" radius="3" />
                     </effect>
@@ -107,7 +107,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="3">
             <children>
-               <Button fx:id="btnActualizarMantenimiento" alignment="CENTER" contentDisplay="CENTER" onAction="#ActualizarMantenimiento" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Actualizar Mantenimiento">
+               <Button fx:id="btnActualizarMantenimiento" alignment="CENTER" contentDisplay="CENTER" onAction="#ActualizarMantenimiento" prefHeight="40" prefWidth="300" text="Actualizar Mantenimiento">
                   <effect>
                      <DropShadow color="#2980b9" radius="3" />
                   </effect>
@@ -116,7 +116,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <children>
-               <Button fx:id="btnLeerMantenimiento" alignment="CENTER" contentDisplay="CENTER" onAction="#LeerMantenimiento" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Leer Mantenimiento">
+               <Button fx:id="btnLeerMantenimiento" alignment="CENTER" contentDisplay="CENTER" onAction="#LeerMantenimiento" prefHeight="40" prefWidth="300" text="Leer Mantenimiento">
                   <effect>
                      <DropShadow color="#2980b9" radius="3" />
                   </effect>
@@ -125,7 +125,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
             <children>
-               <Button fx:id="btnBorrarMantenimiento" alignment="CENTER" contentDisplay="CENTER" nodeOrientation="LEFT_TO_RIGHT" onAction="#BorrarMantenimiento" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Borrar Mantenimiento">
+               <Button fx:id="btnBorrarMantenimiento" alignment="CENTER" contentDisplay="CENTER" nodeOrientation="LEFT_TO_RIGHT" onAction="#BorrarMantenimiento" prefHeight="40" prefWidth="300" text="Borrar Mantenimiento">
                   <effect>
                      <DropShadow color="#2980b9" radius="3" />
                   </effect>
@@ -134,7 +134,7 @@
          </HBox>
       </children>
    </GridPane>
-	<Button fx:id="btnMenu" onAction="#GoToMenu" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Volver al Menú">	
+	<Button fx:id="btnMenu" onAction="#GoToMenu" prefHeight="40" prefWidth="300" text="Volver al Menú">	
         <effect>
             <DropShadow color="#c0392b" radius="3" />
         </effect>

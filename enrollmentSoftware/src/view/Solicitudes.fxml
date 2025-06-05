@@ -13,11 +13,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" style="-fx-background-color: #c2c2c2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SolicitudesController">
+<VBox alignment="TOP_CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" stylesheets="@../../resources/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SolicitudesController">
     <padding>
         <Insets bottom="40" left="40" right="40" top="40" />
     </padding>
-    <Label alignment="TOP_CENTER" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Tabla Gestion de Usuarios">
+    <Label alignment="TOP_CENTER" style="-fx-font-size: 24;" text="Tabla Gestion de Usuarios">
         <font>
             <Font name="Arial" size="24" />
         </font>
@@ -31,10 +31,10 @@
    <TableView fx:id="tablaSolicitudes" prefHeight="677.0" prefWidth="820.0">
      <columns>
        <TableColumn fx:id="columnCedulaUsu" prefWidth="100.0" text="Cedula" />
-       <TableColumn fx:id="columnNombreUsu" prefWidth="234.0" text="Nombre" />
-         <TableColumn fx:id="columnRolUsu" prefWidth="120.0" text="Rol" />
-         <TableColumn fx:id="columnEstadoUsu" prefWidth="97.0" text="Estado" />
-         <TableColumn fx:id="columnCorreoUsu" prefWidth="268.0" text="Correo" />
+       <TableColumn fx:id="columnNombreUsu" prefWidth="280.0" text="Nombre" />
+         <TableColumn fx:id="columnRolUsu" prefWidth="102.0" text="Rol" />
+         <TableColumn fx:id="columnEstadoUsu" prefWidth="104.0" text="Estado" />
+         <TableColumn fx:id="columnCorreoUsu" prefWidth="273.0" text="Correo" />
      </columns>
    </TableView>
    <GridPane translateY="1.0">
@@ -53,7 +53,7 @@
       <children>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
             <children>
-               <Button fx:id="btnConfirmarUsuario" alignment="CENTER" contentDisplay="CENTER" onAction="#ConfirmarUsuario" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Confirmar Usuario">
+               <Button fx:id="btnConfirmarUsuario" alignment="CENTER" contentDisplay="CENTER" onAction="#ConfirmarUsuario" prefHeight="40" prefWidth="300" text="Confirmar Usuario">
                   <effect>
                      <DropShadow color="#2980b9" radius="3" />
                   </effect>
@@ -62,7 +62,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
             <children>
-               <Button fx:id="btnDenegarUsuario" alignment="CENTER" contentDisplay="CENTER" nodeOrientation="LEFT_TO_RIGHT" onAction="#DenegarUsuario" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Denegar Usuario">
+               <Button fx:id="btnDenegarUsuario" alignment="CENTER" contentDisplay="CENTER" nodeOrientation="LEFT_TO_RIGHT" onAction="#DenegarUsuario" prefHeight="40" prefWidth="300" text="Denegar Usuario">
                   <effect>
                      <DropShadow color="#2980b9" radius="3" />
                   </effect>
@@ -71,7 +71,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
             <children>
-            	<Button fx:id="btnMenu" onAction="#GoToMenu" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Volver al Menú">	
+            	<Button fx:id="btnMenu" onAction="#GoToMenu" prefHeight="40" prefWidth="300" text="Volver al Menú">	
                     <effect>
                         <DropShadow color="#c0392b" radius="3" />
                     </effect>

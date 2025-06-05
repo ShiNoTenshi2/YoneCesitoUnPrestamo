@@ -13,11 +13,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" style="-fx-background-color: #c2c2c2;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TablaAudiovisualController">
+<VBox alignment="TOP_CENTER" prefHeight="850.0" prefWidth="900.0" spacing="20" stylesheets="@../../resources/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.TablaAudiovisualController">
     <padding>
         <Insets bottom="40" left="40" right="40" top="40" />
     </padding>
-    <Label alignment="TOP_CENTER" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Tabla de Audiovisuales">
+    <Label alignment="TOP_CENTER" style="-fx-font-size: 24;" text="Tabla de Audiovisuales">
         <font>
             <Font name="Arial" size="24" />
         </font>
@@ -28,12 +28,12 @@
          <Insets />
       </opaqueInsets>
     </Label>
-   <TableView fx:id="tablaAudiovisual" prefHeight="677.0" prefWidth="820.0">
+   <TableView fx:id="tablaAudiovisual" prefHeight="677.0" prefWidth="820.0" stylesheets="@../../resources/style.css">
      <columns>
        <TableColumn fx:id="columnIdAudiovisual" prefWidth="100.0" text="Id" />
        <TableColumn fx:id="columnNombreAudiovisual" prefWidth="234.0" text="Nombre" />
          <TableColumn fx:id="columnEstadoAudiovisual" prefWidth="97.0" text="Estado" />
-         <TableColumn fx:id="columnDetallesAudiovisual" prefWidth="388.0" text="Detalles" />
+         <TableColumn fx:id="columnDetallesAudiovisual" prefWidth="427.0" text="Detalles" />
      </columns>
    </TableView>
    <GridPane>
@@ -48,7 +48,7 @@
       <children>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
             <children>
-               <Button fx:id="btnAudiovisual" onAction="#GoToAudiovisual" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Volver a Audiovisuales">
+               <Button fx:id="btnAudiovisual" onAction="#GoToAudiovisual" prefHeight="40" prefWidth="184.0" text="Volver a Audiovisual">
                   <effect>
                      <DropShadow color="#c0392b" radius="3" />
                   </effect>
@@ -57,7 +57,7 @@
          </HBox>
          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <children>
-               <Button fx:id="btnPrestamo" onAction="#GoToPrestamo" prefHeight="40" prefWidth="300" style="-fx-font-size: 16; -fx-background-color: #7c7c7c; -fx-text-fill: black; -fx-background-radius: 5;" text="Ir a Prestamo">
+               <Button fx:id="btnPrestamo" onAction="#GoToPrestamo" prefHeight="40" prefWidth="300" text="Ir a Prestamo">
                   <effect>
                      <DropShadow color="#c0392b" radius="3" />
                   </effect>
