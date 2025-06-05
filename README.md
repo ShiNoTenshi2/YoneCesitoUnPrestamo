@@ -1,5 +1,5 @@
 # Sistema de Préstamo de Salas y Audiovisuales
-
+# (YONEcesito un préstamo)
 ## Descripción
 - Este proyecto es un sistema de gestión de préstamos de salas y audiovisuales. Permite a usuarios (estudiantes, profesores y coordinadores) registrarse, autenticarse, solicitar préstamos de salas y audiovisuales, devolverlos, y gestionar sanciones o mantenimientos. Utiliza una arquitectura MVC, patrones de diseño como Factory Method y Singleton, y está documentado con diagramas UML (clases, secuencias, entidad-relacion, etc).
 
@@ -47,4 +47,4 @@ Añade dependencias:
 
 ## Contribuidores
 - David Trujillo - @ShiNoTenshi2 (https://github.com/ShiNoTenshi2).
-- Sebastian Nieto - @pqar
+- Sebastian Nieto - @qawer1 (https://github.com/qawer1).
