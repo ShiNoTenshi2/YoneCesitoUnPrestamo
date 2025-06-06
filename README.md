@@ -46,5 +46,5 @@ Añade dependencias:
 5) Ejecuta desde Main.java (o el archivo principal).
 
 ## Contribuidores
-- David Trujillo - @ShiNoTenshi2 (https://github.com/ShiNoTenshi2).
-- Sebastian Nieto - @qawer1 (https://github.com/qawer1).
+- David Trujillo -  [@shinotenshi2](https://github.com/ShiNoTenshi2).
+- Sebastian Nieto - [@qawer1](https://github.com/qawer1).
